@@ -11,7 +11,7 @@ export default function App({Component, pageProps}){
      <Head>
           <meta name="description" content="Quiz Application Called Harts"/>
           <link rel="shortcut icon" href="/favicon.ico"/>
-          <title>Հարց</title>
+          <title>Հարց (բետա-վերսիա)</title>
      </Head>
      <ThemeProvider attribute="class">
           <SessionProvider session={pageProps.session}>
