@@ -40,7 +40,6 @@ export function getAnswerFormat(type){
      }
      return answerFormat
 }
-// Its url will be changed later
 export const getSocketUrl = () => process.env.NODE_ENV==="development" ? "http://localhost:4000" : "https://harts-quiz-backend.onrender.com"
 export function getAnswerType(type){
      switch(type){
