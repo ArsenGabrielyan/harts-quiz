@@ -1,0 +1,36 @@
+.btn{
+     &.outline-blue,&.icon-blue{
+          border: 2px solid #73c2ff;
+          color: #73c2ff;
+          &:hover,&.active{
+               background: #73c2ff;
+               color: #222;
+          }
+     }
+     &.blue{
+          border: 2px solid #73c2ff;
+          background: #73c2ff;
+          color: #222;
+          &:hover,&.active{
+               background: #009fff;
+               border-color: #009fff;
+          }
+     }
+     &.outline-red{
+          border: 2px solid #ff7280;
+          color: #ff7280;
+          &:hover,&.active{
+               background: #ff7280;
+               color: #222;
+          }
+     }
+     &.red{
+          border: 2px solid #ff7280;
+          background: #ff7280;
+          color: #222;
+          &:hover,&.active{
+               background: #dc3545;
+               border-color: #dc3545;
+          }
+     }
+}

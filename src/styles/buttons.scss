@@ -1,0 +1,102 @@
+.btn{
+     padding: 0.5em 1em;
+     font-size: 18px;
+     background: transparent;
+     border-radius: 10px;
+     cursor: pointer;
+     transition: .3s;
+     text-decoration: none;
+     &.mt{margin-top: 10px !important;}
+     &.outline-white{
+          border: 2px solid #fafafa;
+          color: #fafafa;
+          &:hover,&.active,&:focus{
+               background: #fafafa;
+               color: #002a4f;
+          }
+     }
+     &.white{
+          border: 2px solid #fafafa;
+          background: #fafafa;
+          color: #002a4f;
+          &:hover,&.active{
+               background: #d0d0d0;
+               border-color: #d0d0d0;
+          }
+     }
+     &.full-width{
+          width: 100%;
+     }
+     &.outline-blue{
+          border: 2px solid #002a4f;
+          color: #002a4f;
+          &:hover,&.active{
+               background: #002a4f;
+               color: #fafafa;
+          }
+     }
+     &.blue{
+          border: 2px solid #002a4f;
+          background: #002a4f;
+          color: #fafafa;
+          &:hover,&.active{
+               background: #005baa;
+               border-color: #005baa;
+          }
+     }
+     &.icon-blue{
+          margin-top: 0;
+          font-size: 25px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0.5em;
+          border: 2px solid #002a4f;
+          color: #002a4f;
+          &:hover,&.active{
+               background: #002a4f;
+               color: #fafafa;
+          }
+     }
+     &:disabled{
+          user-select: none;
+          pointer-events: none;
+          opacity: .5;
+          cursor: auto;
+     }
+     &.icon{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          svg{
+               font-size: 21px;
+               margin-right: 5px;
+          }
+     }
+     &.icon-only{
+          padding: 0.5em;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          svg{
+               font-size: 21px;
+          }
+     }
+     &.outline-red{
+          border: 2px solid #dc3545;
+          color: #dc3545;
+          &:hover,&.active{
+               background: #dc3545;
+               color: #fafafa;
+          }
+     }
+     &.red{
+          border: 2px solid #dc3545;
+          background: #dc3545;
+          color: #fafafa;
+          &:hover,&.active{
+               background: #92232e;
+               border-color: #92232e;
+          }
+     }
+}

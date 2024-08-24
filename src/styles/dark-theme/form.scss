@@ -1,0 +1,123 @@
+
+.form-container{
+     z-index: 99999;
+     .frmControl{
+          input, .color-selector, textarea, select{
+               border: 2px solid #ccc;
+               background: #222;
+               color: #fafafa;
+               &:focus{
+                    border-color: #73c2ff;
+                    box-shadow: 0 0 5px #73c2ff;
+               }
+          }
+          .color-selector{border-color: #ccc;}
+     }
+     .msg{
+          background: #ff7280;
+          color: #222;
+          box-shadow: 0 5px 25px #ff7280;
+     }
+     .txtSplit{
+          color: #ccc;
+          &::before,&::after{
+               background: #ccc;
+          }
+     }
+     .inner-width{
+          background: #222;
+          color: #fafafa;
+     }
+     .formLink{
+          color: #009fff;
+     }
+     .label{
+          color: #009fff;
+     }
+     .checkBox{
+          input:checked + label{
+               background: #009fff;
+               color: #fafafa;
+               svg{
+                    color: #fafafa;
+               }
+          }
+          label{
+               border: 2px solid #73c2ff;
+               svg{
+                    color: #009fff;
+               }
+          }
+     }
+     .pfp{
+          background: conic-gradient(from 0deg, #0090ff 0%, #0090ff 0% 50%, #222 50%, #222 100%);
+          p{
+               background: rgba(250,250,250,.5);
+          }
+          img{
+               border: 2px solid #222;
+          }
+     }
+     .frmAvatar{
+          .buttons{
+               background: #fafafa;
+          }
+     }
+     .frmCheck{
+          input{
+               accent-color: #0090ff;
+          }
+     }
+     .switch-container{
+          .frmSwitch{
+               input{
+                    &:checked + label{
+                         background: #0090ff;
+                    }
+               }
+               label{
+                    background: #ccc;
+                    .slider{
+                         background: #fafafa;
+                    }
+               }
+          }
+     }
+     &.authForm {
+          .frmControl{
+               label{
+                    background: #222;
+               }
+               .passShowBtn{
+                    background: #222;
+                    color: #fafafa;
+                    &:hover{
+                         color: #009fff;
+                    }
+               }
+          }
+          h2{
+               color: #73c2ff;
+          }
+     }
+     &.settings{
+          .inner-width{
+               background: #222;
+               color: #fafafa;
+               .profile-info{
+                    p{color: #bababa;}
+                    .settings-menu{
+                         li{
+                              color: #1988dd;
+                              a:hover{color: #73c2ff;}
+                              &.red{
+                                   color: #dc3545;
+                                   a:hover{color: #ff7280;}
+                              }
+                         }
+                    }
+               }
+          }
+          .setting-btns{background: #222;}
+     }
+}

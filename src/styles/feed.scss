@@ -1,0 +1,186 @@
+.feed{
+     background: #1988dd;
+     color: #fafafa;
+     margin-top: 85px;
+     padding: 10px 15px;
+     min-height: calc(100vh - 85px);
+     @import "./parts/header.scss";
+     @import "./parts/form.scss";
+     &.no-auth{
+          padding: 0;
+     }
+     .txt{
+          text-align: center;
+          a{
+               color: #fafafa;
+          }
+     }
+     .profile{
+          &,.btns{
+               display: flex;
+               align-items: center;
+          }
+          justify-content: space-between;
+          background: #fafafa;
+          border-radius: 10px;
+          color: #222;
+          padding: 10px;
+          .pfp{
+               margin-right: 15px;
+               border-radius: 50%;
+               width: 150px;
+               height: 150px;
+          }
+          p{
+               margin: 5px 0;
+               color: #888;
+               font-size: 18px;
+               font-weight: 500;
+          }
+          .btns{
+               gap: 5px;
+          }
+     }
+     .hero{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          min-height: calc(100vh - 85px);
+          background: linear-gradient(45deg,#002a4f,#1988dd);
+          width: 100%;
+          h1{
+               font-size: 40px;
+          }
+          p{
+               margin: 15px 0;
+          }
+          .links{
+               display: flex;
+               gap: 10px;
+          }
+     }
+     .subject{
+          margin: 10px 0;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          flex-direction: column;
+          .questions{
+               display: flex;
+               justify-content: flex-start;
+               align-items: center;
+               width: 100%;
+               .question{
+                    width: 100%;
+                    max-width: 450px;
+                    color: #222;
+                    padding: 10px;
+                    background: #fff;
+                    margin: 5px;
+                    h2{font-size: 21px;}
+                    border-radius: 10px;
+                    p{
+                         margin: 5px 0;
+                    }
+               }
+               .btns{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                    .btn{
+                         width: 100%;
+                         margin: 3px 5px 0;
+                    }
+               }
+          }
+     }
+     section{
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          flex-direction: column;
+          width: 100%;
+          .title{
+               font-size: 32px;
+               padding-bottom: 7px;
+               border-bottom: 2px solid #fafafa;
+               margin-bottom: 5px;
+               &.mt{margin-top: 5px;}
+          }
+     }
+     @import "./sections/discover.scss";
+     @import "./sections/single-quiz.scss";
+     @import "./sections/library.scss";
+     @import "./sections/users.scss";
+}
+@media print{
+     *{
+          font-family: 'Times New Roman', Times, Sylfaen, serif;
+          font-size: 16px;
+     }
+     .feed{
+          background: #fafafa;
+          color: #222;
+          margin-top: 0;
+          padding: 10px;
+          header{
+               display: none;
+          }
+          .quiz-info{
+               width: 100%;
+               max-width: 100%;
+               .header, .question-list, h2{
+                    display: none;
+               }
+               .print-img{
+                    display: block;
+                    margin-bottom: 15px;
+               }
+               .print-header{
+                    display: grid;
+                    grid-template-columns: repeat(2,1fr);
+                    width: 100%;
+                    p{
+                         padding: 0.25em;
+                    }
+                    .fields{
+                         width: 100%;
+                         border-collapse: collapse;
+                         tr{
+                              display: grid;
+                              grid-template-columns: 1fr 2fr;
+                              padding: 0.25em;
+                              gap: 10px;
+                              .line{
+                                   border-bottom: 1px solid black;
+                              }
+                         }
+                    }
+               }
+               .print-questions{
+                    width: 100%;
+                    padding: 0.5em;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    .question{
+                         margin: 10px 0;
+                         .answers{
+                              margin-top: 5px;
+                              display: grid;
+                              grid-template-columns: repeat(2,auto);
+                         }
+                         .text-answer{
+                              width: 100%;
+                              height: 30px;
+                              border-bottom: 1px solid #222;
+                              margin-bottom: 10px;
+                         }
+                    }
+               }
+          }
+     }
+}

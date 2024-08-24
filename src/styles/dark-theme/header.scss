@@ -1,0 +1,54 @@
+header{
+     background: #222;
+     .logoSection .logo{
+          background: url("/logos/logo-white.svg") no-repeat;
+          background-size: contain;
+          background-position: center;
+     }
+     form{
+          input{
+               border: 2px solid #ccc;
+               background: #222;
+               color: #fafafa;
+               &:focus{
+                    border-color: #73c2ff;
+                    box-shadow: 0 0 5px #73c2ff;
+               }
+          }
+     }
+     .menuIcon, .formIcon{
+          color: #fafafa;
+     }
+     .profile{
+          background: #222;
+          .profile-pic{
+               box-shadow: 0 0 10px rgba(250,250,250,.7);
+          }
+          .menu{
+               background: #222;
+               color: #fafafa;
+               box-shadow: 0 5px 25px rgba(250,250,250,.3);
+               .menu-profile{
+                    .profile-info{
+                         p{
+                              color: #ccc;
+                         }
+                    }
+               }
+               .links{
+                    li{
+                         color: #009fff;
+                         a:hover{
+                              color: #73c2ff;
+                         }
+                         &.red{
+                              color: #dc3545;
+                              a:hover{
+                                   color: #ff7280;
+                              }
+                         }
+                    }
+               }
+          }
+     }
+}

@@ -1,0 +1,20 @@
+.dark{
+     color: #fafafa !important;
+     background: #222 !important;
+     .main-container{
+          &::before{
+               z-index: 0;
+          }
+          *{
+               z-index: 99999;
+          }
+          .avatar-editor .buttons{
+               background: #222;
+          }
+     }
+     @import "./buttons.scss";
+     @import "./header.scss";
+     @import "./feed.scss";
+     @import "./form.scss";
+     @import "./quizEditor.scss";
+}

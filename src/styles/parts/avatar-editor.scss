@@ -1,0 +1,22 @@
+.avatar-editor{
+     margin-top: 10px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     .avatar{
+          width: 175px;
+          height: 175px;
+     }
+     .buttons{
+          width: 100%;
+          max-width: 400px;
+          display: grid;
+          grid-template-columns: repeat(5,1fr);
+          grid-gap: 5px;
+          place-items: center;
+          background: #fafafa;
+          padding: 10px;
+          border-radius: 10px;
+     }
+}

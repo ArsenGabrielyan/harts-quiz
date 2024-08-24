@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat.otf') format('opentype');
+  font-display: swap;
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, Helvetica, sans-serif;
+}
+body{
+  background: #fafafa;
+  color: #222;
+}
+.disabled{
+  user-select: none;
+  pointer-events: none;
+  opacity: .5;
+}
+@import "./buttons.scss";
+@import "./main.scss";
+@import "./feed.scss";
+@import "./quizEditor.scss";
+@import "./dark-theme/dark.scss";
+@import "./error.scss";
