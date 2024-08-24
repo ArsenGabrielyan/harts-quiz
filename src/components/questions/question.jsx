@@ -24,10 +24,6 @@ export default function Question({data, mode='student', afterCheck, soundEffectO
                audio.play();
           }
      }
-     const endQuestion = () => {
-          setCurrTime(0)
-          if(afterCheck) afterCheck(currAnswer,data.points,data.correct)
-     }
      useEffect(()=>{
           if(soundEffectOn){
                const audio = new Audio("/sounds/start.mp3");
@@ -57,7 +53,6 @@ export default function Question({data, mode='student', afterCheck, soundEffectO
      </> : currTime<=0 ? <h2 className="correct">{currAnswer===data.correct ? 'Դուք ճիշտ պատասխանեցիք' : 'Սխալ է'}</h2> : <h2 className="correct">Խնդրում ենք սպասել</h2>}
      {currTime!==0 && <>
           <Timer type="quiz" setTime={setCurrTime} time={currTime} initialTime={data.timer} />
-          {(currAnswer!=='' || mode==='teacher') && <Button btnStyle="outline-white md" onClick={endQuestion}>Ավարտել</Button>}
      </>}
      </div>
 }
