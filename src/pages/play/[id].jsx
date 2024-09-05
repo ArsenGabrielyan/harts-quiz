@@ -18,9 +18,10 @@ export default function PlaySolo({quiz, session}){
      const [correct, setCorrect] = useState(0);
      const [soundEffectOn, setSoundEffectOn] = useState(session?.soundEffectOn);
      const afterCheck = (answer,correct) => {
-          if(answer===correct) setCorrect(prev=>prev+1);
+          const isCorrect = answer.toLowerCase() === correct.toLowerCase()
+          if(isCorrect) setCorrect(prev=>prev+1);
           if(soundEffectOn){
-               const audio = new Audio(`/sounds/${answer===correct ? 'correct' : 'wrong'}.mp3`);
+               const audio = new Audio(`/sounds/${isCorrect? 'correct' : 'wrong'}.mp3`);
                audio.play();
           }
           setNextRoundReady(true);
@@ -73,6 +74,6 @@ export const getServerSideProps = async(ctx) => {
      await connectDB()
      const {id} = ctx.query, session = await getSession(ctx);
      const quiz = JSON.parse(JSON.stringify(await HartsQuiz.findOne({id})));
-     const user = await User.findOne({email: session?.user.email})
+     const user = await User.findOne({email: session?.user?.email})
      return quiz ? {props: {quiz, session: JSON.parse(JSON.stringify(user))}} : {notFound: true}
 }

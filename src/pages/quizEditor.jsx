@@ -66,7 +66,7 @@ export default function QuizEditor({session,quiz}){
           if(msg===''){
                try{
                     setIsLoading(true);
-                    const res = quiz ? await axios.put("/api/questions",{quizData: formData}) : await axios.post("/api/questions",{quizData: formData, email: session?.user.email})
+                    const res = quiz ? await axios.put("/api/questions",{quizData: formData}) : await axios.post("/api/questions",{quizData: formData, email: session?.user?.email})
                     if(res.status===200){
                          setIsLoading(false);
                          setSelectedQuestion({question: {},index: null});
@@ -101,7 +101,6 @@ export default function QuizEditor({session,quiz}){
      const isUnchanged = useMemo(()=>(quiz && JSON.stringify(quiz)===JSON.stringify(formData)),[formData,quiz])
      return <FeedLayout enableCreateBtn={false}>
           <div className="quizEditor">
-               <DragDropContext onDragEnd={handleDrop}>
                <div className="infoForm">
                     <FormControl title="Հարցաշարի անունը" name="name" value={formData.name} onChange={handleChange}/>
                     <div className="options">
@@ -110,23 +109,6 @@ export default function QuizEditor({session,quiz}){
                     </div>
                </div>
                <div className="editor-container">
-                    <Droppable droppableId="ROOT" type="group">
-                         {provided=><div className="slides" {...provided.droppableProps} ref={provided.innerRef}>
-                         <p className="label">Հարցեր</p>
-                         {formData.questions.map((val,i)=><Draggable key={val.id} draggableId={val.id} index={i}>
-                              {provided=><div className="slide" {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                              <MdDragHandle className="slide-icon"/>
-                              <div className="content">
-                                   <BtnLink href={`#quiz${i+1}`} btnStyle="outline-blue sidebar-elem mt">{i+1}</BtnLink>
-                                   <div className="options">
-                                        <Button customClass="slideBtn" onClick={()=>handleDuplicate(i,val)}><BiDuplicate /></Button>
-                                        <Button customClass="slideBtn red" onClick={()=>handleDelete(i)}><MdDelete /></Button>
-                                   </div>
-                              </div>
-                         </div>}
-                         </Draggable>)}
-                    </div>}
-                    </Droppable>
                     <div className="editor">
                          {formData.questions.length===0 ? <h2>Ավելացնել Հարց</h2> : formData.questions.map((q,i)=><QuizForm key={q.id} data={q} id={q.id} setQuestions={val=>setQuestions(val,i)} onSelect={val=>handleSelection(val,i)} selected={selectedQuestion.index===i} mainQuizId={formData.id} index={i+1}/>)}
                     </div>
@@ -135,7 +117,6 @@ export default function QuizEditor({session,quiz}){
                          {JSON.stringify(selectedQuestion.question)!=='{}' && <QuizSideBar formData={formData} setFormData={setFormData} selectedQuestion={selectedQuestion} onDuplicate={()=>handleDuplicate(selectedQuestion.index,selectedQuestion.question)} onDelete={()=>handleDelete(selectedQuestion.index)}/>}
                     </aside>
                </div>
-               </DragDropContext>
           </div>
      </FeedLayout>
 }
@@ -153,11 +134,11 @@ export const getServerSideProps = async ctx => {
                permanent: false,
           }}
      }
-     if((quiz && quiz.teacherEmail!==session?.user.email) || session?.user?.accountType === 'student'){
+     if((quiz && quiz.teacherEmail!==session?.user?.email) || session?.user?.accountType === 'student'){
           return {redirect: {
                destination: '/feed',
                permanent: false,
           }}
      }
-     return (quiz && quiz.teacherEmail===session?.user.email) ? {props: {session,quiz: startEditing(quiz)}} : {props: {session}}
+     return (quiz && quiz.teacherEmail===session?.user?.email) ? {props: {session,quiz: startEditing(quiz)}} : {props: {session}}
 }

@@ -75,10 +75,11 @@ export default function MainPage({quizDetails,questionId}){
     setSubmitted(false);
   }
   const afterCheck = (answer,point,correct) => {
-    setScore(prev=>answer===correct ? prev+point : prev);
+    const isCorrect = answer.toLowerCase() === correct.toLowerCase()
+    setScore(prev=>isCorrect ? prev+point : prev);
     socket.current?.emit('round end',answer,point,correct,currId,formData.quizId)
     if(formData.soundEffectOn){
-      const audio = new Audio(`/sounds/${answer===correct ? 'correct' : 'wrong'}.mp3`);
+      const audio = new Audio(`/sounds/${isCorrect ? 'correct' : 'wrong'}.mp3`);
       audio.play();
     }
   }
@@ -114,10 +115,10 @@ export const getServerSideProps = async(ctx) => {
   await connectDB()
   const {id} = ctx.query;
   const session = await getSession(ctx);
-  const user = await User.findOne({email: session?.user.email, accountType: 'student'})
+  const user = await User.findOne({email: session?.user?.email, accountType: 'student'})
   const quizDetails = {
     quizId: id || "",
-    playerName: session?.user.accountType==='student' ? user?.name : '' || "",
+    playerName: session?.user?.accountType==='student' ? user?.name : '' || "",
     avatar: typeof user?.image === 'object' ? user?.image : null,
     userId: user ? user?.userId : generateId(10),
     soundEffectOn: user ? user.soundEffectOn : true

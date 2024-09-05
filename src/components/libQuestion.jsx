@@ -29,7 +29,7 @@ export default function LibraryQuiz({data, updateQuiz, updateUser, session, curr
           }
      }
      const likeQuiz = async()=>{
-          const res = await axios.patch("/api/questions",{email: session?.user.email, quizId: id});
+          const res = await axios.patch("/api/questions",{email: session?.user?.email, quizId: id});
           if(res.status===200) await updateUser();
      }
      const isLiked = currUser?.favorites?.includes(id);

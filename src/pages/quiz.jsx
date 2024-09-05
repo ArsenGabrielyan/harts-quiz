@@ -161,12 +161,12 @@ export async function getServerSideProps(ctx){
      const session = await getSession(ctx);
      const {id} = ctx.query;
      const currQuiz = JSON.parse(JSON.stringify(await HartsQuiz.findOne({id})));
-     const user = await User.findOne({email: session?.user.email, $or: [{accountType: "teacher"},{accountType: "personal"}]});
+     const user = await User.findOne({email: session?.user?.email, $or: [{accountType: "teacher"},{accountType: "personal"}]});
      if(!session) return {redirect: {
           destination: '/auth/signin',
           permanent: false,
      }}
-     if(session?.user.accountType==='student') return {redirect: {
+     if(session?.user?.accountType==='student') return {redirect: {
           destination: '/feed',
           permanent: false,
      }}

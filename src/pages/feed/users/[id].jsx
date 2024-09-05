@@ -40,9 +40,9 @@ export default function UserInfo({user,session, questions}){
                     </div>
                     <div className="options">
                          <Button onClick={shareProfile} btnStyle="outline-blue">Կիսվել</Button>
-                         {session?.user.email===user.email && <>
+                         {session?.user?.email===user.email && <>
                               <BtnLink href="/settings" btnStyle="outline-blue">Կարգավորումներ</BtnLink>
-                              {session?.user.accountType!=='student' && <BtnLink href="/library" btnStyle="outline-blue">Բոլոր Հարցաշարերը</BtnLink>}
+                              {session?.user?.accountType!=='student' && <BtnLink href="/library" btnStyle="outline-blue">Բոլոր Հարցաշարերը</BtnLink>}
                          </>}
                     </div>
                </div>

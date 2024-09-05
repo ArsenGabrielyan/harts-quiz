@@ -17,7 +17,7 @@ import User from "@/model/User";
 
 export default function SingleQuiz({quiz,session,teacherId}){
      const router = useRouter();
-     const {data: currUser, mutate: updateUser} = useSWR(`/api/users?email=${session?.user.email}`,fetcher)
+     const {data: currUser, mutate: updateUser} = useSWR(`/api/users?email=${session?.user?.email}`,fetcher)
      const duplicateQuiz = async()=>await toast.promise(axios.post("/api/questions",{reqType: 'duplicate',quizId: quiz.id}),{
           pending: "Հարցաշարը կրկնօրինակվում է։ Խնդրում ենք սպասել...",
           success: 'Հարցաշարը կրկնօրինակված է',
@@ -34,7 +34,7 @@ export default function SingleQuiz({quiz,session,teacherId}){
           }
      }
      const likeQuiz = async()=>{
-          const res = await axios.patch("/api/questions",{email: session?.user.email, quizId: quiz.id});
+          const res = await axios.patch("/api/questions",{email: session?.user?.email, quizId: quiz.id});
           if(res.status===200) await updateUser();
      }
      const isLiked = currUser?.favorites?.includes(quiz.id);
@@ -49,7 +49,7 @@ export default function SingleQuiz({quiz,session,teacherId}){
                          <Button customClass="optBtn" title="Տպել" onClick={()=>print()}><MdPrint /></Button>
                          {session && <>
                               <Button customClass={`optBtn ${isLiked ? 'active' : ''}`.trim()} title={isLiked ? 'Չհավանել' : 'Հավանել'} onClick={likeQuiz}><MdFavorite /></Button>
-                              {session?.user.email===quiz.teacherEmail && <>
+                              {session?.user?.email===quiz.teacherEmail && <>
                                    <Link href={`/quizEditor?quizId=${quiz.id}`} className="optBtn" title="Խմբագրել"><MdEdit /></Link>
                                    <Button customClass="optBtn" title="Կրկնօրինակել" onClick={duplicateQuiz}><BiDuplicate /></Button>
                                    <Button customClass="optBtn red" title="Ջնջել" onClick={deleteQuiz}><MdDelete /></Button>
@@ -57,7 +57,7 @@ export default function SingleQuiz({quiz,session,teacherId}){
                          </>}
                     </div>
                     <div className="links">
-                         {!session?.user?.accountType ? null : session?.user?.accountType!=='personal' ? <BtnLink href={session?.user.accountType==='student' ? `/?id=${quiz.id}` : `/quiz?id=${quiz.id}`} btnStyle="outline-blue">{session?.user.accountType==='student' ? "Խաղալ" : "Կազմակերպել"}</BtnLink> : <>
+                         {!session?.user?.accountType ? null : session?.user?.accountType!=='personal' ? <BtnLink href={session?.user?.accountType==='student' ? `/?id=${quiz.id}` : `/quiz?id=${quiz.id}`} btnStyle="outline-blue">{session?.user?.accountType==='student' ? "Խաղալ" : "Կազմակերպել"}</BtnLink> : <>
                               <BtnLink href={`/?id=${quiz.id}`} btnStyle="outline-blue">Խաղալ</BtnLink>
                               <BtnLink href={`/quiz?id=${quiz.id}`} btnStyle="outline-blue">Կազմակերպել</BtnLink>
                          </>}

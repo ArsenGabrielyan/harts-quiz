@@ -11,7 +11,7 @@ import SettingsLayout from "@/components/settings/Settings-Layout";
 
 export default function PasswordSettings({session}){
      const [passData, setPassData] = useState(PASS_RESET_INITIAL);
-     const {data: currUser, isLoading} = useSWR(`/api/users?email=${session?.user.email}`,fetcher);
+     const {data: currUser, isLoading} = useSWR(`/api/users?email=${session?.user?.email}`,fetcher);
      const [isChanging, setIsChanging] = useState(false);
      const handleChange = e => setPassData({...passData, [e.target.name]: e.target.value});
      const handleSubmit = async e => {

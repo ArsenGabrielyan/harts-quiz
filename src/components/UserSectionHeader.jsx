@@ -13,9 +13,9 @@ const ProfilePic = ({size=64,handleClick,image}) => typeof image==='string' ? <I
 
 export default function HeaderUserSection({session, enableBtn}){
      const [menuOpened, setMenuOpened] = useState(false);
-     const {data,isLoading} = useSWR(`/api/users?email=${session?.user.email}`,fetcher)
+     const {data,isLoading} = useSWR(`/api/users?email=${session?.user?.email}`,fetcher)
      return <div className="profile">
-          {enableBtn && <>{(session?.user.accountType==='teacher' || session?.user.accountType==='personal') && <BtnLink btnStyle="outline-blue icon" href="/quizEditor"><MdAddBox />Ստեղծել</BtnLink>}</>}
+          {enableBtn && <>{(session?.user?.accountType==='teacher' || session?.user?.accountType==='personal') && <BtnLink btnStyle="outline-blue icon" href="/quizEditor"><MdAddBox />Ստեղծել</BtnLink>}</>}
           {!isLoading && <ProfilePic image={data?.image}/>}
           <Button customClass='menuIcon' onClick={()=>setMenuOpened(!menuOpened)}>{menuOpened ? <MdClose /> : <MdMenu />}</Button>
           {menuOpened && <div className="menu">
@@ -23,7 +23,7 @@ export default function HeaderUserSection({session, enableBtn}){
                     {!isLoading && <ProfilePic image={data?.image} size={72}/>}
                     <div className="profile-info">
                          <h2>{data?.name}</h2>
-                         <p className="type">{accTypeInArmenian(session?.user.accountType)}</p>
+                         <p className="type">{accTypeInArmenian(session?.user?.accountType)}</p>
                     </div>
                </div>
                <ul className="links">

@@ -29,7 +29,7 @@ export default function Question({data, mode='student', afterCheck, soundEffectO
                const audio = new Audio("/sounds/start.mp3");
                audio.play();
           }
-     },[])
+     },[soundEffectOn])
      useEffect(()=>{
           if(currTime<=0) {
                if(afterCheck) afterCheck(currAnswer,data.points,data.correct)

@@ -5,8 +5,8 @@ import { fetcher } from "@/lib/helpers";
 import LibraryQuiz from "@/components/libQuestion";
 
 export default function MyQuiz({session}){
-     const {data: myQuizzes, isLoading, mutate: updateQuiz} = useSWR(`/api/questions?email=${session?.user.email}`,fetcher);
-     const {data: currUser, mutate: updateUser} = useSWR(`/api/users?email=${session?.user.email}`,fetcher)
+     const {data: myQuizzes, isLoading, mutate: updateQuiz} = useSWR(`/api/questions?email=${session?.user?.email}`,fetcher);
+     const {data: currUser, mutate: updateUser} = useSWR(`/api/users?email=${session?.user?.email}`,fetcher)
      return <FeedLayout>
           <h1>Ձեր հարցաշարերը</h1>
           {!isLoading && <div className="lib-quiz-list">

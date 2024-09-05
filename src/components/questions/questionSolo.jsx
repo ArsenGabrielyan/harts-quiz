@@ -20,9 +20,7 @@ export default function QuestionSolo({data, afterCheck, soundEffectOn}){
      }
      useEffect(()=>{
           if(currTime<=0) {
-               if(afterCheck) {
-                    afterCheck(currAnswer,data.correct);
-               }
+               if(afterCheck) afterCheck(currAnswer,data.correct);
           }
           //eslint-disable-next-line
      },[currTime])
@@ -31,7 +29,7 @@ export default function QuestionSolo({data, afterCheck, soundEffectOn}){
                const audio = new Audio("/sounds/start.mp3");
                audio.play();
           }
-     },[])
+     },[soundEffectOn])
      return <div className={`quiz ${data.type}`}>
      <Image src="/logos/logo-white.svg" alt="harts" width={100} height={50} priority className="logo"/>
      {currAnswer==='' ? <>

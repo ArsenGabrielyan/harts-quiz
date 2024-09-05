@@ -19,7 +19,7 @@ import ToggleSwitch from "@/components/formComponents/toggle-switch";
 import useTheme from "next-theme";
 
 export default function AppSettings({session}){
-     const {data: currUser, isLoading, mutate: updateUser} = useSWR(`/api/users?email=${session?.user.email}`,fetcher);
+     const {data: currUser, isLoading, mutate: updateUser} = useSWR(`/api/users?email=${session?.user?.email}`,fetcher);
      const [formData, setFormData] = useState(INITIAL_SETTINGS)
      const [isChanging, setIsChanging] = useState(false);
      const [currPfp, setCurrPfp] = useState(null);
