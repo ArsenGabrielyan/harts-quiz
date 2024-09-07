@@ -178,3 +178,4 @@ export const divideQuestionsBySubject = questions => questions.length===0 ? [] :
      !obj[first] ? obj[first] = {title: subjectList.find(v=>v.name===first).title, data: [val]} : obj[first].data.push(val)
      return obj;
 },{}))
+export const absoluteUrl = path => `${process.env.NEXT_PUBLIC_BASE_URL}${path}`

@@ -1,8 +1,9 @@
 import { Resend } from "resend"
+import { absoluteUrl } from "../helpers";
 
 const resend = new Resend(process.env.RESEND_API);
 export const sendEmailVerification = (token) => {
-     const url = `http://localhost:3000/auth/verify-email?token=${token.token}`;
+     const url = absoluteUrl(`/auth/verify-email?token=${token.token}`);
      return resend.emails.send({
           from: "onboarding@resend.dev",
           to: token.email,
@@ -16,7 +17,7 @@ export const sendEmailVerification = (token) => {
      })
 }
 export const sendPasswordReset = (name,email,token) => {
-     const url = `http://localhost:3000/auth/reset-password/${token}?email=${email}`;
+     const url = absoluteUrl(`/auth/reset-password/${token}?email=${email}`);
      return resend.emails.send({
           from: "onboarding@resend.dev",
           to: email,
