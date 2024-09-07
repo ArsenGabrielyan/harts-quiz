@@ -10,6 +10,6 @@ export default async function handler(req,res){
           res.status(200).json(updated)
      } catch (e) {
           console.error(e.message)
-          res.status(500).json({message: e.message})
+          res.status(500).json({message: 'Վայ․․․ Սխալ առաջացավ'})
      }
 }

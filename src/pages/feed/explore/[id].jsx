@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { fetcher, getAnswerType, shareQuiz } from "@/lib/helpers";
+import { absoluteUrl, fetcher, getAnswerType, shareQuiz } from "@/lib/helpers";
 import FeedLayout from "@/components/feed/FeedLayout";
 import { getSession } from "next-auth/react";
 import Button, { BtnLink } from "@/components/formComponents/button";
@@ -45,7 +45,7 @@ export default function SingleQuiz({quiz,session,teacherId}){
                     <p className="author">Ստեղծող՝ <Link href={`/feed/users/${teacherId}`}>{quiz.teacher}</Link></p>
                     <p>{quiz.description}</p>
                     <div className="options">
-                         <Button customClass="optBtn" title="Կիսվել" onClick={shareQuiz}><MdShare /></Button>
+                         <Button customClass="optBtn" title="Կիսվել" onClick={()=>shareQuiz(absoluteUrl(`/feed/explore/${quiz.id}`))}><MdShare /></Button>
                          <Button customClass="optBtn" title="Տպել" onClick={()=>print()}><MdPrint /></Button>
                          {session && <>
                               <Button customClass={`optBtn ${isLiked ? 'active' : ''}`.trim()} title={isLiked ? 'Չհավանել' : 'Հավանել'} onClick={likeQuiz}><MdFavorite /></Button>

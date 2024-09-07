@@ -20,7 +20,7 @@ export const getServerSideProps = async ctx => {
      const tokenReq = await EmailToken.findOne({token});
      if(!tokenReq) return {props: {msg: {
           success: false,
-          message: 'Այս token-ը գոյություն չունի'
+          message: 'Այս token-ը չկա'
      }}}
      else if(new Date(tokenReq.expirationDate) < new Date()) return {props: {msg: {
           success: false,
@@ -31,14 +31,14 @@ export const getServerSideProps = async ctx => {
           if(user){
                const result = {props: {msg: {
                     success: true,
-                    message: 'Այս հաշիվը վերիֆիկացված է'
+                    message: 'Այս հաշիվը հաստատված է'
                }}};
                await EmailToken.deleteOne({token});
                return result
           } else {
                return {props: {msg: {
                     success: false,
-                    message: 'Այս էլ․ փոստի հացեն գոյություն չունի'
+                    message: 'Այս էլ․ փոստի հացեն գրանցված չէ'
                }}}
           }
      }

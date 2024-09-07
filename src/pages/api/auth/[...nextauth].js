@@ -10,7 +10,10 @@ import {compare} from "bcrypt"
 import { generateId } from "@/lib/helpers";
 
 export default NextAuth({
-     pages: {signIn: "/auth/signin"},
+     pages: {
+          signIn: "/auth/signin",
+          error: "/auth/error"
+     },
      providers: [
           Credentials({
                name: "Harts",
@@ -22,10 +25,10 @@ export default NextAuth({
                async authorize(credentials){
                     await connectDB();
                     const user = await User.findOne({email: credentials?.email});
-                    if(!user) throw new Error("Այս Օգտատերը գոյություն չունի");
+                    if(!user) throw new Error("Այս Օգտատերը գրանցված չէ");
                     const isPassCorrect = await compare(credentials?.password,user?.password);
-                    if(!isPassCorrect) throw new Error("Գաղտնաբառը սխալ է հավաքված");
-                    if(!user.isEmailVerified) throw new Error("Այս հաշիվը վերիֆիկացված չի")
+                    if(!isPassCorrect) throw new Error("Գաղտնաբառը սխալ է հավաքած։ Խնդրում ենք փորձել կրկին ավելի ուշ");
+                    if(!user.isEmailVerified) throw new Error("error.emailNotVerified")
                     return user;
                }
           }),
@@ -73,10 +76,7 @@ export default NextAuth({
                if(process.env.NODE_ENV==="development") console.info("The Result of Sign In Is " + result)
                return result
           },
-          async jwt({token, user, trigger, session}){
-               if(trigger==='update'){
-                    token.user = session.user;
-               }
+          async jwt({token, user}){
                if(user){
                     const {email} = user;
                     const profile = await User.findOne({email});

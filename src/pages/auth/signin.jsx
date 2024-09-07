@@ -7,6 +7,7 @@ import { FaFacebook, FaGoogle } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react"
 import Button from "@/components/formComponents/button";
+import axios from "axios";
 
 export default function SignInPage(){
      const [loginData, setLoginData] = useState(INITIAL_LOGINDATA);
@@ -14,6 +15,7 @@ export default function SignInPage(){
      const [isLoading, setIsLoading] = useState(false)
      const router = useRouter(), {status} = useSession();
      const callbackUrl = router.query.callbackUrl || "/feed";
+     const error = router.query.error==="OAuthAccountNotLinked" ? "Էլ․ հասցեն արդեն օգտագործվում է այլ ծառայության կողմից" : "";
      const handleChange = e => setLoginData({...loginData, [e.target.name]: e.target.value});
      const handleSubmit = async e => {
           e.preventDefault();
@@ -31,8 +33,16 @@ export default function SignInPage(){
                          router.push(callbackUrl);
                          reset()
                     } else {
-                         setMsg({success: false, msg: res?.error});
-                         setIsLoading(false)
+                         if(res.error==="error.emailNotVerified"){
+                              const emailVerification = await axios.post("/api/email-verification",{email: loginData.email})
+                              if(emailVerification.status===200){
+                                   setMsg({success: true, msg: emailVerification.data.message})
+                                   setIsLoading(false)
+                              }
+                         } else {
+                              setMsg({success: false, msg: res?.error});
+                              setIsLoading(false)
+                         }
                     }
                } else {
                     setMsg({success: false, msg});
@@ -53,6 +63,7 @@ export default function SignInPage(){
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
                <p className="formTxt">Բարի Վերադարձ</p>
                {msg.msg!=='' && <div className={`msg ${msg.success ? 'success' : ''}`.trim()}>{msg.msg}</div>}
+               {error && <div className="msg">{error}</div>}
                <div className="inner-width">
                     <FormControl name='email' title='Էլ․ փոստի հասցե' placeholder="օր․՝ name@example.com" value={loginData.email} onChange={handleChange}/>
                     <FormControl type='password' name='password' title='Գաղտնաբառ' value={loginData.password} onChange={handleChange}/>

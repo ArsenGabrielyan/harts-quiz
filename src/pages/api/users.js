@@ -31,7 +31,7 @@ export default async function handler(req,res){
                const deleted = await User.deleteOne({userId: id})
                res.status(deleted ? 200 : 400).json({msg: deleted ? 'Ձեր հաշիվը ջնջվել է' : 'Չհաջողվեց ջնջել հաշիվը'})
           } else {
-               res.status(400).json({msg: 'Չհաջողվեց ջնջել այս հաշիվը, որովհետև այս հաշիվը գոյություն չունի'})
+               res.status(400).json({msg: 'Չհաջողվեց ջնջել այս հաշիվը, որովհետև այս հաշիվը գրանցված չէ'})
           }
      } else {
           await connectDB();

@@ -9,7 +9,7 @@ export default async function handler(req,res){
      if(req.method==='POST') try{
           await connectDB();
           const user = await User.findOne({email});
-          if(!user) res.status(400).json({message: "Այս Օգտատերը գոյություն չունի"})
+          if(!user) res.status(404).json({message: "Այս Օգտատերը չի գտնվել"})
           let token = await PassResetToken.findOne({id: user.userId});
           if(!token) token = await new PassResetToken({
                id: user.userId,
@@ -20,6 +20,6 @@ export default async function handler(req,res){
           res.status(200).json({message: "Գաղտնաբառը վերականգնելու հղումը ուղարկված է"})
      } catch(e){
           console.error(e.message)
-          res.status(500).json({message: e.message})
+          res.status(500).json({message: 'Վայ․․․ Սխալ առաջացավ'})
      }
 }

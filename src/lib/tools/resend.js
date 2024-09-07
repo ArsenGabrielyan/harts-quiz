@@ -7,11 +7,11 @@ export const sendEmailVerification = (token) => {
      return resend.emails.send({
           from: "onboarding@resend.dev",
           to: token.email,
-          subject: "Վերիֆիկացնել ձեր էլ․ Փոստի հասցեն",
+          subject: "Հաստատել ձեր էլ․ Փոստի հասցեն",
           html: `
-               <h1 style="color: #002a4f">Վերիֆիկացնել ձեր հաշիվը</h1>
+               <h1 style="color: #002a4f">Հաստատել ձեր հաշիվը</h1>
                <p>Բարև ${token.name.split(' ')[0]}, Մենք ուրախ ենք "Հարց" հավելվածում գրանցվելու համար։ Ուսումնասիրելու և գիտելիքդ փորձելու համար խնդրում ենք հաստատել ձեր էլ․ փոստի հասցեն</p>
-               <a href="${url}">Վերիֆիկացնել</a>
+               <a href="${url}">Հաստատել</a>
                <p>Կամ Պատճենել այս հղումը՝ <a href="${url}">${url}</a></p>
           `
      })

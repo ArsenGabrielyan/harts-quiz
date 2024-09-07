@@ -11,7 +11,7 @@ export default async function handler(req,res){
                await connectDB();
                const {signupData} = req.body;
                const user = await User.findOne({email: signupData.email});
-               if(user) res.status(400).json({message: "Այս հաշիվը արդեն գոյություն ունի"})
+               if(user) res.status(404).json({message: "Այս հաշիվը արդեն գրանցված է"})
                else {
                     const {name, email, bdate, password} = signupData;
                     const hashed = await hash(password,12)
@@ -47,11 +47,11 @@ export default async function handler(req,res){
                          const {error} = await sendEmailVerification({...tokenData,name});
                          if(error) console.error(error)
                     }
-                    res.status(200).json({message: "Վերիֆիկացիայի նամակը ուղարկված է"})
+                    res.status(200).json({message: "Հաստատման նամակը ուղարկված է"})
                }
           } catch(e){
                console.error(e.message)
-               res.status(500).json({message: e.message})
+               res.status(500).json({message: 'Վայ․․․ Սխալ առաջացավ'})
           }
      } else if(req.method==='PUT'){
           try{
@@ -70,11 +70,11 @@ export default async function handler(req,res){
                     }})
                     res.status(200).json(updated)
                } else {
-                    res.status(400).json({message: 'Այսպիսի օգտվող գոյություն չունի'})
+                    res.status(404).json({message: 'Այսպիսի օգտվող չի գտնվել'})
                }
           }  catch(e){
                console.error(e.message)
-               res.status(500).json({message: e.message})
+               res.status(500).json({message: 'Վայ․․․ Սխալ առաջացավ'})
           }
      }  
 }

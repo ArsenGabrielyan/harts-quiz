@@ -9,15 +9,15 @@ export default async function handler(req,res){
      if(req.method==='POST') try{
           await connectDB();
           const user = await User.findOne({email});
-          if(!user) res.status(400).json({message: "Այս Օգտատերը գոյություն չունի"})
+          if(!user) res.status(404).json({message: "Այս Օգտատերը չի գտնվել"})
           const claimedToken = await PassResetToken.findOne({id: user.userId,token});
-          if(!claimedToken) res.status(400).json({message: "Այս Token-ը գոյություն չունի"})
+          if(!claimedToken) res.status(400).json({message: "Այս Token-ը չի գտնվել"})
           const hashed = await hash(newPass,12)
           await User.updateOne({email},{$set: {password: hashed}});
           await PassResetToken.deleteOne({id: user.userId,token})
           res.status(200).json({message: "Գաղտնաբառը վերականգնվել է"})
      } catch(e){
           console.error(e.message)
-          res.status(500).json({message: e.message})
+          res.status(500).json({message: 'Վայ․․․ Սխալ առաջացավ'})
      }
 }
