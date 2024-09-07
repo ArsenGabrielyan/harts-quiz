@@ -1,5 +1,5 @@
 import { Resend } from "resend"
-import { absoluteUrl } from "../helpers";
+import { absoluteUrl } from "@/lib/helpers";
 
 const resend = new Resend(process.env.RESEND_API);
 export const sendEmailVerification = (token) => {
