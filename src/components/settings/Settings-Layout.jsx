@@ -14,10 +14,10 @@ export default function SettingsLayout({children,isLoading,cancelDisabled,submit
                     {typeof currUser?.image==='object' ? <ReactNiceAvatar {...currUser?.image} className="pfp"/> : currUser?.image && <Image className="pfp" src={currUser?.image} alt="pfp" width={200} height={200} style={{objectFit: "cover"}}/>}
                     <h3>{currUser?.name} (@{currUser?.username})</h3>
                     <p>{accTypeInArmenian(currUser?.accountType)}</p>
-                    <ul className="settings-menu">
+                    {!currUser?.isOauth && <ul className="settings-menu">
                          <li><FaCog/><Link href="/settings">Կարգավորումներ</Link></li>
                          <li><FaLock /><Link href="/settings/change-password">Փոխել Գաղտնաբառը</Link></li>
-                    </ul>
+                    </ul>}
                </div>
                {children}
           </div>

@@ -108,7 +108,7 @@ export default function AppSettings({session}){
                          <h2>Խմբագրել հաշիվը</h2>
                          <FormControl name="name" value={formData?.name} onChange={handleChange} title="Հաշվի անուն"/>
                          <FormControl name="username" value={formData?.username} onChange={handleChange} title="Օգտանուն"/>
-                         <FormControl name="email" value={formData?.email} onChange={handleChange} title="Էլ․ փոստի հասցե"/>
+                         {!currUser?.isOauth && <FormControl name="email" value={formData?.email} onChange={handleChange} title="Էլ․ փոստի հասցե"/>}
                          <FormControl name="organization" value={formData?.organization} onChange={handleChange} title="Կազմակերպության անուն"/>
                          <FormControl type="textarea" name="bio" value={formData?.bio} onChange={handleChange} title="Հաշվի Նկարագրություն"/>
                          <FormSelection name="favoriteSubject" value={formData?.favoriteSubject} onChange={handleChange} title="Ձեր սիրած առարկան" disabled={!formData.showFavoriteSubject}>

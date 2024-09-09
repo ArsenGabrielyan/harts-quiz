@@ -58,7 +58,6 @@ export default function PassResetForm({isLinkInvalid}){
 }
 export const getServerSideProps = async ({query}) => {
      await connectDB();
-     const claimedToken = await PassResetToken.findOne({token: query.token})
-     if(!claimedToken) return {props: {isLinkInvalid: true}};
-     else return {props: {isLinkInvalid: false}};
+     const claimedToken = await PassResetToken.findOne({token: query.token});
+     return {props: {isLinkInvalid: !claimedToken }};
 }

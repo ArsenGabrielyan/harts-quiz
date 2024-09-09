@@ -1,5 +1,5 @@
 import FeedLayout from "@/components/feed/FeedLayout";
-import Button, {BtnLink} from "@/components/formComponents/button";
+import Button from "@/components/formComponents/button";
 import FormControl from "@/components/formComponents/frmControl";
 import { getSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
@@ -7,9 +7,6 @@ import QuizForm from "@/components/quizEditor/quizForm";
 import { deleteFolder, folderExists, generateId, getQuizDataFromType, startEditing } from "@/lib/helpers";
 import MainSideBar from "@/components/quizEditor/MainSidebar";
 import QuizSideBar from "@/components/quizEditor/QuizSidebar";
-import { MdDelete, MdDragHandle } from "react-icons/md";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { BiDuplicate } from "react-icons/bi"
 import { validateQuizEditor } from "@/lib/formData";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -36,19 +33,6 @@ export default function QuizEditor({session,quiz}){
      }
      const handleChange = e => setFormData({...formData,[e.target.name]: e.target.value});
      const handleSelection = (question,i) => setSelectedQuestion({question,index: i})
-     const handleDrop = (results) => {
-          const {source,destination,type} = results;
-          if(!destination) return;
-          if(source.droppableId===destination.droppableId && source.index === destination.index) return;
-          if(type==='group'){
-               const q = [...formData.questions];
-               const sourceI = source.index;
-               const destI = destination.index;
-               const [removed] = q.splice(sourceI,1);
-               q.splice(destI,0,removed)
-               return setFormData(prev=>({...prev, questions: q}))
-          }
-     }
      const handleDuplicate = (i,val)=>{
           const q = [...formData.questions];
           const question = {...val, id: generateId(8)}

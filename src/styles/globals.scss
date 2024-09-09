@@ -24,4 +24,4 @@ body{
 @import "./quizEditor.scss";
 @import "./dark-theme/dark.scss";
 @import "./error.scss";
-@media(prefers-reduced-motion:reduce) {* {transition: none !important;}}
+@media (prefers-reduced-motion: reduce) {*,*::after,*::before {transition: none !important;scroll-behavior: auto !important;transition-delay: 0 !important;}}

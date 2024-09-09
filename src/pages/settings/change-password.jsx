@@ -47,7 +47,12 @@ export default function PasswordSettings({session}){
 }
 export const getServerSideProps = async(ctx)=>{
      const session = await getSession(ctx);
-     return session ? {props: {session}} : {redirect: {
+     if(session){
+          return session?.user?.isOauth ? {redirect: {
+               destination: '/settings',
+               permanent: false,
+          }} : {props: {session}}
+     }else return {redirect: {
           destination: '/auth/signin',
           permanent: false,
      }}

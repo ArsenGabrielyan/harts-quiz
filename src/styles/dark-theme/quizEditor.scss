@@ -69,28 +69,11 @@
                     }
                }
           }
-          .editor-sidebar, .slides{
+          .editor-sidebar{
                background: #222;
                color: #fafafa;
                .label{
                     color: #009fff;
-               }
-          }
-          .slides{
-               .slide{
-                    .content{
-                         .options{
-                              .slideBtn{
-                                   color: #ccc;
-                                   &:hover{
-                                        color: #73c2ff;
-                                   }
-                                   &.red:hover{
-                                        color: #ff7280;
-                                   }
-                              }
-                         }
-                    }
                }
           }
           .editor-sidebar{

@@ -5,6 +5,8 @@ import { useState } from "react";
 import Button from "@/components/formComponents/button";
 import { MdAdd, MdRemove } from "react-icons/md";
 import ToggleSwitch from "@/components/formComponents/toggle-switch";
+import { MdDelete } from "react-icons/md";
+import { BiDuplicate } from "react-icons/bi"
 
 export default function QuizSideBar({formData, selectedQuestion, setFormData, onDelete, onDuplicate}){
      const currQuestion = formData.questions[selectedQuestion.index];
@@ -81,8 +83,8 @@ export default function QuizSideBar({formData, selectedQuestion, setFormData, on
           </div>
           </>}
           <div className="options">
-               <Button btnStyle="outline-blue" onClick={onDuplicate}>Կրկնօրինակել</Button>
-               <Button btnStyle="outline-red" onClick={onDelete}>Ջնջել</Button>
+               <Button btnStyle="outline-blue" onClick={onDuplicate}><BiDuplicate /> Կրկնօրինակել</Button>
+               <Button btnStyle="outline-red" onClick={onDelete}><MdDelete /> Ջնջել</Button>
           </div>
      </>
 }
