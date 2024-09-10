@@ -5,7 +5,7 @@ import { useState } from "react";
 import { INITIAL_LOGINDATA, validateLogin } from "@/lib/formData";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { signIn, useSession } from "next-auth/react"
+import { getSession, signIn } from "next-auth/react"
 import Button from "@/components/formComponents/button";
 import axios from "axios";
 
@@ -13,7 +13,7 @@ export default function SignInPage(){
      const [loginData, setLoginData] = useState(INITIAL_LOGINDATA);
      const [msg, setMsg] = useState({success: false, msg: ''});
      const [isLoading, setIsLoading] = useState(false)
-     const router = useRouter(), {status} = useSession();
+     const router = useRouter();
      const callbackUrl = router.query.callbackUrl || "/feed";
      const error = router.query.error==="OAuthAccountNotLinked" ? "Էլ․ հասցեն արդեն օգտագործվում է այլ ծառայության կողմից" : "";
      const handleChange = e => setLoginData({...loginData, [e.target.name]: e.target.value});
@@ -57,7 +57,6 @@ export default function SignInPage(){
           setMsg({success: false, msg: ''})
           setIsLoading(false);
      }
-     if(status==='authenticated') router.push(callbackUrl)
      return <div className="main-container">
           <form className="form-container authForm" onSubmit={handleSubmit}>
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
@@ -78,4 +77,13 @@ export default function SignInPage(){
           </form>
           <p className="info">Դուք նորե՞կ եք այստեղ։ <Link href="/auth/signup">Գրանցվել</Link></p>
      </div>
+}
+export const getServerSideProps = async ctx => {
+     const session = await getSession(ctx);
+     const {callbackUrl} = ctx.query;
+     if(session) return {redirect: {
+          destination: callbackUrl || "/feed",
+          permanent: false,
+     }}
+     return {props: {}}
 }

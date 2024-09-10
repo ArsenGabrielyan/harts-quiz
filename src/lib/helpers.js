@@ -66,7 +66,7 @@ export function getQuizDataFromType(type){
                timer: '',
                points: '',
                type,
-               id: generateId(8),
+               id: generateId(10),
                description: ""
           };
           case "true-false": return {
@@ -77,7 +77,7 @@ export function getQuizDataFromType(type){
                timer: '',
                points: '',
                type,
-               id: generateId(15),
+               id: generateId(10),
                description: ""
           };
           case "text-answer": return {
@@ -87,7 +87,7 @@ export function getQuizDataFromType(type){
                timer: '',
                points: '',
                type,
-               id: generateId(15),
+               id: generateId(10),
                description: ""
           };
      }
@@ -95,7 +95,7 @@ export function getQuizDataFromType(type){
 export const formatNumberSuffix = n => n===1 ? `${n}-ին` : `${n}-րդ`;
 export function startEditing(quiz){
      const questionsCopy = [...quiz.questions];
-     return {...quiz, questions: questionsCopy.map(val=>({...val, id: generateId(15)}))}
+     return {...quiz, questions: questionsCopy.map(val=>({...val, id: generateId(10)}))}
 }
 export async function shareQuiz(url=location.href){
      const shareData = {

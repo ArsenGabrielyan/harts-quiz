@@ -120,7 +120,7 @@ export const getServerSideProps = async(ctx) => {
     quizId: id || "",
     playerName: session?.user?.accountType==='student' ? user?.name : '' || "",
     avatar: typeof user?.image === 'object' ? user?.image : null,
-    userId: user ? user?.userId : generateId(10),
+    userId: user ? user?.userId : generateId(12),
     soundEffectOn: user ? user.soundEffectOn : true
   }
   return { props: { quizDetails, questionId: id || "", session } }

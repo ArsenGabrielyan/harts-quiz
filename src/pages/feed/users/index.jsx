@@ -1,17 +1,20 @@
 import FeedLayout from "@/components/feed/FeedLayout";
 import Button, {BtnLink} from "@/components/formComponents/button";
-import { accTypeInArmenian } from "@/lib/helpers";
+import Loader from "@/components/Loader";
+import { accTypeInArmenian, fetcher } from "@/lib/helpers";
 import User from "@/model/User";
 import { getSession } from "next-auth/react"
 import Image from "next/image";
 import { useState } from "react";
 import ReactNiceAvatar from "react-nice-avatar";
+import useSWR from "swr";
 
-export default function UserList({users}){
+export default function UserList(){
+     const {data: users, isLoading} = useSWR("/api/users",fetcher)
      const [usersCount, setUsersCount] = useState(20);
      const [search, setSearch] = useState("");
      return <FeedLayout search={search} setSearch={setSearch}>
-          <section>
+          {isLoading ? <Loader /> : <section>
                <h1 className="title">Օգտվողներ</h1>
                <div className="users">
                     {users.filter(val=>
@@ -28,12 +31,11 @@ export default function UserList({users}){
                     val.name.toLowerCase().includes(search.toLowerCase()) ||
                     val.username.toLowerCase().includes(search.toLowerCase())
                ).length && <Button onClick={()=>setUsersCount(prev=>prev+10)} btnStyle="outline-white mt">Բեռնել Ավելին</Button>}
-          </section>
+          </section>}
      </FeedLayout>
 }
 export const getServerSideProps = async ctx => {
      const session = await getSession(ctx);
-     const users = JSON.parse(JSON.stringify(await User.find()));
      const user = await User.findOne({email: session?.user?.email});
      if(user && user.isAccountNew) return {
           redirect: {
@@ -41,5 +43,5 @@ export const getServerSideProps = async ctx => {
                permanent: false,
           },
      }
-     return {props: {users}}
+     return {props: {}}
 }

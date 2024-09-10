@@ -19,7 +19,7 @@ export default function LibraryQuiz({data, updateQuiz, updateUser, session, curr
           if(res.status===200) await updateQuiz();
      }
      const deleteQuiz = async() => {
-          if(confirm("Վստա՞հ ես")){
+          if(confirm("Իսկապե՞ս ջնջել այս հարցաշարը")){
                const res = await toast.promise(axios.delete(`/api/questions?id=${id}`),{
                     pending: 'Հարցաշարը ջնջվում է։ Խնդրում ենք սպասել...',
                     success: 'Հարցաշարը ջնջված է',

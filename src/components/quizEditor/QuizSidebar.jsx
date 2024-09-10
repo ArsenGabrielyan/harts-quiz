@@ -3,12 +3,12 @@ import FormSelection from "@/components/formComponents/frmSelect";
 import { getQuizDataFromType } from "@/lib/helpers";
 import { useState } from "react";
 import Button from "@/components/formComponents/button";
-import { MdAdd, MdRemove } from "react-icons/md";
+import { MdAdd, MdMoveDown, MdMoveUp, MdRemove } from "react-icons/md";
 import ToggleSwitch from "@/components/formComponents/toggle-switch";
 import { MdDelete } from "react-icons/md";
 import { BiDuplicate } from "react-icons/bi"
 
-export default function QuizSideBar({formData, selectedQuestion, setFormData, onDelete, onDuplicate}){
+export default function QuizSideBar({formData, selectedQuestion, setFormData, onDelete, onDuplicate, onMoveUp, onMoveDown}){
      const currQuestion = formData.questions[selectedQuestion.index];
      const [count, setCount] = useState(currQuestion.type==='pick-one' ? currQuestion.answers.length : 0);
      const handleChangeQuestion = e => {
@@ -82,6 +82,10 @@ export default function QuizSideBar({formData, selectedQuestion, setFormData, on
                <Button btnStyle="icon-only outline-blue" disabled={count===4} onClick={handleIncrease}><MdAdd /></Button>
           </div>
           </>}
+          <div className="move-btns">
+               <Button btnStyle="outline-blue" title="Տեղափոխել վերև" onClick={onMoveUp}><MdMoveUp /></Button>
+               <Button btnStyle="outline-blue" title="Տեղափոխել Ներքև" onClick={onMoveDown}><MdMoveDown /></Button>
+          </div>
           <div className="options">
                <Button btnStyle="outline-blue" onClick={onDuplicate}><BiDuplicate /> Կրկնօրինակել</Button>
                <Button btnStyle="outline-red" onClick={onDelete}><MdDelete /> Ջնջել</Button>

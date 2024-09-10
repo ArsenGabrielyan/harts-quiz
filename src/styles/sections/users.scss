@@ -49,6 +49,12 @@
                margin-right: 20px;
           }
      }
+     .user-details h1{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 15px;
+     }
      .options{
           display: flex;
           align-items: center;

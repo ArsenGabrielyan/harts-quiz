@@ -22,7 +22,7 @@ export default async function handler(req,res){
                          organization: '',
                          password: hashed,
                          image: null,
-                         userId: generateId(10),
+                         userId: generateId(12),
                          accountType: '',
                          bio: '',
                          details: {
@@ -61,11 +61,11 @@ export default async function handler(req,res){
                if(user){
                     const {accountType, organization, username, image, favoriteSubject} = formData;
                     const takenUsername = await User.findOne({username: formData.username})
-                    const newUsernamefromTaken = `${formData.username.toLowerCase().replace(/[0-9]/g,'')}-${generateId(10,'username')}`;
+                    const newUsernamefromTaken = `${formData.username.toLowerCase().replace(/[0-9]/g,'')}-${generateId(12,'username')}`;
                     const updated = await User.updateOne({email},{$set: {
                          accountType,organization,image,
                          isAccountNew: false,
-                         username: !username ? `${accountType}-${generateId(10,'username')}` : takenUsername ? newUsernamefromTaken : username,
+                         username: !username ? `${accountType}-${generateId(12,'username')}` : takenUsername ? newUsernamefromTaken : username,
                          favoriteSubject
                     }})
                     res.status(200).json(updated)

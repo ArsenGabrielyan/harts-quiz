@@ -7,7 +7,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/tools/firebase";
 import { Grid } from "react-loader-spinner";
 
-export default function QuizForm({data, id, setQuestions, onSelect, selected, mainQuizId, index}){
+export default function QuizForm({data, id, setQuestions, onSelect, selected, mainQuizId, index, totalQuestions}){
      const [formData, setFormData] = useState(data);
      const [isUploading, setIsUploading] = useState(false)
      const imageRef = useRef(null);
@@ -65,5 +65,6 @@ export default function QuizForm({data, id, setQuestions, onSelect, selected, ma
                {formData.answers.map((answer,i)=><Button key={i} btnStyle={`outline-blue ${formData.correct===answer ? 'active' : ''}`.trim()} onClick={()=>changeCorrect(answer)}>{answer==='true' ? 'Այո' : 'Ոչ'}</Button>)}
           </> : <FormControl name="correct" title="Ճիշտ պատասխան" value={formData.correct} onChange={handleChange}/>}
           </div>
+          <p>{index}/{totalQuestions}</p>
      </div>
 }

@@ -18,6 +18,17 @@ body{
   pointer-events: none;
   opacity: .5;
 }
+.loader{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  h1{
+    font-size: 25px;
+    margin-top: 15px;
+  }
+}
 @import "./buttons.scss";
 @import "./main.scss";
 @import "./feed.scss";

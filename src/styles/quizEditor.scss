@@ -210,7 +210,6 @@
                     justify-content: flex-end;
                     align-items: center;
                     flex-direction: column;
-                    margin-top: 25px;
                     button{
                          width: 100%;
                          display: flex;
@@ -220,6 +219,21 @@
                               margin-right: 10px;
                               font-size: 25px;
                          }
+                    }
+               }
+               .move-btns{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    margin: 30px 0 10px;
+                    button{
+                         width: 100%;
+                         padding: 0.5em;
+                         font-size: 24px;
+                         display: flex;
+                         align-items: center;
+                         justify-content: center;
                     }
                }
                .elems{

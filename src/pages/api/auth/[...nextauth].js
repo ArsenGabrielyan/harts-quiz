@@ -52,12 +52,12 @@ export default NextAuth({
                          await connectDB();
                          const mentionedUser = await User.findOne({email: user.email});
                          if(!mentionedUser) {
-                              const userId = generateId(10);
+                              const userId = generateId(12);
                               const {email,name,image} = user
                               const isTakenUsername = await User.findOne({username: name.split(' ')[0].toLowerCase()});
                               const userDetails = {
                                    name,email,image,userId,
-                                   username: isTakenUsername ? `${name.split(' ')[0].toLowerCase()}-${generateId(10,'username')}` : name.split(' ')[0].toLowerCase(),accountType: 'personal',
+                                   username: isTakenUsername ? `${name.split(' ')[0].toLowerCase()}-${generateId(12,'username')}` : name.split(' ')[0].toLowerCase(),accountType: 'personal',
                                    isAccountNew: true, isEmailVerified: true,bio: '',
                                    details: {favorites: [],followed: []},favoriteSubject: '',
                                    bdate: null,organization: '',password: '',isOauth: true

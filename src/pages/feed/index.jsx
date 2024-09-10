@@ -3,20 +3,21 @@ import connectDB from "@/lib/tools/connectDb";
 import { getSession, useSession } from "next-auth/react";
 import User from "@/model/User";
 import Button, { BtnLink } from "@/components/formComponents/button";
-import HartsQuiz from "@/model/Quiz";
 import Image from "next/image";
-import { divideQuestionsBySubject } from "@/lib/helpers";
+import { divideQuestionsBySubject, fetcher } from "@/lib/helpers";
 import ReactNiceAvatar from "react-nice-avatar";
 import Link from "next/link";
 import QuestionItem from "@/components/feed/questionItem";
 import Carousel from "react-multi-carousel";
 import { RESPONSIVE_CARDS } from "@/lib/constants";
-import axios from "axios";
+import useSWR from "swr";
+import Loader from "@/components/Loader";
 
-export default function FeedPage({questions, user}){
+export default function FeedPage({user}){
      const {data, status} = useSession();
+     const {data: questions, isLoading} = useSWR("/api/questions?visibility=public",fetcher)
      return <FeedLayout isAuth={status==='authenticated'}>
-          <section>
+          {isLoading ? <Loader /> : <section>
                {status==='authenticated' ? <>
                <div className="profile">
                     {typeof user?.image==='string' ? <Image src={user?.image} alt="pfp" width={150} height={150} className="pfp"/> : <ReactNiceAvatar className="pfp" {...user?.image} />}
@@ -44,19 +45,18 @@ export default function FeedPage({questions, user}){
                          <BtnLink href="/feed/explore" btnStyle="outline-white">Ուսումնասիրել</BtnLink>
                     </div>
                </div>}
-          </section>
+          </section>}
      </FeedLayout>
 }
 export const getServerSideProps = async ctx => {
      await connectDB();
      const session = await getSession(ctx);
      const user = await User.findOne({email: session?.user?.email});
-     const questions = JSON.parse(JSON.stringify(await HartsQuiz.find({visibility: 'public'})))
      if(user && user.isAccountNew) return {
           redirect: {
                destination: session?.user?.isOauth ? "/welcome/oauth" : '/welcome',
                permanent: false,
           },
      }
-     return {props: {questions, user: JSON.parse(JSON.stringify(user))}}
+     return {props: {user: JSON.parse(JSON.stringify(user))}}
 }

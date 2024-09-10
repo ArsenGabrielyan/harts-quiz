@@ -71,14 +71,6 @@
                          border-color: transparent;
                     }
                }
-               &.dragging{
-                    scroll-behavior: auto;
-                    cursor: grabbing;
-                    li{
-                         user-select: none;
-                         pointer-events: none;
-                    }
-               }
           }
      }
 }
@@ -86,6 +78,7 @@
      display: flex;
      justify-content: center;
      align-items: center;
+     flex-wrap: wrap;
      width: 100%;
      .question{
           width: 100%;

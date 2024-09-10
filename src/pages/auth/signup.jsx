@@ -4,16 +4,13 @@ import FormControl from "@/components/formComponents/frmControl";
 import { useState } from "react";
 import { INITIAL_SIGNUPDATA, validateSignup } from "@/lib/formData";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import Button from "@/components/formComponents/button";
-import { useRouter } from "next/router";
 
 export default function SignUp(){
-     const router = useRouter()
      const [signupData, setSignupData] = useState(INITIAL_SIGNUPDATA)
      const [msg, setMsg] = useState({success: false, msg: ''});
-     const [isLoading, setIsLoading] = useState(false), {status} = useSession();
-     const callbackUrl = router.query.callbackUrl || "/feed";
+     const [isLoading, setIsLoading] = useState(false);
      const reset = () => {
           setSignupData(INITIAL_SIGNUPDATA);
           setIsLoading(false);
@@ -38,7 +35,6 @@ export default function SignUp(){
                setIsLoading(false);
           }
      }
-     if(status==='authenticated') router.push(callbackUrl)
      return <div className="main-container">
           <form className="form-container authForm" onSubmit={handleSubmit}>
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
@@ -59,4 +55,13 @@ export default function SignUp(){
           </form>
           <p className="info">Արդեն ունե՞ք հաշիվ։ <Link href="/auth/signin">Մուտք գործել</Link></p>
      </div>
+}
+export const getServerSideProps = async ctx => {
+     const session = await getSession(ctx);
+     const {callbackUrl} = ctx.query;
+     if(session) return {redirect: {
+          destination: callbackUrl || "/feed",
+          permanent: false,
+     }}
+     return {props: {}}
 }

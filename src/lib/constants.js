@@ -36,7 +36,7 @@ export const subjectList = [
      {name: "others", title: "Ուրիշներ",type: "Ուրիշ Առարկաներ"},
 ]
 export const INITIAL_QUIZEDITOR_DATA = {
-     id: generateId(12,'username'),
+     id: generateId(8,'username'),
      name: '',
      description: "",
      questions: [],

@@ -111,6 +111,12 @@
                &.mt{margin-top: 5px;}
           }
      }
+     .library-title{
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 15px;
+     }
      @import "./sections/discover.scss";
      @import "./sections/single-quiz.scss";
      @import "./sections/library.scss";

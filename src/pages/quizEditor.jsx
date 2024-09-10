@@ -35,15 +35,33 @@ export default function QuizEditor({session,quiz}){
      const handleSelection = (question,i) => setSelectedQuestion({question,index: i})
      const handleDuplicate = (i,val)=>{
           const q = [...formData.questions];
-          const question = {...val, id: generateId(8)}
+          const question = {...val, id: generateId(10)}
           q.splice(i,0,question);    
           setFormData(prev=>({...prev, questions: q}))
      }
-     const handleDelete = (i)=>{
+     const handleDelete = i => {
           const q = [...formData.questions];
           q.splice(i,1);    
           setFormData(prev=>({...prev, questions: q}))
           setSelectedQuestion({question: {},index: null})
+     }
+     const handleMoveUp = () => {
+          const i = selectedQuestion.index;
+          const q = [...formData.questions];
+          if(i>0){
+               [q[i],q[i-1]] = [q[i-1],q[i]]
+               setFormData({...formData, questions: q})
+               setSelectedQuestion(prev=>({...prev, index: prev.index-1}))
+          }
+     }
+     const handleMoveDown = () => {
+          const i = selectedQuestion.index;
+          const q = [...formData.questions];
+          if(i<q.length-1){
+               [q[i],q[i+1]] = [q[i+1],q[i]]
+               setFormData(prev=>({...prev, questions: q}))
+               setSelectedQuestion(prev=>({...prev, index: prev.index+1}))
+          }
      }
      const handleSave = async () => {
           let msg = validateQuizEditor(formData);
@@ -56,7 +74,7 @@ export default function QuizEditor({session,quiz}){
                          setSelectedQuestion({question: {},index: null});
                          toast.success(`Հարցաշարը ${quiz ? 'Խմբագրված է' : formData.visibility==='public' ? 'Հրատարակված է' : 'Պահպանված է'}`)
                          if(quiz) setTimeout(()=>router.push(`/feed/explore/${quiz.id}`),3000)
-                         else setFormData({...INITIAL_QUIZEDITOR_DATA, id: generateId(12,'username')});
+                         else setFormData({...INITIAL_QUIZEDITOR_DATA, id: generateId(8,'username')});
                     }
                } catch (e){
                     const errMsg = e.response ? e.response.data.message : e.message;
@@ -94,11 +112,11 @@ export default function QuizEditor({session,quiz}){
                </div>
                <div className="editor-container">
                     <div className="editor">
-                         {formData.questions.length===0 ? <h2>Ավելացնել Հարց</h2> : formData.questions.map((q,i)=><QuizForm key={q.id} data={q} id={q.id} setQuestions={val=>setQuestions(val,i)} onSelect={val=>handleSelection(val,i)} selected={selectedQuestion.index===i} mainQuizId={formData.id} index={i+1}/>)}
+                         {formData.questions.length===0 ? <h2>Ավելացնել Հարց</h2> : formData.questions.map((q,i)=><QuizForm key={q.id} data={q} id={q.id} setQuestions={val=>setQuestions(val,i)} onSelect={val=>handleSelection(val,i)} selected={selectedQuestion.index===i} mainQuizId={formData.id} index={i+1} totalQuestions={formData.questions.length}/>)}
                     </div>
                     <aside className="editor-sidebar">
                          {JSON.stringify(selectedQuestion.question)==='{}' && <MainSideBar addQuiz={addQuiz} handleChange={handleChange} formData={formData} />}
-                         {JSON.stringify(selectedQuestion.question)!=='{}' && <QuizSideBar formData={formData} setFormData={setFormData} selectedQuestion={selectedQuestion} onDuplicate={()=>handleDuplicate(selectedQuestion.index,selectedQuestion.question)} onDelete={()=>handleDelete(selectedQuestion.index)}/>}
+                         {JSON.stringify(selectedQuestion.question)!=='{}' && <QuizSideBar formData={formData} setFormData={setFormData} selectedQuestion={selectedQuestion} onDuplicate={()=>handleDuplicate(selectedQuestion.index,selectedQuestion.question)} onDelete={()=>handleDelete(selectedQuestion.index)} onMoveDown={handleMoveDown} onMoveUp={handleMoveUp}/>}
                     </aside>
                </div>
           </div>

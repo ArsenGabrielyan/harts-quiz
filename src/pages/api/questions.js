@@ -11,7 +11,7 @@ export default async function handler(req,res){
           if(reqType==='duplicate'){
                const {quizId} = req.body;
                const mentionedQuiz = await HartsQuiz.findOne({id: quizId});
-               const duplObj = {...mentionedQuiz._doc, id: generateId(12,'username')};
+               const duplObj = {...mentionedQuiz._doc, id: generateId(8,'username')};
                const {_id,...rest} = duplObj;
                const duplicatedQuiz = new HartsQuiz({...rest, name: `«${rest.name}»-ի կրկնօրինակ`});
                await duplicatedQuiz.save();

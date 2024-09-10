@@ -17,7 +17,7 @@ export default function PlayForm({onSubmit, hasId}){
           const error = validateJoinGame(formData);
           if(error===''){
                setMsg('')
-               const id = generateId(8)
+               const id = generateId(12)
                onSubmit(formData,id)
                setSubmitted(true);
           } else setMsg(error)
