@@ -5,10 +5,10 @@ import HeaderUserSection from "../UserSectionHeader";
 import { MdClose, MdSearch } from "react-icons/md";
 import Button, { BtnLink } from "../formComponents/button";
 
-export default function FeedLayout({children, search, setSearch, enableCreateBtn=true, isAuth=true}){
+export default function FeedLayout({children, search, setSearch, enableCreateBtn=true, isAuth=true,type="feed"}){
      const {data, status} = useSession();
      const [openedSearch, setOpenedSearch] = useState(false);
-     return <main className={`feed ${!isAuth ? 'no-auth' : ''}`.trim()}>
+     return type==="feed" ? <main className={`feed ${!isAuth ? 'no-auth' : ''}`.trim()}>
      <header>
           <div className="logoSection">
                <Link href="/feed" title="Վերադառնալ" className="logo" aria-label="Հարց"></Link>
@@ -24,5 +24,7 @@ export default function FeedLayout({children, search, setSearch, enableCreateBtn
           </>}
      </header>
      {children}
-     </main>
+     </main> : <div className="main-container">
+          {children}
+     </div>
 }

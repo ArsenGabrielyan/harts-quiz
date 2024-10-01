@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { getSession, signIn } from "next-auth/react"
 import Button from "@/components/formComponents/button";
 import axios from "axios";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function SignInPage(){
      const [loginData, setLoginData] = useState(INITIAL_LOGINDATA);
@@ -57,7 +58,7 @@ export default function SignInPage(){
           setMsg({success: false, msg: ''})
           setIsLoading(false);
      }
-     return <div className="main-container">
+     return <FeedLayout type="main">
           <form className="form-container authForm" onSubmit={handleSubmit}>
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
                <p className="formTxt">Բարի Վերադարձ</p>
@@ -76,7 +77,7 @@ export default function SignInPage(){
                </div>
           </form>
           <p className="info">Դուք նորե՞կ եք այստեղ։ <Link href="/auth/signup">Գրանցվել</Link></p>
-     </div>
+     </FeedLayout>
 }
 export const getServerSideProps = async ctx => {
      const session = await getSession(ctx);

@@ -5,6 +5,7 @@ import { useState } from "react";
 import axios from "axios";
 import Button from "@/components/formComponents/button";
 import { validateEmail } from "@/lib/formData";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function ResetPassword(){
      const [email, setEmail] = useState('')
@@ -29,7 +30,7 @@ export default function ResetPassword(){
                setIsLoading(false);
           }
      }
-     return <div className="main-container">
+     return <FeedLayout type="main">
           <form className="form-container authForm" onSubmit={handleSubmit}>
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
                <p className="formTxt">Գաղտնաբառի վերականգնում</p>
@@ -40,5 +41,5 @@ export default function ResetPassword(){
                </div>
           </form>
           <p className="info">Շփոթվե՞լ եք։ <Link href="/auth/signin">Մուտք գործել</Link></p>
-     </div>
+     </FeedLayout>
 }

@@ -12,6 +12,7 @@ import ReactNiceAvatar from "react-nice-avatar";
 import User from "@/model/User";
 import connectDB from "@/lib/tools/connectDb";
 import axios from "axios";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export const PlayContext = createContext();
 export default function MainPage({quizDetails,questionId}){
@@ -83,7 +84,7 @@ export default function MainPage({quizDetails,questionId}){
       audio.play();
     }
   }
-  return <div className="main-container">
+  return <FeedLayout type="main">
     {started && <div className="player-status">
       <ReactNiceAvatar {...formData.avatar} className="avatar" />
       <div className="status-info">
@@ -109,7 +110,7 @@ export default function MainPage({quizDetails,questionId}){
     </> : progress<=0 ? currQuiz.questions.map((val,i)=>{
       if(i===currIdx) return <Question data={val} key={i} afterCheck={afterCheck} soundEffectOn={formData.soundEffectOn}/>
     }) : <Timer time={progress} setTime={setProgress} initialTime={5} />}
-  </div>
+  </FeedLayout>
 }
 export const getServerSideProps = async(ctx) => {
   await connectDB()

@@ -4,15 +4,16 @@ import User from "@/model/User";
 import Link from "next/link";
 import Image from "next/image";
 import { BtnLink } from "@/components/formComponents/button";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function VerifyEmail({msg}){
-     return <div className="main-container">
+     return <FeedLayout type="main">
           <div className="form-container verification">
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
                {msg && msg.message!=='' && <div className={`msg ${msg.success ? "success" : ''}`.trim()}>{msg.message}</div>}
                <BtnLink href="/auth/signin" btnStyle="outline-white">Մուտք գործել</BtnLink>
           </div>
-     </div>
+     </FeedLayout>
 }
 export const getServerSideProps = async ctx => {
      await connectDB();

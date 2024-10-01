@@ -9,6 +9,7 @@ import PassResetToken from "@/model/PassResetToken";
 import { useSession } from "next-auth/react";
 import Button from "@/components/formComponents/button";
 import { PASS_RESET_INITIAL, validatePasswords } from "@/lib/formData";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function PassResetForm({isLinkInvalid}){
      const [passData, setPassData] = useState(PASS_RESET_INITIAL)
@@ -40,7 +41,7 @@ export default function PassResetForm({isLinkInvalid}){
                setIsLoading(false);
           }
      }
-     return <div className="main-container">
+     return <FeedLayout type="main">
           <form className="form-container authForm" onSubmit={handleSubmit}>
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
                <p className="formTxt">Գաղտնաբառի վերականգնում</p>
@@ -54,7 +55,7 @@ export default function PassResetForm({isLinkInvalid}){
                </div>
           </form>
           <p className="info">{isLinkInvalid ? "Դուք կարող եք" : "Շփոթվե՞լ եք։"} <Link href="/auth/signin">Մուտք գործել</Link></p>
-     </div>
+     </FeedLayout>
 }
 export const getServerSideProps = async ({query}) => {
      await connectDB();

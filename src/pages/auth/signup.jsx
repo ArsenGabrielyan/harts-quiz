@@ -6,6 +6,7 @@ import { INITIAL_SIGNUPDATA, validateSignup } from "@/lib/formData";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 import Button from "@/components/formComponents/button";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function SignUp(){
      const [signupData, setSignupData] = useState(INITIAL_SIGNUPDATA)
@@ -35,7 +36,7 @@ export default function SignUp(){
                setIsLoading(false);
           }
      }
-     return <div className="main-container">
+     return <FeedLayout type="main">
           <form className="form-container authForm" onSubmit={handleSubmit}>
                <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
                <p className="formTxt">Ստեղծել հաշիվ</p>
@@ -54,7 +55,7 @@ export default function SignUp(){
                </div>
           </form>
           <p className="info">Արդեն ունե՞ք հաշիվ։ <Link href="/auth/signin">Մուտք գործել</Link></p>
-     </div>
+     </FeedLayout>
 }
 export const getServerSideProps = async ctx => {
      const session = await getSession(ctx);

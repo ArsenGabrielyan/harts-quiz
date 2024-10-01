@@ -2,13 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { GET_INITIAL_SIGNUP2, GET_MULTISTEP_DATA, validateWelcomePage } from "@/lib/formData";
-import useMultiStep from "@/lib/tools/use-multistep";
+import useMultiStep from "@/lib/hooks/use-multistep";
 import axios from "axios";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import connectDB from "@/lib/tools/connectDb";
 import User from "@/model/User";
 import Button from "@/components/formComponents/button";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function WelcomePage(){
      const {data} = useSession(), router = useRouter();
@@ -46,8 +47,8 @@ export default function WelcomePage(){
      useEffect(()=>{
           setFormData(GET_INITIAL_SIGNUP2(data?.user.id))
      },[data])
-     return <div className="main-container">
-     <form className="form-container authForm" onSubmit={handleSubmit}>
+     return <FeedLayout type="main">
+          <form className="form-container authForm" onSubmit={handleSubmit}>
           <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
           <p className="formTxt">Բարի Գալուստ</p>
           {msg.msg!=='' && <div className={`msg ${msg.success ? 'success' : ''}`.trim()}>{msg.msg}</div>}
@@ -59,7 +60,7 @@ export default function WelcomePage(){
                </div>
           </div>
      </form>
-     </div>
+     </FeedLayout>
 }
 export const getServerSideProps = async ctx => {
      await connectDB();

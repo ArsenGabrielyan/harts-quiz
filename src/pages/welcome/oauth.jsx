@@ -12,6 +12,7 @@ import Button from "@/components/formComponents/button";
 import FormSelection from "@/components/formComponents/frmSelect";
 import { subjectList } from "@/lib/constants";
 import { getFilteredSubjects } from "@/lib/helpers";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function WelcomePageOauth(){
      const [formData, setFormData] = useState(INITIAL_SIGNUP3);
@@ -37,15 +38,15 @@ export default function WelcomePageOauth(){
                setIsLoading(false)
           }
      }
-     return <div className="main-container">
-     <form className="form-container authForm" onSubmit={handleSubmit}>
-          <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
-          <p className="formTxt">Բարի Գալուստ</p>
-          {msg.msg!=='' && <div className={`msg ${msg.success ? 'success' : ''}`.trim()}>{msg.msg}</div>}
-          <div className="inner-width">
-               <FormControl type='date' name="bdate" title="Ծննդյան Ամսաթիվ" value={formData.bdate} onChange={handleChange}/>
-               <FormControl name="organization" title="Կազմակերպություն" value={formData.organization} onChange={handleChange}/>
-               <FormSelection name="favoriteSubject" title="Ձեր սիրած առարկան" value={formData.favoriteSubject} onChange={handleChange}>
+     return <FeedLayout type="main">
+          <form className="form-container authForm" onSubmit={handleSubmit}>
+               <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={200} height={100} priority/></Link>
+               <p className="formTxt">Բարի Գալուստ</p>
+               {msg.msg!=='' && <div className={`msg ${msg.success ? 'success' : ''}`.trim()}>{msg.msg}</div>}
+               <div className="inner-width">
+                    <FormControl type='date' name="bdate" title="Ծննդյան Ամսաթիվ" value={formData.bdate} onChange={handleChange}/>
+                    <FormControl name="organization" title="Կազմակերպություն" value={formData.organization} onChange={handleChange}/>
+                    <FormSelection name="favoriteSubject" title="Ձեր սիրած առարկան" value={formData.favoriteSubject} onChange={handleChange}>
                     <option value="" disabled>Ընտրել Առարկան</option>
                     {getFilteredSubjects(subjectList)?.map((val,i)=><optgroup key={i} label={val.title}>
                          {val.data.map((val,i)=><option key={i} value={val.name}>{val.title}</option>)}
@@ -53,8 +54,8 @@ export default function WelcomePageOauth(){
                </FormSelection>
                <Button type="submit" btnStyle="outline-blue full-width" disabled={isLoading}>{isLoading ? 'Բեռնվում է...' : 'Վերջացնել'}</Button>
           </div>
-     </form>
-     </div>
+          </form>
+     </FeedLayout>
 }
 export const getServerSideProps = async ctx => {
      await connectDB();

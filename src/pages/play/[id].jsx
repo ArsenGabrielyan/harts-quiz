@@ -9,6 +9,7 @@ import Link from "next/link";
 import { getSession } from "next-auth/react";
 import User from "@/model/User";
 import ToggleSwitch from "@/components/formComponents/toggle-switch";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function PlaySolo({quiz, session}){
      const [started, setStarted] = useState(false);
@@ -46,8 +47,8 @@ export default function PlaySolo({quiz, session}){
           setNextRoundReady(false);
           setCorrect(0)
      }
-     return <div className="main-container">
-     {!started ? <>
+     return <FeedLayout type="main">
+          {!started ? <>
           <Link href="/feed"><Image src="/logos/logo-white.svg" alt="harts" width={250} height={150} priority/></Link>
           <h2>{quiz.name}</h2>
           <p>{quiz.teacher}</p>
@@ -68,7 +69,7 @@ export default function PlaySolo({quiz, session}){
                </div>}
           </> }
      </> : <Timer time={progress} setTime={setProgress} initialTime={5} />}
-     </div>
+     </FeedLayout>
 }
 export const getServerSideProps = async(ctx) => {
      await connectDB()

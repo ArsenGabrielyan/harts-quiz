@@ -14,6 +14,7 @@ import User from "@/model/User";
 import { getSession } from "next-auth/react";
 import ToggleSwitch from "@/components/formComponents/toggle-switch";
 import useTheme from "next-theme";
+import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function Quiz({currQuiz,soundEffectOn}){
      const socket = useRef(null);
@@ -101,7 +102,7 @@ export default function Quiz({currQuiz,soundEffectOn}){
           //eslint-disable-next-line
      },[])
      const leaderboard = users.slice(0,5).sort(({points: a},{points: b})=>b-a);
-     return <div className="main-container">
+     return <FeedLayout type="main">
           {isEnded ? <div className="quiz-results">
                {!showPlacements ? <h2>Հաղթող է ճանաչվում․․․</h2> : <>
                     <ReactNiceAvatar className="first-avatar" {...placements[0].avatar} />
@@ -154,7 +155,7 @@ export default function Quiz({currQuiz,soundEffectOn}){
           <p className="info">Հարց ուսումնասիրելու համար սեղմել <Link href="/feed">Այստեղ</Link></p>
           </>}
           {(started && progress<=0 && !showLeaderBoard) && <p>Հարցեր՝ {currIndex+1}/{currQuiz.questions.length}</p>}
-     </div>
+     </FeedLayout>
 }
 export async function getServerSideProps(ctx){
      await connectDB();
