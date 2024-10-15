@@ -60,7 +60,7 @@ export default function PlaySolo({quiz, session}){
           <Button btnStyle="outline-white" onClick={()=>setStarted(true)}>Սկսել</Button>
      </> : progress<=0 ? <>
           {currIdx<=quiz.questions.length && quiz.questions.map((val,i)=>{
-               if(i===currIdx) return <QuestionSolo data={val} key={i} afterCheck={afterCheck} soundEffectOn={soundEffectOn}/>
+               if(i===currIdx) return <QuestionSolo data={val} key={i} afterCheck={afterCheck} soundEffectOn={soundEffectOn} questionNumber={i+1}/>
           })}
           {nextRoundReady && <>
                {currIdx!==quiz.questions.length ? <Button btnStyle="outline-white mt" onClick={handleNextRound}>Անցնել հաջորդին</Button> : <div className="results-solo">

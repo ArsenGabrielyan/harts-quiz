@@ -1,13 +1,13 @@
-import FormCheckbox from "../formComponents/frmCheckbox"
 import { MdBook, MdPerson } from "react-icons/md";
 import { FaGraduationCap } from "react-icons/fa";
+import Button from "../formComponents/button";
 
 export default function AccountType({accountType, updateFields}){
-     const handleChange = e => updateFields({accountType: e.target.value})
+     const handleCheck = (accType) => updateFields({accountType: accType})
      return <>
           <h2>Հաշվի տեսակ</h2>
-          <FormCheckbox checked={accountType==='teacher'} type="radio" name="accountType" value="teacher" onChange={handleChange}><MdBook/> Ուսուցիչ</FormCheckbox>
-          <FormCheckbox checked={accountType==='student'} type="radio" name="accountType" value="student" onChange={handleChange}><FaGraduationCap/> Աշակերտ</FormCheckbox>
-          <FormCheckbox checked={accountType==='personal'} type="radio" name="accountType" value="personal" onChange={handleChange}><MdPerson/> Անձնական</FormCheckbox>
+          <Button btnStyle={`outline-blue multistep-btn ${accountType==='teacher' ? "active" : ""}`.trim()} onClick={()=>handleCheck("teacher")}><MdBook/> Ուսուցիչ</Button>
+          <Button btnStyle={`outline-blue multistep-btn ${accountType==='student' ? "active" : ""}`.trim()} onClick={()=>handleCheck("student")}><FaGraduationCap/> Աշակերտ</Button>
+          <Button btnStyle={`outline-blue multistep-btn ${accountType==='personal' ? "active" : ""}`.trim()} onClick={()=>handleCheck("personal")} ><MdPerson/> Անձնական</Button>
      </>
 }

@@ -313,6 +313,14 @@
           h2{
                color: #002a4f;
           }
+          .multistep-btn{
+               width: 100%;
+               margin-top: 10px;
+               &.active{
+                    background: #002a4f;
+                    color: #fafafa;
+               }
+          }
      }
      &.avatarForm{
           .frmControl{

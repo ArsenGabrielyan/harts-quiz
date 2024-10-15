@@ -130,7 +130,7 @@ export default function Quiz({currQuiz,soundEffectOn}){
                     </div>)}
                     <Button btnStyle="outline-white mt" onClick={()=>currIndex!==currQuiz.questions.length-1 ? nextQuestion() : finishGame()}>{currIndex!==currQuiz.questions.length-1 ? 'Անցնել հաջորդին' : 'Վերջացնել'}</Button>
                </div> : currQuiz.questions.map((val,i)=>{
-                    if(i===currIndex) return <Question data={val} key={i} mode="teacher" socket={socket}/>
+                    if(i===currIndex) return <Question data={val} key={i} mode="teacher" socket={socket} questionNumber={i+1}/>
                })}
                </> : <Timer time={progress} setTime={setProgress} initialTime={5}/>}
           </> : <>

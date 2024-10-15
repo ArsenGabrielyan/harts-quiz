@@ -11,8 +11,8 @@ export default function Timer({time, setTime, initialTime, type=''}){
      },[time])
      return <div className={`timer ${type}`}>
           <h2>{time}</h2>
-          <div className="progress">
+          {type!=="quiz" && <div className="progress">
                <div className="bar" style={{width: `${time/initialTime*100}%`}}></div>
-          </div>
+          </div>}
      </div>
 }

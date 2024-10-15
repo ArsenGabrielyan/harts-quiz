@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import Timer from "./timer";
 import { getAnswerFormat } from "@/lib/helpers";
 import Button from "../formComponents/button";
+import { MdCheck, MdClose } from "react-icons/md";
 
-export default function QuestionSolo({data, afterCheck, soundEffectOn}){
+export default function QuestionSolo({data, afterCheck, soundEffectOn, questionNumber}){
      const mode = 'student'
      const answerFormat = getAnswerFormat(data.type);
      const [currTime, setCurrTime] = useState(data.timer);
@@ -30,21 +31,20 @@ export default function QuestionSolo({data, afterCheck, soundEffectOn}){
                audio.play();
           }
      },[soundEffectOn])
+     const isCorrect = currAnswer.toLowerCase()===data.correct.toLowerCase();
      return <div className={`quiz ${data.type}`}>
-     <Image src="/logos/logo-white.svg" alt="harts" width={100} height={50} priority className="logo"/>
-     {currAnswer==='' ? <>
-     <h2 className="question">{data.question}</h2>
+     <Image src="/logos/logo.svg" alt="harts" width={100} height={50} priority className="logo"/>
+     <h2 className="question">{currAnswer==="" ? <>{questionNumber}. {data.question}</> : currTime!==0 ? "Խնդրում ենք սպասել" : isCorrect ? <><MdCheck /> Ճիշտ է</> : <><MdClose /> Սխալ է. Ճիշտ պատասխան՝ {data.correct==="true" ? "Այո" : data.correct==="false" ? "Ոչ" : data.correct}</>}</h2>
      {data.image && <div className="img"><Image src={data.image} fill alt="quiz-image"/></div>}
      {data.description && <p className="desc">{data.description}</p>}
      {mode==='student' ? <>
-     {currTime<=0 ? <h2 className="correct">{data.type==='true-false' ? `Պատասխան՝ ${data.correct==='true' ? 'Ճիշտ է' : 'Սխալ է'}` : `Ճիշտ պատասխան՝ ${data.correct}`}</h2> : data.type==='text-answer' ? <form onSubmit={handleSubmit}>
-          <input type="text" name="input" placeholder="Ձեր պատասխանը" value={input} onChange={e=>setInput(e.target.value)}/>
-          <Button type="submit" btnStyle="outline-white">Հաստատել</Button>
-     </form> : <div className="answers">
-          {data.answers.map((answ,i)=><Button btnStyle="outline-white mt" key={i} onClick={()=>checkAnswer(answ)}>{data.type==='true-false' ? answerFormat[i] : `${answerFormat[i]}. ${answ}`}</Button>)}    
+     {data.type==='text-answer' ? <form onSubmit={handleSubmit} className={currTime<=0 ? "disabled-quiz" : ""}>
+          <input type="text" name="input" placeholder="Ձեր պատասխանը" value={input} onChange={e=>setInput(e.target.value)} className={currAnswer==="" ? "" : isCorrect ? "correct" : "wrong"}/>
+          <Button type="submit" btnStyle="outline-blue">Հաստատել</Button>
+     </form> : <div className={`answers ${currTime<=0 ? "disabled-quiz" : ""}`}>
+          {data.answers.map((answ,i)=><Button btnStyle={`outline-blue ${currAnswer==="" ? "" : answ===data.correct ? "correct" : answ===currAnswer ? "wrong" : ''}`.trim()} key={i} onClick={()=>checkAnswer(answ)}>{data.type==='true-false' ? answerFormat[i] : `${answerFormat[i]}. ${answ}`}</Button>)}    
      </div>}
-     </> : currTime<=0 ? <h2 className="correct">Ճիշտ պատասխան՝ {data.correct}</h2> : null}
-     </> : <h2 className="correct">{currAnswer===data.correct ? 'Դուք ճիշտ պատասխանեցիք' : `Սխալ է։ Ճիշտ պատասխան՝ ${data.type==='true-false' ? data.correct==='true' ? 'Այո' : "Ոչ" : data.correct}`}</h2>}
+     </> : currTime<=0 ? <h2 className="correct">Ճիշտ պատասխան՝ {data.correct==="true" ? "Այո" : data.correct==="false" ? "Ոչ" : data.correct}</h2> : null}
      {currTime>0 && <Timer type="quiz" setTime={setCurrTime} time={currTime} initialTime={data.timer} />}
      </div>
 }

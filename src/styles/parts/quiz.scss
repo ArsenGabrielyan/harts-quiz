@@ -2,8 +2,24 @@
      width: 100%;
      display: flex;
      justify-content: center;
-     align-items: center;
+     align-items: flex-start;
      flex-direction: column;
+     background: #fafafa;
+     max-width: 512px;
+     color: #222;
+     padding: 20px;
+     border-radius: 10px;
+     h2{
+          color: #222;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          svg{
+               font-size: 72px;
+          }
+     }
      .question{
           font-size: clamp(16px,9vw,25px);
           text-align: center;
@@ -13,6 +29,7 @@
           max-width: 750px;
           margin-top: 15px;
           font-size: 18px;
+          color: #222;
      }
      .img{
           margin-top: 10px;
@@ -28,39 +45,50 @@
      .logo{
           margin-bottom: 10px;
      }
-     .answers{
-          margin-top: 10px;
-          display: grid;
-          grid-template-columns: repeat(2,1fr);
-          gap: 10px;
+     .disabled-quiz{
+          user-select: none;
+          pointer-events: none;
      }
      .correct{
-          margin-top: clamp(10px,100%,20px);
-          font-size: clamp(20px,5vw,35px);
+          background: #70ffa2;
+     }
+     .wrong{
+          background: #ff96a0;
+     }
+     .answers{
+          margin-top: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: 100%;
+     }
+     .answer{
+          margin-top: 10px;
+          font-size: 21px;
+          text-align: center;
      }
      form{
           display: flex;
           justify-content: center;
           align-items: center;
           width: 100%;
-          max-width: 420px;
           margin-top: 15px;
           input{
                width: 100%;
                font-size: 18px;
                padding: 0.5em;
-               border: 2px solid #fafafa;
+               border: 2px solid #a0a0a0;
                border-radius: 10px;
-               color: #fafafa;
+               color: #222;
                background: none;
                outline: none;
                transition: .3s;
                &:focus{
-                    border-color: #88cbff;
-                    box-shadow: 0 0 10px #88cbff;
+                    border-color: #009fff;
+                    box-shadow: 0 0 10px #009fff;
                }
                &::placeholder{
-                    color: #ccc;
+                    color: #a0a0a0;
                }
           }
           button{

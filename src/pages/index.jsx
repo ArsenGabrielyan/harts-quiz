@@ -108,7 +108,7 @@ export default function MainPage({quizDetails,questionId}){
     </PlayContext.Provider>
     <p className="info">Հարց ուսումնասիրելու համար սեղմել <Link href="/feed">Այստեղ</Link></p>
     </> : progress<=0 ? currQuiz.questions.map((val,i)=>{
-      if(i===currIdx) return <Question data={val} key={i} afterCheck={afterCheck} soundEffectOn={formData.soundEffectOn}/>
+      if(i===currIdx) return <Question data={val} key={i} afterCheck={afterCheck} soundEffectOn={formData.soundEffectOn} questionNumber={i+1}/>
     }) : <Timer time={progress} setTime={setProgress} initialTime={5} />}
   </FeedLayout>
 }
