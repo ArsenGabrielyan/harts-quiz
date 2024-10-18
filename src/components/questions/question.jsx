@@ -40,7 +40,7 @@ export default function Question({data, mode='student', afterCheck, soundEffectO
      const isCorrect = currAnswer.toLowerCase()===data.correct.toLowerCase();
      return <div className={`quiz ${data.type}`}>
      <Image src="/logos/logo.svg" alt="harts" width={100} height={50} priority className="logo"/>
-     <h2 className="question">{currAnswer==="" ? <>{questionNumber}. {data.question}</> : currTime!==0 ? "Խնդրում ենք սպասել" : isCorrect ? <><MdCheck /> Ճիշտ է</> : <><MdClose /> Սխալ է. Ճիշտ պատասխան՝ {data.correct==="true" ? "Այո" : data.correct==="false" ? "Ոչ" : data.correct}</>}</h2>
+     <h2 className="question">{currAnswer==="" ? <>{questionNumber}. {data.question}</> : currTime!==0 ? "Խնդրում ենք սպասել" : isCorrect ? "Ճիշտ է" : `Սխալ է. Ճիշտ պատասխան՝ ${data.correct==="true" ? "Այո" : data.correct==="false" ? "Ոչ" : data.correct}`}</h2>
      {data.image && <div className="img"><Image src={data.image} fill alt="quiz-image"/></div>}
      {data.description && <p className="desc">{data.description}</p>}
      {mode==='student' ? <>

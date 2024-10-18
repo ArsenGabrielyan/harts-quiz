@@ -11,14 +11,7 @@
      border-radius: 10px;
      h2{
           color: #222;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
           width: 100%;
-          svg{
-               font-size: 72px;
-          }
      }
      .question{
           font-size: clamp(16px,9vw,25px);
