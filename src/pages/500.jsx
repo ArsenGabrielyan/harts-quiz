@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function NotFound(){
      return <div className="error-container">
           <div className="error">
-               <Image src="/logos/logo.svg" alt="harts" width={100} height={50} priority className="logo"/>
+               <Image src="/logos/logo-colorful.svg" alt="harts" width={100} height={50} priority className="logo"/>
                <div className="err-info">
                     <h1>Վայ․․․ Սխալ առաջացավ</h1>
                     <h2>500</h2>

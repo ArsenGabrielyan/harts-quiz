@@ -77,20 +77,22 @@ export default NextAuth({
                return result
           },
           async jwt({token, user}){
-               if(user){
-                    const {email} = user;
-                    const profile = await User.findOne({email});
-                    token.user = {
-                         id: profile.userId,
-                         email,
-                         accountType: profile.accountType,
-                         isOauth: profile.isOauth
-                    }
-               } 
+               if(!user) return token;
+               const existingUser = await User.findOne({email: user.email})
+               if(!existingUser) return token
+               token.id = existingUser.userId;
+               token.email = existingUser.email;
+               token.accountType = existingUser.accountType;
+               token.isOauth = existingUser.isOauth;
                return token
           },
           async session({token, session}){
-               session.user = token.user;
+               if(session.user){
+                    session.user.id = token.id
+                    session.user.email = token.email;
+                    session.user.accountType = token.accountType;
+                    session.user.isOauth = token.isOauth;
+               }
                return session
           },
      }

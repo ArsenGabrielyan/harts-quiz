@@ -1,0 +1,36 @@
+.quiz{
+     background: #222;
+     color: #fafafa;
+     h2{
+          color: #fafafa;
+     }
+     .desc{
+          color: #fafafa;
+     }
+     .correct{
+          background: #70ffa2;
+          color: #222;
+          border-color: #fafafa;
+     }
+     .wrong{
+          background: #ff96a0;
+          color: #222;
+          border-color: #fafafa;
+     }
+     form{
+          input{
+               border: 2px solid #ccc;
+               color: #fafafa;
+               &:focus{
+                    border-color: #82b6ff;
+                    box-shadow: 0 0 10px #82b6ff;
+               }
+               &::placeholder{
+                    color: #ccc;
+               }
+          }
+     }
+}
+.timer.quiz h2{
+     color: #fafafa;
+}

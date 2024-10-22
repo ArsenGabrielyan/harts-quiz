@@ -2,12 +2,7 @@
      color: #fafafa !important;
      background: #222 !important;
      .main-container{
-          &::before{
-               z-index: 0;
-          }
-          *{
-               z-index: 99999;
-          }
+          background: linear-gradient(45deg,#002a4f,#0090ff);
           .avatar-editor .buttons{
                background: #222;
           }
@@ -17,4 +12,6 @@
      @import "./feed.scss";
      @import "./form.scss";
      @import "./quizEditor.scss";
+     @import "./quiz.scss";
+     @import "./error.scss";
 }

@@ -47,7 +47,8 @@ export default function MainPage({quizDetails,questionId}){
       setFormData({
         quizId: quizDetails.quizId,
         playerName: quizDetails.playerName,
-        avatar: quizDetails.avatar
+        avatar: quizDetails.avatar,
+        soundEffectOn: quizDetails.soundEffectOn
       })
       setCurrId('')
       setSubmitted(false);

@@ -13,7 +13,6 @@ import connectDB from "@/lib/tools/connectDb";
 import User from "@/model/User";
 import { getSession } from "next-auth/react";
 import ToggleSwitch from "@/components/formComponents/toggle-switch";
-import useTheme from "next-theme";
 import FeedLayout from "@/components/feed/FeedLayout";
 
 export default function Quiz({currQuiz,soundEffectOn}){
@@ -27,7 +26,6 @@ export default function Quiz({currQuiz,soundEffectOn}){
      const [placements, setPlacements] = useState([]);
      const [showPlacements, setShowPlacements] = useState(false);
      const [soundToggle, setSoundToggle] = useState(soundEffectOn);
-     const {theme} = useTheme()
      const startGame = () => {
           socket.current?.emit('start game',currQuiz, currIndex);
           setStarted(true)

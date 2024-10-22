@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Timer from "./timer";
 import { getAnswerFormat } from "@/lib/helpers";
 import Button from "../formComponents/button";
-import { MdCheck, MdClose } from "react-icons/md";
 
 export default function Question({data, mode='student', afterCheck, soundEffectOn, questionNumber}){
      const answerFormat = getAnswerFormat(data.type);
@@ -39,14 +38,14 @@ export default function Question({data, mode='student', afterCheck, soundEffectO
      },[currTime])
      const isCorrect = currAnswer.toLowerCase()===data.correct.toLowerCase();
      return <div className={`quiz ${data.type}`}>
-     <Image src="/logos/logo.svg" alt="harts" width={100} height={50} priority className="logo"/>
+     <Image src="/logos/logo-colorful.svg" alt="harts" width={100} height={50} priority className="logo"/>
      <h2 className="question">{currAnswer==="" ? <>{questionNumber}. {data.question}</> : currTime!==0 ? "Խնդրում ենք սպասել" : isCorrect ? "Ճիշտ է" : `Սխալ է. Ճիշտ պատասխան՝ ${data.correct==="true" ? "Այո" : data.correct==="false" ? "Ոչ" : data.correct}`}</h2>
      {data.image && <div className="img"><Image src={data.image} fill alt="quiz-image"/></div>}
      {data.description && <p className="desc">{data.description}</p>}
      {mode==='student' ? <>
      {data.type==='text-answer' ? <form onSubmit={handleSubmit} className={currAnswer!=="" ? "disabled-quiz" : ""}>
-          <input type="text" name="input" placeholder="Ձեր պատասխանը" value={input} onChange={e=>setInput(e.target.value)} className={(currAnswer==="" || currTime!==0) ? "" : isCorrect ? "correct" : "wrong"}/>
-          <Button type="submit" btnStyle="outline-blue">Հաստատել</Button>
+          <input type="text" name="input" placeholder="Ձեր պատասխանը" value={input} onChange={e=>setInput(e.target.value)} className={(currAnswer==="" || currTime!==0) ? "" : isCorrect ? "correct" : "wrong"} readOnly={currAnswer!==""}/>
+          <Button type="submit" btnStyle="outline-blue" disabled={currAnswer!==""}>Հաստատել</Button>
      </form> : <div className={`answers ${currAnswer!=="" ? "disabled-quiz" : ""}`}>
           {data.answers.map((answ,i)=><Button btnStyle={`outline-blue ${(currAnswer==="" || currTime!==0) ? "" : answ===data.correct ? "correct" : answ===currAnswer ? "wrong" : ''}`.trim()} key={i} onClick={()=>pickAnswer(answ)}>{data.type==='true-false' ? answerFormat[i] : `${answerFormat[i]}. ${answ}`}</Button>)}    
      </div>}

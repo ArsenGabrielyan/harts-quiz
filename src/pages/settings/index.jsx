@@ -8,7 +8,7 @@ import { fetcher, imageToBase64, getFilteredSubjects, checkIfFileExists } from "
 import axios from "axios";
 import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
 import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
@@ -20,12 +20,13 @@ import useTheme from "next-theme";
 
 export default function AppSettings({session}){
      const {data: currUser, isLoading, mutate: updateUser} = useSWR(`/api/users?email=${session?.user?.email}`,fetcher);
-     const [formData, setFormData] = useState(INITIAL_SETTINGS)
-     const [isChanging, setIsChanging] = useState(false);
+     const [formData, setFormData] = useState(INITIAL_SETTINGS);
+     const [isPending, startTransition] = useTransition();
      const [currPfp, setCurrPfp] = useState(null);
      const [isDarkMode, setIsDarkMode] = useState(false);
      const imgRef = useRef(null)
-     const {data, update} = useSession();
+     const {update} = useSession();
+     console.log(currUser)
      const {theme, setTheme} = useTheme();
      useEffect(()=>{
           if(!isLoading) setFormData(currUser)
@@ -44,55 +45,60 @@ export default function AppSettings({session}){
      const handleChange = e => setFormData({...formData, [e.target.name]: e.target.value});
      const handleChecked = e => setFormData({...formData, [e.target.name]: e.target.checked});
      const changeSettings = async(obj=formData)=>{
-          const res = await axios.put("/api/users",{formData: obj, email: currUser?.email});
-          if(res.status===200){
-               if(formData.email!==currUser?.email) await update({...data, user: {...data.user,email}})
-               await updateUser();
-               setIsChanging(false);
-               setCurrPfp(null)
-               toast.success(res.data.msg)
+          try{
+               const res = await axios.put("/api/users",{formData: obj, email: currUser?.email});
+               if(res.status===200){
+                    update();
+                    await updateUser();
+                    setCurrPfp(null)
+                    toast.success(res.data.msg)
+               }
+          } catch(err){
+               const errMsg = err.response ? err.response.data.msg : err.message;
+               toast.error(errMsg);
           }
      }
-     const handleSubmit = async e => {
+     const handleSubmit = e => {
           e.preventDefault();
           const msg = validateSettings(formData,currUser?.accountType);
           if(msg===''){
-               try{
-                    setIsChanging(true);
-                    if(typeof formData.image === 'object'){
-                         changeSettings()
-                    } else if(formData.image.startsWith("data:")){
-                         const pfpRef = ref(storage,`pfps/${currUser.userId}`);
-                         await uploadBytes(pfpRef,currPfp);
-                         const url = await getDownloadURL(pfpRef);
-                         const updated = {...formData, image: url}
-                         changeSettings(updated)
-                    } else {
-                         changeSettings()
+               startTransition(async()=>{
+                    try{
+                         if(typeof formData.image === 'object'){
+                              changeSettings()
+                         } else if(formData.image.startsWith("data:")){
+                              const pfpRef = ref(storage,`pfps/${currUser.userId}`);
+                              await uploadBytes(pfpRef,currPfp);
+                              const url = await getDownloadURL(pfpRef);
+                              const updated = {...formData, image: url}
+                              changeSettings(updated)
+                         } else {
+                              changeSettings()
+                         }
+                    } catch(err){
+                         const errMsg = err.response ? err.response.data.msg : err.message;
+                         toast.error(errMsg);
                     }
-               } catch(err){
-                    const errMsg = err.response ? err.response.data.msg : err.message;
-                    toast.error(errMsg);
-                    setIsChanging(false);
-               }
+               })
           } else toast.error(msg)
      }
-     const deleteAccount = async() => {
-          if(confirm('Ձեր հաշիվը ջնջելը մշտական է և հնարավոր չէ հետարկել: Իսկապե՞ս ուզում եք ջնջել ձեր հաշիվը:')){
-               try{
-                    const hasPfp = await checkIfFileExists(`pfps/${currUser?.userId}`);
-                    if(hasPfp){
-                         const pfpRef = ref(storage,`pfps/${currUser?.userId}`);
-                         await deleteObject(pfpRef);
+     const deleteAccount = () => {
+          startTransition(async()=>{
+               if(confirm('Ձեր հաշիվը ջնջելը մշտական է և հնարավոր չէ հետարկել: Իսկապե՞ս ուզում եք ջնջել ձեր հաշիվը:')){
+                    try{
+                         const hasPfp = await checkIfFileExists(`pfps/${currUser?.userId}`);
+                         if(hasPfp){
+                              const pfpRef = ref(storage,`pfps/${currUser?.userId}`);
+                              await deleteObject(pfpRef);
+                         }
+                         const res = await axios.delete(`/api/users?id=${currUser?.userId}`)
+                         if(res.status===200) await signOut();
+                    } catch(err){
+                         const errMsg = err.response ? err.response.data.msg : err.message;
+                         toast.error(errMsg);
                     }
-                    const res = await axios.delete(`/api/users?id=${currUser?.userId}`)
-                    if(res.status===200) await signOut();
-               } catch(err){
-                    const errMsg = err.response ? err.response.data.msg : err.message;
-                    toast.error(errMsg);
-                    setIsChanging(false)
                }
-          }
+          })
      }
      const isChanged = useMemo(()=>JSON.stringify(formData)===JSON.stringify(currUser),[currUser,formData]);
      useEffect(()=>{
@@ -103,7 +109,7 @@ export default function AppSettings({session}){
      },[theme])
      return <FeedLayout>
           <form className="form-container settings authForm" onReset={()=>setFormData(!currUser ? INITIAL_SETTINGS : currUser)} onSubmit={handleSubmit}>
-               <SettingsLayout isLoading={isLoading} currUser={currUser} cancelDisabled={isChanged} submitDisabled={isChanged || isChanging} submitTxt={isChanging ? 'Բեռնվում է․․․' : 'Պահպանել'}>
+               <SettingsLayout isLoading={isLoading} currUser={currUser} cancelDisabled={isChanged} submitDisabled={isChanged || isPending} submitTxt={isPending ? 'Բեռնվում է․․․' : 'Պահպանել'}>
                     <div className="settings">
                          <h2>Խմբագրել հաշիվը</h2>
                          <FormControl name="name" value={formData?.name} onChange={handleChange} title="Հաշվի անուն"/>
@@ -111,7 +117,7 @@ export default function AppSettings({session}){
                          {!currUser?.isOauth && <FormControl name="email" value={formData?.email} onChange={handleChange} title="Էլ․ փոստի հասցե"/>}
                          <FormControl name="organization" value={formData?.organization} onChange={handleChange} title="Կազմակերպության անուն"/>
                          <FormControl type="textarea" name="bio" value={formData?.bio} onChange={handleChange} title="Հաշվի Նկարագրություն"/>
-                         <FormSelection name="favoriteSubject" value={formData?.favoriteSubject} onChange={handleChange} title="Ձեր սիրած առարկան" disabled={!formData.showFavoriteSubject}>
+                         <FormSelection name="favoriteSubject" value={formData?.favoriteSubject} onChange={handleChange} title="Ձեր սիրած առարկան" disabled={!formData?.showFavoriteSubject}>
                               <option value="" disabled>Ընտրել Առարկան</option>
                               {getFilteredSubjects(subjectList)?.map((val,i)=><optgroup key={i} label={val.title}>
                                    {val.data.map((val,i)=><option key={i} value={val.name}>{val.title}</option>)}

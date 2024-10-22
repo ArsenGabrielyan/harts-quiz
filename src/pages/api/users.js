@@ -2,6 +2,9 @@ import connectDB from "@/lib/tools/connectDb"
 import HartsQuiz from "@/model/Quiz";
 import User from "@/model/User";
 import { hash } from "bcrypt";
+import { generateId } from "@/lib/helpers";
+import { sendEmailVerification } from "@/lib/tools/resend";
+import EmailToken from "@/model/EmailToken";
 
 export default async function handler(req,res){
      const {id} = req.query;
@@ -15,9 +18,14 @@ export default async function handler(req,res){
                res.status(updated ? 200 : 400).json({msg: updated ? 'Կարգավորումները թարմացված են' : 'Չհաջողվեց թարմացնել կարգավորումները'})
           } else {
                const {formData, email} = req.body;
-               await HartsQuiz.updateMany({teacherEmail: email},{$set: {teacherEmail: formData.email, teacher: formData.name}})
-               const updated = await User.updateOne({email},{$set: formData});
-               res.status(updated ? 200 : 400).json({msg: updated ? 'Կարգավորումները թարմացված են' : 'Չհաջողվեց թարմացնել կարգավորումները'})
+               const user = await User.findOne({email: formData.email});
+               if(user){
+                    res.status(400).json({msg: "Այս Էլ․ Փոստը օգտագործված է"})
+               } else {
+                    await HartsQuiz.updateMany({teacherEmail: email},{$set: {teacherEmail: formData.email, teacher: formData.name}})
+                    const updated = await User.updateOne({email},{$set: formData.email!==email ? {...formData, isEmailVerified: false} : formData});
+                    res.status(updated ? 200 : 400).json({msg: updated ? `Կարգավորումները թարմացված են։ ${formData.email!==email ? "Քանի որ էլ․ փոստի հասցեն թարմացված է, դուրս գալ և մուտք գործելուց օգտագործել նոր էլ․ փոստի հասցեն" : ""}`.trim() : 'Չհաջողվեց թարմացնել կարգավորումները'})
+               }
           }
      } else if(req.method==='DELETE'){
           await connectDB();

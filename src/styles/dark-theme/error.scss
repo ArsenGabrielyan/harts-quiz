@@ -1,19 +1,11 @@
 .error-container{
-     position: relative;
-     padding: 20px;
-     min-height: 100vh;
-     background: linear-gradient(45deg,#002a4f,#0090ff);
-     &,.error{
-          display: flex;
-          justify-content: center;
-          align-items: center;
-     }
      .error{
           width: 100%;
           max-width: 600px;
           flex-direction: column;
           padding: 15px;
-          background: #fafafa;
+          background: #222;
+          color: #fafafa;
           border-radius: 10px;
           text-align: center;
           .err-info{
@@ -22,7 +14,7 @@
                align-items: center;
                h2{
                     font-size: 10em;
-                    background: linear-gradient(-45deg,#002a4f,#0090ff);
+                    background: linear-gradient(-45deg,#82b6ff,#0090ff);
                     -webkit-text-fill-color: transparent;
                     background-clip: text;
                }
