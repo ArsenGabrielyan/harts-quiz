@@ -80,20 +80,12 @@ export default function Quiz({currQuiz,soundEffectOn}){
                })
                setTimeout(()=>setShowLeaderBoard(true),5000)
           })
-          currSocket.on('change pfp',(avatar,id)=>setUsers(prev=>{
-               const newArr = produce(prev,draft=>{
-                    const mentioned = draft.find(val=>val.id===id);
-                    mentioned.avatar = avatar
-               })
-               return newArr
-          }))
           currSocket.on("update players",players=>setUsers(players.map(val=>{
                const {socketId, ...rest} = val;
                return rest;
           })))
           return () => {
                currSocket.off('end round')
-               currSocket.off('change pfp');
                currSocket.off('update players');
                currSocket.disconnect()
           }

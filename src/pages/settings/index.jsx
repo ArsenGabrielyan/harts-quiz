@@ -26,7 +26,6 @@ export default function AppSettings({session}){
      const [isDarkMode, setIsDarkMode] = useState(false);
      const imgRef = useRef(null)
      const {update} = useSession();
-     console.log(currUser)
      const {theme, setTheme} = useTheme();
      useEffect(()=>{
           if(!isLoading) setFormData(currUser)

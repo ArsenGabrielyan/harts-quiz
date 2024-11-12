@@ -23,13 +23,12 @@ export default function AvatarEditor({handleLeave}){
                case "shirtStyle": style = avatar.shirtStyle === 'hoody' ? 'short' : avatar.shirtStyle === 'short' ? 'polo' : 'hoody'; break;
           }
           const newAvatar = genConfig({...avatar,[type]:style})
-          setAvatar(newAvatar)
           socket.current?.emit('change avatar',newAvatar,currId,formData.quizId)
+          setAvatar(newAvatar)
           setFormData({...formData,avatar})
      }
      const changeAvatar = e => {
           const newAvatar = genConfig({...avatar, [e.target.name]: e.target.value})
-          setAvatar(newAvatar)
           socket.current?.emit('change avatar',newAvatar,currId,formData.quizId)
           setAvatar(newAvatar)
           setFormData({...formData,avatar})
