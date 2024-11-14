@@ -6,7 +6,7 @@ import { getAllStyles } from "@/lib/helpers";
 import Button from "./formComponents/button";
 
 export default function AvatarEditor({handleLeave}){
-     const {formData, setFormData, currId, socket} = useContext(PlayContext);
+     const {formData, setFormData, socket} = useContext(PlayContext);
      const [avatar, setAvatar] = useState(formData.avatar);
      const changeAvatarStyle = (type) => {
           let style = ''
@@ -23,13 +23,13 @@ export default function AvatarEditor({handleLeave}){
                case "shirtStyle": style = avatar.shirtStyle === 'hoody' ? 'short' : avatar.shirtStyle === 'short' ? 'polo' : 'hoody'; break;
           }
           const newAvatar = genConfig({...avatar,[type]:style})
-          socket.current?.emit('change avatar',newAvatar,currId,formData.quizId)
+          socket.current?.emit('change avatar',newAvatar,formData.userId,formData.quizId)
           setAvatar(newAvatar)
           setFormData({...formData,avatar})
      }
      const changeAvatar = e => {
           const newAvatar = genConfig({...avatar, [e.target.name]: e.target.value})
-          socket.current?.emit('change avatar',newAvatar,currId,formData.quizId)
+          socket.current?.emit('change avatar',newAvatar,formData.userId,formData.quizId)
           setAvatar(newAvatar)
           setFormData({...formData,avatar})
      }

@@ -45,7 +45,7 @@ export default function AppSettings({session}){
      const handleChecked = e => setFormData({...formData, [e.target.name]: e.target.checked});
      const changeSettings = async(obj=formData)=>{
           try{
-               const res = await axios.put("/api/users",{formData: obj, email: currUser?.email});
+               const res = await axios.put("/api/users",{formData: obj, email: currUser?.email, session});
                if(res.status===200){
                     update();
                     await updateUser();

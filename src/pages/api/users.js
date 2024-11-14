@@ -17,9 +17,9 @@ export default async function handler(req,res){
                const updated = await User.updateOne({email},{$set: {password: hashed}});
                res.status(updated ? 200 : 400).json({msg: updated ? 'Կարգավորումները թարմացված են' : 'Չհաջողվեց թարմացնել կարգավորումները'})
           } else {
-               const {formData, email} = req.body;
+               const {formData, email, session} = req.body;
                const user = await User.findOne({email: formData.email});
-               if(user){
+               if(user && user.email!==session?.user?.email){
                     res.status(400).json({msg: "Այս Էլ․ Փոստը օգտագործված է"})
                } else {
                     await HartsQuiz.updateMany({teacherEmail: email},{$set: {teacherEmail: formData.email, teacher: formData.name}})

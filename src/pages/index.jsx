@@ -17,7 +17,6 @@ import FeedLayout from "@/components/feed/FeedLayout";
 export const PlayContext = createContext();
 export default function MainPage({quizDetails,questionId}){
   const [formData, setFormData] = useState(quizDetails)
-  const [currId, setCurrId] = useState('')
   const [submitted, setSubmitted] = useState(false);
   const [started, setStarted] = useState(false);
   const [progress, setProgress] = useState(5);
@@ -35,6 +34,10 @@ export default function MainPage({quizDetails,questionId}){
       setStarted(true);
       setCurrIdx(idx);
     })
+    currSocket.on("update players",(room)=>{
+      const player = room.find(val=>val.userId===formData.userId);
+      if(player) setFormData({...formData, playerName: player.name, avatar: player.avatar})
+    })
     currSocket.on('start round',idx=>setCurrIdx(idx))
     currSocket.on('end quiz',async placement=>{
       setIsEnded(true);
@@ -44,13 +47,7 @@ export default function MainPage({quizDetails,questionId}){
     })
     currSocket.on('reset game',()=>{
       setStarted(false);
-      setFormData({
-        quizId: quizDetails.quizId,
-        playerName: quizDetails.playerName,
-        avatar: quizDetails.avatar,
-        soundEffectOn: quizDetails.soundEffectOn
-      })
-      setCurrId('')
+      setFormData(quizDetails)
       setSubmitted(false);
       setProgress(5);
       setCurrQuiz(null);
@@ -59,7 +56,7 @@ export default function MainPage({quizDetails,questionId}){
       setPlace(0)
     })
     return () => {
-      socket.current.emit('leave',formData,currId);
+      socket.current.emit('leave',formData);
       currSocket.off('start quiz');
       currSocket.off('start round');
       currSocket.off('end quiz');
@@ -67,19 +64,18 @@ export default function MainPage({quizDetails,questionId}){
     }
     // eslint-disable-next-line
   },[])
-  const handleSubmit = (data,id)=>{
-    socket.current.emit('join',data,id)
-    setCurrId(id)
+  const handleSubmit = data=>{
+    socket.current.emit('join',data)
     setFormData(data)
   }
   const handleLeave = () =>{
-    socket.current.emit('leave',formData,currId);
+    socket.current.emit('leave',formData);
     setSubmitted(false);
   }
   const afterCheck = (answer,point,correct) => {
     const isCorrect = answer.toLowerCase() === correct.toLowerCase()
     setScore(prev=>isCorrect ? prev+point : prev);
-    socket.current?.emit('round end',answer,point,correct,currId,formData.quizId)
+    socket.current?.emit('round end',answer,point,correct,formData.userId,formData.quizId)
     if(formData.soundEffectOn){
       const audio = new Audio(`/sounds/${isCorrect ? 'correct' : 'wrong'}.mp3`);
       audio.play();
@@ -100,7 +96,7 @@ export default function MainPage({quizDetails,questionId}){
       <p className="place">{place} տեղ</p>
     </div> : !started ? <>
       <Image src="/logos/logo-white.svg" alt="harts" width={250} height={150} priority/>
-      <PlayContext.Provider value={{setSubmitted,formData,setFormData,currId,socket}}>
+      <PlayContext.Provider value={{setSubmitted,formData,setFormData,socket}}>
       {!submitted ? <PlayForm onSubmit={handleSubmit} hasId={!!questionId}/> : <>
         <h2>Խնդրում ենք սպասել</h2>
         <p>Դուք կարող եք փոխել տեսքը</p>

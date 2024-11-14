@@ -24,6 +24,9 @@ export default function FeedLayout({children, search, setSearch, enableCreateBtn
           </>}
      </header>
      {children}
+     <footer>
+          <p>&copy; 2024 | Բոլոր իրավունքները պաշտպանված են</p>
+     </footer>
      </main> : <div className="main-container">
           {children}
      </div>

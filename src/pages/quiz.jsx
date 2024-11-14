@@ -70,14 +70,11 @@ export default function Quiz({currQuiz,soundEffectOn}){
           socket.current = io(getSocketUrl());
           const currSocket = socket.current;
           currSocket.emit('join room', currQuiz.id)
-          currSocket.on('end round',(answer,point,correct,id)=>{
-               setUsers(prev=>{
-                    const newArr = produce(prev,draft=>{
-                         const mentioned = draft.find(val=>val.id===id);
-                         if(answer===correct) mentioned.points+=point
-                    })
-                    return newArr
-               })
+          currSocket.on('end round',players=>{
+               setUsers(players.map(val=>{
+                    const {socketId, ...rest} = val;
+                    return rest;
+               }))
                setTimeout(()=>setShowLeaderBoard(true),5000)
           })
           currSocket.on("update players",players=>setUsers(players.map(val=>{

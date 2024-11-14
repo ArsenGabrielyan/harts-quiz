@@ -6,8 +6,20 @@
      min-height: calc(100vh - 85px);
      @import "./parts/header.scss";
      @import "./parts/form.scss";
+     footer{
+          text-align: center;
+          background: #fafafa;
+          color: #222;
+          padding: 20px;
+          margin-top: 15px;
+          border-radius: 12px;
+     }
      &.no-auth{
           padding: 0;
+          footer{
+               margin: 0;
+               border-radius: 0;
+          }
      }
      .txt{
           text-align: center;
