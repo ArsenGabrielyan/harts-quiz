@@ -8,6 +8,7 @@ import Button, { BtnLink } from "../formComponents/button";
 export default function FeedLayout({children, search, setSearch, enableCreateBtn=true, isAuth=true,type="feed"}){
      const {data, status} = useSession();
      const [openedSearch, setOpenedSearch] = useState(false);
+     const date = new Date();
      return type==="feed" ? <main className={`feed ${!isAuth ? 'no-auth' : ''}`.trim()}>
      <header>
           <div className="logoSection">
@@ -25,7 +26,7 @@ export default function FeedLayout({children, search, setSearch, enableCreateBtn
      </header>
      {children}
      <footer>
-          <p>&copy; 2024 | Բոլոր իրավունքները պաշտպանված են</p>
+          <p>&copy; {date.getFullYear()} | Բոլոր իրավունքները պաշտպանված են</p>
      </footer>
      </main> : <div className="main-container">
           {children}
