@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
+import ThemeDataProvider from "@/context/theme-data-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Հարց (Բետա 2)",
@@ -27,7 +30,12 @@ export default function RootLayout({
   return (
     <html lang="hy" suppressHydrationWarning>
       <body>
-        {children}
+        <ThemeProvider>
+          <ThemeDataProvider>
+            <Toaster/>
+            {children}
+          </ThemeDataProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

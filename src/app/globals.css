@@ -71,12 +71,21 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    @apply relative border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
+  ::-webkit-scrollbar{
+    @apply w-3 bg-background
+  }
+  ::-webkit-scrollbar-thumb{
+    @apply bg-gradient-to-b from-transparent to-primary rounded-xl
+  }
   ::selection{
     @apply bg-primary text-primary-foreground
+  }
+  .primary-main-bg{
+    @apply bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary via-accent to-background
   }
 }

@@ -1,0 +1,93 @@
+import { toast } from "sonner";
+import { subjectList } from "./constants";
+import { AccountType, IQuestion, QuestionType } from "./types/other-types";
+
+export const getSocketUrl = () => process.env.NODE_ENV==="development" ? "http://localhost:4000" : "https://harts-quiz-backend.onrender.com"
+export function getAnswerFormat(type: QuestionType){
+     const result: Record<QuestionType, string[] | string> = {
+          "pick-one": ["Ա","Բ","Գ","Դ"],
+          "true-false": ["Այո", "Ոչ"],
+          "text-answer": ""
+     }
+     return result[type] || null
+}
+export function getAnswerType(type: QuestionType){
+     const result: Record<QuestionType, string> = {
+          "pick-one": "Նշել Պատասխանը",
+          "true-false": "Այո կամ ոչ",
+          "text-answer": "Գրավոր հարց"
+     }
+     return result[type];
+}
+export function accTypeInArmenian(accountType: AccountType){
+     const result: Record<AccountType, string> = {
+          teacher: "Ուսուցիչ",
+          student: "Աշակերտ",
+          personal: "Անձնական",
+     }
+     return result[accountType]
+}
+export function getQuizDataFromType(type: QuestionType){
+     const result: Record<QuestionType,IQuestion> = {
+          "pick-one": {
+               question: '',
+               answers: ['','','',''],
+               correct: null,
+               image: null,
+               timer: 0,
+               points: 0,
+               type,
+               description: ""
+          },
+          "true-false": {
+               question: '',
+               answers: ['true','false'],
+               correct: '',
+               image: null,
+               timer: 0,
+               points: 0,
+               type,
+               description: ""
+          },
+          "text-answer": {
+               question: '',
+               correct: '',
+               image: null,
+               timer: 0,
+               points: 0,
+               type,
+               description: ""
+          }
+     }
+     return result[type];
+}
+export const formatNumberSuffix = (n: number) => n===1 ? `${n}-ին` : `${n}-րդ`;
+export async function shareQuiz(url=location.href){
+     const shareData = {
+          title: 'Հարց',
+          text: "Եկեք խաղացեք այս հարցաշարը",
+          url
+     }
+     if(navigator.canShare(shareData)) await navigator.share(shareData)
+     else {
+          navigator.clipboard.writeText(location.href);
+          toast.success("Հղումը պատճենված է")
+     }
+}
+export function getSubjectInArmenian(subject: string): string{
+     const currSubject = subjectList.find(val=>val.name===subject);
+     return currSubject.title;
+}
+export const absoluteUrl = (path: string) => `${process.env.NEXT_PUBLIC_BASE_URL}${path}`
+/*
+export const getFilteredSubjects = list => list.length===0 ? [] : Object.values(list.reduce((obj,val)=>{
+     const first = val.type;
+     !obj[first] ? obj[first] = {title: first, data: [val]} : obj[first].data.push(val)
+     return obj;
+},{}))
+export const divideQuestionsBySubject = questions => questions.length===0 ? [] : Object.values(questions.reduce((obj,val)=>{
+     const first = val.subject;
+     !obj[first] ? obj[first] = {title: subjectList.find(v=>v.name===first).title, data: [val]} : obj[first].data.push(val)
+     return obj;
+},{}))
+*/
