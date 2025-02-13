@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat.otf') format('opentype');
+  font-display: swap;
 }
 
+body {
+  font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, Helvetica, sans-serif;
+}
 
 @layer base {
   :root {
