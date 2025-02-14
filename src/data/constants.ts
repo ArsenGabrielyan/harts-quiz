@@ -1,4 +1,6 @@
-import { IQuestion, IQuiz, ISelectedQuiz, ISubject } from "@/data/types/other-types";
+import { IAccountType, IQuestion, IQuiz, ISelectedQuiz, ISubject } from "@/data/types/other-types";
+import { BookOpenText, User } from "lucide-react";
+import { FaChalkboardTeacher } from "react-icons/fa";
 
 export const subjectList: ISubject[] = [
      {name: "mayreni", title: "Մայրենի", type: "Հումանիտար"},
@@ -42,6 +44,11 @@ export const INITIAL_QUIZEDITOR_DATA: IQuiz = {
      visibility: '',
      subject: ''
 }
+export const accountTypesEnum: IAccountType[] = [
+     {type: "student", name: "Ուսանող", Icon: BookOpenText},
+     {type: "teacher", name: "Ուսուցիչ", Icon: FaChalkboardTeacher},
+     {type: "personal", name: "Անձնական", Icon: User}
+]
 export const INITIAL_SELECTED_QUIZ: ISelectedQuiz = {
      question: {} as IQuestion,
      index: null

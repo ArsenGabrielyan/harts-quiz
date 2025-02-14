@@ -22,6 +22,7 @@ export interface UserDocument extends MongooseDocument{
      isTwoFactorEnabled: boolean,
      soundEffectOn: boolean,
      showFavoriteSubject: boolean,
+     isOauth: boolean
      bio: string,
      favoriteSubject: string,
      favorites: string[]
@@ -35,4 +36,7 @@ export interface QuizDocument extends MongooseDocument{
      visibility: QuizVisibility,
      subject: string,
      createdAt: Date
+}
+export interface TwoFactorConfirmationDocument extends MongooseDocument{
+     userId: mongoose.Types.ObjectId
 }

@@ -4,8 +4,7 @@ import { Button } from "./ui/button";
 import ThemeSettings from "./themes/theme-changer";
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
-import { Search, X } from "lucide-react";
-
+import { PlusCircle, Search, X } from "lucide-react";
 import {
      Dialog,
      DialogContent,
@@ -13,8 +12,10 @@ import {
      DialogTitle,
      DialogTrigger,
 } from "@/components/ui/dialog"
-import { subjectList } from "@/data/constants";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "./ui/carousel";
+import { LoginButton } from "./auth/login-button";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { UserButton } from "./auth/user-button";
+import Link from "next/link";
 
 interface PageLayoutProps{
      children: React.ReactNode,
@@ -23,10 +24,12 @@ interface PageLayoutProps{
      searchBox?: {
           search: string,
           setSearch: React.Dispatch<React.SetStateAction<string>>,
-     }
+     },
+     removeCreateButton?: boolean
 }
-export default function PageLayout({children,themeSwitcher=false,mainClassName, searchBox}: PageLayoutProps){
+export default function PageLayout({children,themeSwitcher=false,mainClassName, searchBox, removeCreateButton=false}: PageLayoutProps){
      const year = new Date().getFullYear();
+     const user = useCurrentUser();
      return (
           <>
                <header className="flex justify-between items-center fixed z-20 w-full top-0 left-0 p-4 bg-background text-foreground shadow gap-3 h-[80px]">
@@ -42,7 +45,7 @@ export default function PageLayout({children,themeSwitcher=false,mainClassName, 
                                              </DialogHeader>
                                              <div className="flex-1 flex gap-x-2 w-full">
                                                   <Input value={searchBox.search} placeholder="Որոնել․․․" onChange={e=>searchBox.setSearch(e.target.value)}/>
-                                                  {searchBox.search!=="" && <Button size="icon" variant="outline" onClick={()=>searchBox.setSearch("")}><X/></Button>}
+                                                  {searchBox.search!=="" && <Button size="icon" title="Մաքրել որոնումը" variant="outline" onClick={()=>searchBox.setSearch("")}><X/></Button>}
                                              </div>
                                         </DialogContent>
                                    </Dialog>
@@ -52,14 +55,27 @@ export default function PageLayout({children,themeSwitcher=false,mainClassName, 
                     {searchBox && (
                          <div className="flex-1 hidden sm:flex gap-x-2 w-full max-w-sm">
                               <Input value={searchBox.search} placeholder="Որոնել․․․" onChange={e=>searchBox.setSearch(e.target.value)}/>
-                              {searchBox.search!=="" && <Button size="icon" variant="outline" onClick={()=>searchBox.setSearch("")}><X/></Button>}
+                              {searchBox.search!=="" && <Button size="icon" title="Մաքրել որոնումը" variant="outline" onClick={()=>searchBox.setSearch("")}><X/></Button>}
                          </div>
                     )}
                     <div className="flex gap-x-2">
-                         <Button>Մուտք</Button>
+                         {!user ? (
+                              <LoginButton>
+                                   <Button>Մուտք</Button>
+                              </LoginButton>
+                         ) : (
+                              <>
+                                   {(!removeCreateButton && user?.accountType !== "student") && (
+                                        <Button size="icon" variant="outline" asChild title="Ստեղծել հարցաշար">
+                                             <Link href={"/quiz-editor"}><PlusCircle/></Link>
+                                        </Button>
+                                   )}
+                                   <UserButton/>
+                              </>
+                         )}
                     </div>
                </header>
-               <main className={cn("primary-main-bg min-h-screen mt-[80px] p-3",mainClassName)}>
+               <main className={cn("primary-main-bg min-h-screen mt-[80px] p-3 relative",mainClassName)}>
                     {children}
                </main>
                <footer className="text-center bg-background text-foreground shadow p-5 flex justify-between items-center flex-col md:flex-row gap-2">

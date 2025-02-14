@@ -1,7 +1,25 @@
 import { toast } from "sonner";
 import { subjectList } from "./constants";
-import { AccountType, IQuestion, QuestionType } from "./types/other-types";
+import { AccountType, IQuestion, IQuiz, QuestionType } from "./types/other-types";
+import { ReadonlyURLSearchParams } from "next/navigation";
+import { QuizDocument } from "./types/mongoose-document-types";
 
+export function getOAuthNotLinkedError(searchParams: ReadonlyURLSearchParams){
+     const error = searchParams.get("error");
+     if(error){
+          return error.includes("OAuthAccountNotLinked") ? "Այս էլ․ փոստով արդեն կա հաշիվ, բայց այլ մուտքի մեթոդով։" : ""
+     }
+     return ""
+}
+export function generateUsername(prefix="user",length=8){
+     const chars = "abcdefghijklmnopqrstuvwxyz0123456789-";
+     let str = prefix+"-";
+     for(let i=0;i<length;i++){
+          const randI = Math.floor(Math.random()*chars.length);
+          str+=chars[randI];
+     }
+     return str
+}
 export const getSocketUrl = () => process.env.NODE_ENV==="development" ? "http://localhost:4000" : "https://harts-quiz-backend.onrender.com"
 export function getAnswerFormat(type: QuestionType){
      const result: Record<QuestionType, string[] | string> = {
@@ -76,18 +94,23 @@ export async function shareQuiz(url=location.href){
 }
 export function getSubjectInArmenian(subject: string): string{
      const currSubject = subjectList.find(val=>val.name===subject);
-     return currSubject.title;
+     return currSubject ? currSubject?.title : "";
 }
 export const absoluteUrl = (path: string) => `${process.env.NEXT_PUBLIC_BASE_URL}${path}`
+export const divideQuestionsBySubject = (questions: QuizDocument[]) => questions.length===0 ? [] : Object.values(questions.reduce((obj,val)=>{
+     const first = val.subject;
+     console.log(first, obj);
+     if(!obj[first]){
+          obj[first] = {title: subjectList.find(v=>v.name===first)?.title as string, data: [val]}
+     } else {
+          obj[first].data.push(val)
+     }
+     return obj;
+},{} as Record<string, { title: string, data: QuizDocument[] }>))
 /*
 export const getFilteredSubjects = list => list.length===0 ? [] : Object.values(list.reduce((obj,val)=>{
      const first = val.type;
      !obj[first] ? obj[first] = {title: first, data: [val]} : obj[first].data.push(val)
-     return obj;
-},{}))
-export const divideQuestionsBySubject = questions => questions.length===0 ? [] : Object.values(questions.reduce((obj,val)=>{
-     const first = val.subject;
-     !obj[first] ? obj[first] = {title: subjectList.find(v=>v.name===first).title, data: [val]} : obj[first].data.push(val)
      return obj;
 },{}))
 */

@@ -25,6 +25,7 @@ const userSchema = new Schema<UserDocument>({
           type: Boolean,
           default: false
      },
+     isOauth: Boolean,
      soundEffectOn: {
           type: Boolean,
           default: false,
@@ -36,6 +37,7 @@ const userSchema = new Schema<UserDocument>({
      bio: String,
      favorites: [String],
      favoriteSubject: String,
-},{versionKey: "_userKey",collection: 'user-list'});
-const User: Model<UserDocument> = mongoose.models.User || model("User",userSchema);
+});
+
+const User: Model<UserDocument> = mongoose.models?.User || model("User",userSchema);
 export default User

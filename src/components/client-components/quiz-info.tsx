@@ -5,11 +5,17 @@ import { Button } from "../ui/button";
 import { CopyPlus, Edit, Heart, Printer, Share, Trash } from "lucide-react";
 import QuestionCard from "../cards/question-card";
 import Link from "next/link";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface QuizInfoProps{
      quiz: QuizDocument | null
 }
 export default function QuizInfo({quiz}: QuizInfoProps){
+     const user = useCurrentUser();
+     const isCurrUser = user?.email===quiz?.teacherEmail
+     const isTeacher = user?.accountType==="teacher";
+     const isStudent = user?.accountType==="student";
+     const isPersonal = user?.accountType==="personal"
      return (
           <PageLayout>
                {quiz && (
@@ -18,40 +24,50 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                               <div className="space-y-2 text-center md:text-left">
                                    <h1 className="text-2xl font-semibold">{quiz.name}</h1>
                                    <p className="text-muted-foreground">{quiz.teacher}</p>
-                                   <div className="flex items-center gap-3 flex-wrap justify-center">
-                                        <Button variant="ghost" size="icon">
+                                   <div className="flex items-center gap-3 flex-wrap justify-center md:justify-start">
+                                        <Button variant="ghost" size="icon" title="Կիսվել">
                                              <Share/>
                                         </Button>
-                                        <Button variant="ghost" size="icon">
+                                        <Button variant="ghost" size="icon" title="Տպել">
                                              <Printer/>
                                         </Button>
-                                        <Button variant="ghost" size="icon">
-                                             <Heart/>
-                                        </Button>
-                                        <Button variant="ghost" size="icon">
-                                             <Edit/>
-                                        </Button>
-                                        <Button variant="ghost" size="icon">
-                                             <CopyPlus/>
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="hover:text-destructive">
-                                             <Trash/>
-                                        </Button>
+                                        {user && (
+                                             <Button variant="ghost" size="icon" title="Հավանել">
+                                                  <Heart/>
+                                             </Button>
+                                        )}
+                                        {isCurrUser && (
+                                             <>
+                                                  <Button variant="ghost" size="icon" title="Խմբագրել">
+                                                       <Edit/>
+                                                  </Button>
+                                                  <Button variant="ghost" size="icon" title="Կրկնօրինակել">
+                                                       <CopyPlus/>
+                                                  </Button>
+                                                  <Button variant="ghost" size="icon" className="hover:text-destructive" title="Ջնջել">
+                                                       <Trash/>
+                                                  </Button>
+                                             </>
+                                        )}
                                    </div>
                               </div>
                               <div className="flex flex-wrap items-center justify-center gap-2">
-                                   <Button className="flex-1" asChild>
-                                        <Link href={`/play?id=${quiz._id}`}>Խաղալ</Link>
-                                   </Button>
-                                   <Button variant="outline" className="flex-1" asChild>
-                                        <Link href={`/host?id=${quiz._id}`}>Կազմակերպել</Link>
-                                   </Button>
+                                   {(isStudent || isPersonal) && (
+                                        <Button className="flex-1" asChild>
+                                             <Link href={`/play?id=${quiz._id}`}>Խաղալ</Link>
+                                        </Button>
+                                   )}
+                                   {(isTeacher || isPersonal) && (
+                                        <Button className="flex-1" asChild>
+                                             <Link href={`/host?id=${quiz._id}`}>Կազմակերպել</Link>
+                                        </Button>
+                                   )}
                                    <Button variant="outline" className="flex-1" asChild>
                                         <Link href={`/play/${quiz._id}`}>Խաղալ մենակ</Link>
                                    </Button>
                               </div>
                          </div>
-                         <h1 className="text-3xl md:text-4xl text-center my-3">Հարցեր</h1>
+                         <h2 className="text-3xl md:text-4xl text-center my-3">Հարցեր</h2>
                          <div className="flex flex-col gap-y-3">
                               {quiz.questions.map((question,i)=><QuestionCard key={i} question={question} id={i+1}/>)}
                          </div>

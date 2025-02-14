@@ -1,4 +1,4 @@
-import User from "@/model/user"
+import User from "@/models/user"
 
 export const getUserById = async (id: string) => {
      try{
@@ -15,5 +15,14 @@ export const getUserByEmail = async (email: string) => {
           return user;
      } catch{
           return null
+     }
+}
+
+export const getUserByUsername = async (username: string) => {
+     try{
+          const user = await User.findOne({username});
+          return user;
+     } catch {
+          return null;
      }
 }

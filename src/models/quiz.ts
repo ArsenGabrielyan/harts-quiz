@@ -1,5 +1,5 @@
 import { QuizDocument } from "@/data/types/mongoose-document-types";
-import { Model, Schema, model, models } from "mongoose"
+import mongoose, {Model, Schema, model} from "mongoose";
 
 const quizSchema = new Schema<QuizDocument>({
      name: String,
@@ -13,6 +13,6 @@ const quizSchema = new Schema<QuizDocument>({
           type: Date,
           default: new Date()
      }
-},{collection: 'quiz-list',versionKey: "_quizKey"})
-const HartsQuiz: Model<QuizDocument> = models.HartsQuiz || model('HartsQuiz',quizSchema);
+},{collection: 'quiz-list'})
+const HartsQuiz: Model<QuizDocument> = mongoose.models?.HartsQuiz || model('HartsQuiz',quizSchema);
 export default HartsQuiz

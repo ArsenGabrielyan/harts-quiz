@@ -1,4 +1,4 @@
-import HartsQuiz from "@/model/quiz"
+import HartsQuiz from "@/models/quiz"
 import { QuizVisibility } from "../types/other-types";
 
 export async function getQuizById(id: string){

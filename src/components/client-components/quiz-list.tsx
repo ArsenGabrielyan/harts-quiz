@@ -23,14 +23,14 @@ export default function QuizList({quizzes}:QuizListProps){
                <div className="bg-background shadow rounded-xl p-5 px-16 flex justify-start items-center gap-3 flex-wrap w-full max-w-8xl">
                     <Carousel className="w-full">
                          <CarouselContent>
-                         <CarouselItem className="basis-1/8">
-                              <Button variant={selectedSubject==="" ? "default" : "outline"} onClick={()=>setSelectedSubject("")}>Ցույց տալ բոլորը</Button>
-                         </CarouselItem>
-                         {subjectList.map((subject,i)=>(
-                              <CarouselItem className="basis-1/8" key={i}>
-                                   <Button variant={subject.name===selectedSubject ? "default" : "outline"} onClick={()=>setSelectedSubject(subject.name)}>{subject.title}</Button>
+                              <CarouselItem className="basis-1/8">
+                                   <Button variant={selectedSubject==="" ? "default" : "outline"} onClick={()=>setSelectedSubject("")}>Ցույց տալ բոլորը</Button>
                               </CarouselItem>
-                         ))}
+                              {subjectList.map((subject,i)=>(
+                                   <CarouselItem className="basis-1/8" key={i}>
+                                        <Button variant={subject.name===selectedSubject ? "default" : "outline"} onClick={()=>setSelectedSubject(subject.name)}>{subject.title}</Button>
+                                   </CarouselItem>
+                              ))}
                          </CarouselContent>
                          <CarouselPrevious/>
                          <CarouselNext/>

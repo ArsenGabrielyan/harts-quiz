@@ -13,7 +13,7 @@ export default function QuestionCard({question,id}:QuestionCardProps){
                     <CardTitle>{id} - {question.question}</CardTitle>
                     <CardDescription>{getAnswerType(question.type)}</CardDescription>
                </CardHeader>
-               {question.answers && (
+               {(question.answers && question.type==="pick-one") && (
                     <CardContent>
                          <ul className="space-y-2">
                               {question.answers.map((answer,i)=>(

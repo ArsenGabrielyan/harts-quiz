@@ -3,6 +3,8 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import ThemeDataProvider from "@/context/theme-data-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
   title: "Հարց (Բետա 2)",
@@ -22,21 +24,24 @@ export const viewport: Viewport = {
   themeColor: "#002a4f"
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth()
   return (
-    <html lang="hy" suppressHydrationWarning>
-      <body>
-        <ThemeProvider>
-          <ThemeDataProvider>
-            <Toaster/>
-            {children}
-          </ThemeDataProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <SessionProvider session={session}>
+      <html lang="hy" suppressHydrationWarning>
+        <body>
+          <ThemeProvider>
+            <ThemeDataProvider>
+              <Toaster/>
+              {children}
+            </ThemeDataProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </SessionProvider>
   );
 }

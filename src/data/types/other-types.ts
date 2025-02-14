@@ -1,3 +1,7 @@
+import { LucideProps } from "lucide-react";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { IconType } from "react-icons/lib";
+
 // Themes
 export type ThemeColors = "Zinc" | "Rose" | "Blue" | "Green" | "Orange";
 export interface ThemeColorStateParams{
@@ -40,3 +44,8 @@ export interface ISubject{
 
 // Other
 export type AccountType = "student" | "teacher" | "personal"
+export interface IAccountType{
+     type: AccountType,
+     name: string,
+     Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
+}
