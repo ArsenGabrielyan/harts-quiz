@@ -1,15 +1,11 @@
 "use client"
 import { accTypeInArmenian, divideQuestionsBySubject } from "@/data/helpers";
-import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PageLayout from "../page-layout";
 import { ExtendedUser } from "@/next-auth";
 import { QuizDocument } from "@/data/types/mongoose-document-types";
-import QuestionCard from "../cards/question-card";
 import QuizCard from "../cards/quiz-card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 interface MainPageProps {
      user: ExtendedUser | null,
@@ -34,12 +30,6 @@ export default function MainPage({user, questions}: MainPageProps) {
                ) : (
                     <>
                          <div className="bg-background shadow rounded-xl p-5 flex justify-center items-center flex-col sm:flex-row gap-4">
-                              <Avatar className="w-24 h-24">
-                                   <AvatarImage src={user.image || ""} className="rounded-full" />
-                                   <AvatarFallback className="bg-primary">
-                                        <User className="w-14 h-14 text-primary-foreground" />
-                                   </AvatarFallback>
-                              </Avatar>
                               <div className="flex flex-col justify-center items-center text-center sm:items-start sm:text-left gap-1">
                                    <h1 className="text-3xl font-semibold">Բարև {user.name?.split(' ')[0]}!</h1>
                                    <p className="text-muted-foreground">@{user.username}</p>

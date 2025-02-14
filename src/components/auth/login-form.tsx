@@ -35,7 +35,8 @@ export default function LoginForm(){
           resolver: zodResolver(LoginSchema),
           defaultValues: {
                email: "",
-               password: ""
+               password: "",
+               code: "",
           }
      });
      const handleSubmit = (values: z.infer<typeof LoginSchema>) => {

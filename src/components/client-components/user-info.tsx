@@ -3,7 +3,7 @@ import { User } from "lucide-react";
 import PageLayout from "../page-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { QuizDocument, UserDocument } from "@/data/types/mongoose-document-types";
-import {absoluteUrl, accTypeInArmenian, getSubjectInArmenian} from "@/data/helpers"
+import {accTypeInArmenian, getSubjectInArmenian} from "@/data/helpers"
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown"
@@ -57,9 +57,11 @@ export default function UserInfo({user, questions}: UserInfoProps){
                                         <Button variant="outline" className="flex-1" asChild>
                                              <Link href="/settings">Կարգավորումներ</Link>
                                         </Button>
-                                        <Button variant="outline" className="flex-1" asChild>
-                                             <Link href="/settings">Բոլոր հարցաշարերը</Link>
-                                        </Button>
+                                        {currUser.accountType!=="student" && (
+                                             <Button variant="outline" className="flex-1" asChild>
+                                                  <Link href="/settings">Բոլոր հարցաշարերը</Link>
+                                             </Button>
+                                        )}
                                    </>
                               )}
                          </div>
@@ -74,7 +76,7 @@ export default function UserInfo({user, questions}: UserInfoProps){
                               </div>
                          </>
                     )}
-                    {questions && (
+                    {currUser?.accountType!=="student" && questions && (
                          <>
                               <h2 className="text-3xl md:text-4xl text-center my-3">Հարցաշարեր</h2>
                               <div className="flex flex-wrap justify-center items-center gap-4">
