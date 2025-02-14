@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { subjectList } from "./constants";
-import { AccountType, IQuestion, IQuiz, QuestionType } from "./types/other-types";
+import { AccountType, IQuestion, ISubject, QuestionType } from "./types/other-types";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { QuizDocument } from "./types/mongoose-document-types";
 
@@ -51,7 +51,6 @@ export function getQuizDataFromType(type: QuestionType){
                question: '',
                answers: ['','','',''],
                correct: null,
-               image: null,
                timer: 0,
                points: 0,
                type,
@@ -61,7 +60,6 @@ export function getQuizDataFromType(type: QuestionType){
                question: '',
                answers: ['true','false'],
                correct: '',
-               image: null,
                timer: 0,
                points: 0,
                type,
@@ -70,7 +68,6 @@ export function getQuizDataFromType(type: QuestionType){
           "text-answer": {
                question: '',
                correct: '',
-               image: null,
                timer: 0,
                points: 0,
                type,
@@ -107,10 +104,8 @@ export const divideQuestionsBySubject = (questions: QuizDocument[]) => questions
      }
      return obj;
 },{} as Record<string, { title: string, data: QuizDocument[] }>))
-/*
-export const getFilteredSubjects = list => list.length===0 ? [] : Object.values(list.reduce((obj,val)=>{
+export const getFilteredSubjects = (list: ISubject[]=subjectList) => list.length===0 ? [] : Object.values(list.reduce((obj,val)=>{
      const first = val.type;
      !obj[first] ? obj[first] = {title: first, data: [val]} : obj[first].data.push(val)
      return obj;
-},{}))
-*/
+},{} as Record<string, { title: string, data: ISubject[] }>))

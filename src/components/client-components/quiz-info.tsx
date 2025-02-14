@@ -6,6 +6,7 @@ import { CopyPlus, Edit, Heart, Printer, Share, Trash } from "lucide-react";
 import QuestionCard from "../cards/question-card";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { shareQuiz } from "@/data/helpers";
 
 interface QuizInfoProps{
      quiz: QuizDocument | null
@@ -25,26 +26,27 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                                    <h1 className="text-2xl font-semibold">{quiz.name}</h1>
                                    <p className="text-muted-foreground">{quiz.teacher}</p>
                                    <div className="flex items-center gap-3 flex-wrap justify-center md:justify-start">
-                                        <Button variant="ghost" size="icon" title="Կիսվել">
+                                        {/* TODO: Add More Options To Click On Buttons */}
+                                        <Button variant="ghost" size="icon" title="Կիսվել" onClick={()=>shareQuiz()}>
                                              <Share/>
                                         </Button>
-                                        <Button variant="ghost" size="icon" title="Տպել">
+                                        <Button variant="ghost" size="icon" title="Տպել" onClick={()=>{}}>
                                              <Printer/>
                                         </Button>
                                         {user && (
-                                             <Button variant="ghost" size="icon" title="Հավանել">
+                                             <Button variant="ghost" size="icon" title="Հավանել" onClick={()=>{}}>
                                                   <Heart/>
                                              </Button>
                                         )}
                                         {isCurrUser && (
                                              <>
-                                                  <Button variant="ghost" size="icon" title="Խմբագրել">
-                                                       <Edit/>
+                                                  <Button variant="ghost" size="icon" title="Խմբագրել" asChild>
+                                                       <Link href={`/quiz-editor?id=${quiz._id}`}><Edit/></Link>
                                                   </Button>
-                                                  <Button variant="ghost" size="icon" title="Կրկնօրինակել">
+                                                  <Button variant="ghost" size="icon" title="Կրկնօրինակել" onClick={()=>{}}>
                                                        <CopyPlus/>
                                                   </Button>
-                                                  <Button variant="ghost" size="icon" className="hover:text-destructive" title="Ջնջել">
+                                                  <Button variant="ghost" size="icon" className="hover:text-destructive" title="Ջնջել" onClick={()=>{}}>
                                                        <Trash/>
                                                   </Button>
                                              </>

@@ -1,6 +1,8 @@
-import { IAccountType, IQuestion, IQuiz, ISelectedQuiz, ISubject } from "@/data/types/other-types";
-import { BookOpenText, User } from "lucide-react";
+import { AccountType, IQuestion, ISelectData, ISelectedQuiz, ISubject, QuestionType, QuizVisibility } from "@/data/types/other-types";
+import { BookOpenText, Globe, Link, Lock, User } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
+import { CheckSquare, TextCursorInput } from "lucide-react"
+import { IoRadioButtonOn } from "react-icons/io5"
 
 export const subjectList: ISubject[] = [
      {name: "mayreni", title: "Մայրենի", type: "Հումանիտար"},
@@ -37,17 +39,20 @@ export const subjectList: ISubject[] = [
      {name: "reading", title: "Ինքնուրույն ընթերցանություն", type: "Հումանիտար"},
      {name: "others", title: "Ուրիշներ",type: "Ուրիշ Առարկաներ"},
 ]
-export const INITIAL_QUIZEDITOR_DATA: IQuiz = {
-     name: '',
-     description: "",
-     questions: [],
-     visibility: '',
-     subject: ''
-}
-export const accountTypesEnum: IAccountType[] = [
+export const accountTypesEnum: ISelectData<AccountType>[] = [
      {type: "student", name: "Ուսանող", Icon: BookOpenText},
      {type: "teacher", name: "Ուսուցիչ", Icon: FaChalkboardTeacher},
      {type: "personal", name: "Անձնական", Icon: User}
+]
+export const quizVisibilities: ISelectData<QuizVisibility>[] = [
+     {type: "private", name: "Անձնական", Icon: Lock},
+     {type: "public", name: "Ընդհանուր", Icon: Globe},
+     {type: "unlisted", name: "Հղումով հասանելի", Icon: Link}
+]
+export const quizTypes: ISelectData<QuestionType>[] = [
+     {type: 'pick-one', name: "Նշելով", Icon: CheckSquare},
+     {type: "true-false", name: "Այո և Ոչ", Icon: IoRadioButtonOn},
+     {type: "text-answer", name: "Գրավոր", Icon: TextCursorInput}
 ]
 export const INITIAL_SELECTED_QUIZ: ISelectedQuiz = {
      question: {} as IQuestion,

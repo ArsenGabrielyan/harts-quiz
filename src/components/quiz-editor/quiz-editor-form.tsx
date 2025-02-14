@@ -1,0 +1,231 @@
+"use client"
+import * as z from "zod";
+import { QuizEditorSchema } from "@/schemas";
+import { useFieldArray, useForm } from "react-hook-form"
+import {zodResolver} from "@hookform/resolvers/zod"
+import {
+     Form,
+     FormControl,
+     FormField,
+     FormItem,
+     FormLabel,
+     FormMessage
+} from "@/components/ui/form"
+import {
+     Select,
+     SelectTrigger,
+     SelectValue,
+     SelectItem,
+     SelectContent,
+     SelectGroup,
+     SelectLabel
+} from "@/components/ui/select"
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-success";
+import { CheckSquare, TextCursorInput } from "lucide-react"
+import { IoRadioButtonOn } from "react-icons/io5"
+import PageLayout from "../page-layout"
+import { useState, useTransition } from "react";
+import { Textarea } from "../ui/textarea";
+import { getFilteredSubjects } from "@/data/helpers";
+import { quizVisibilities } from "@/data/constants";
+import { QuestionType } from "@/data/types/other-types";
+import QuizEditorQuestionCard from "./quiz-editor-question-form";
+import { addQuiz } from "@/actions/quiz/addQuiz";
+
+export default function QuizEditorForm(){
+     // TODO: Add Feature To Edit The Quiz
+     const [error, setError] = useState<string | undefined>("");
+     const [success, setSuccess] = useState<string | undefined>("");
+     const [isPending, startTransition] = useTransition();
+     const form = useForm<z.infer<typeof QuizEditorSchema>>({
+          resolver: zodResolver(QuizEditorSchema),
+          defaultValues: {
+               name: "",
+               description: "",
+               visibility: "private",
+               subject: "others",
+               questions: []
+          },
+     })
+     const {fields,append,remove,move,insert} = useFieldArray<z.infer<typeof QuizEditorSchema>>({
+          control: form.control,
+          name: "questions"
+     })
+     const handleSubmit = (values: z.infer<typeof QuizEditorSchema>) => {
+          console.log("hi")
+          setError("");
+          setSuccess("");
+          startTransition(()=>{
+               addQuiz(values)
+               .then(data=>{
+                    if(data.error) setError(data.error);
+                    if(data.success) {
+                         setSuccess(data.success);
+                         form.reset();
+                    }
+               })
+          })
+     }
+     const addQuestion = (questionType: QuestionType) => {
+          append({
+               question: "",
+               answers: questionType==="text-answer" ? [] : questionType==="true-false" ? ["true", "false"] : ["","","",""],
+               correct: "",
+               timer: 0,
+               type: questionType,
+               points: 0,
+               description: ""
+          })
+     }
+     const duplicateQuestion = (index: number) => {
+          const {question,answers,correct,timer,type,points,description} = fields[index]
+          insert(index+1,{
+               question,
+               answers,
+               correct,
+               timer,
+               type,
+               points,
+               description,
+          })
+     }
+     const moveQuestion = (from: number,to: number) => {
+          move(from,to)
+     }
+     const removeQuestion = (index: number) => {
+          remove(index)
+     }
+     const visibility = form.watch("visibility")
+     return <PageLayout removeCreateButton>
+          <div className="p-4 w-full bg-background border-b shadow flex items-center justify-start fixed top-[80px] left-0 gap-2 z-20">
+               <Button size="icon" variant="outline" title="Նշելով" onClick={()=>addQuestion("pick-one")}>
+                    <CheckSquare/>
+               </Button>
+               <Button size="icon" variant="outline" title="Այո և Ոչ" onClick={()=>addQuestion("true-false")}>
+                    <IoRadioButtonOn/>
+               </Button>
+               <Button size="icon" variant="outline" title="Գրավոր" onClick={()=>addQuestion("text-answer")}>
+                    <TextCursorInput/>
+               </Button>
+          </div>
+          <div className="mt-[70px] flex items-center justify-center w-full">
+               <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleSubmit)} className="w-full max-w-4xl">
+                         <div className="p-4 w-full bg-background border shadow rounded-xl space-y-3">
+                              <FormSuccess message={success}/>
+                              <FormError message={error}/>
+                              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">Ստեղծել Հարցաշար</h1>
+                              <div className="space-y-4 mb-4">
+                                   <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({field})=>(
+                                             <FormItem>
+                                                  <FormLabel>Հարցաշարի անուն</FormLabel>
+                                                  <FormControl>
+                                                       <Input
+                                                            {...field}
+                                                            disabled={isPending}
+                                                            placeholder="Թեմատիկ գրավոր աշխատանք"
+                                                       />
+                                                  </FormControl>
+                                                  <FormMessage/>
+                                             </FormItem>
+                                        )}
+                                   />
+                                   <FormField
+                                        control={form.control}
+                                        name="description"
+                                        render={({field})=>(
+                                             <FormItem>
+                                                  <FormLabel>Նկարագրություն</FormLabel>
+                                                  <FormControl>
+                                                       <Textarea
+                                                            {...field}
+                                                            disabled={isPending}
+                                                            placeholder="Տեղադրել այս հարցաշարի մասին տեղեկություն այստեղ"
+                                                       />
+                                                  </FormControl>
+                                                  <FormMessage/>
+                                             </FormItem>
+                                        )}
+                                   />
+                                   <FormField
+                                        control={form.control}
+                                        name="visibility"
+                                        render={({field})=>(
+                                             <FormItem>
+                                                  <FormLabel>Հասանելիություն</FormLabel>
+                                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                       <FormControl>
+                                                            <SelectTrigger>
+                                                                 <SelectValue placeholder="Ընտրել հասանելիությունը"/>
+                                                            </SelectTrigger>
+                                                       </FormControl>
+                                                       <SelectContent>
+                                                            {quizVisibilities.map(({type,Icon,name},i)=>(
+                                                                 <SelectItem
+                                                                      key={i}
+                                                                      value={type}
+                                                                 >
+                                                                      <div className="flex item-center justify-center gap-x-3">
+                                                                           <Icon className="w-[20px] h-[20px]"/>
+                                                                           {name}
+                                                                      </div>
+                                                                 </SelectItem>
+                                                            ))}
+                                                       </SelectContent>
+                                                  </Select>
+                                                  <FormMessage/>
+                                             </FormItem>
+                                        )}
+                                   />
+                                   <FormField
+                                        control={form.control}
+                                        name="subject"
+                                        render={({field})=>(
+                                             <FormItem>
+                                                  <FormLabel>Առարկա</FormLabel>
+                                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                       <FormControl>
+                                                            <SelectTrigger>
+                                                                 <SelectValue placeholder="Ընտրել առարկան"/>
+                                                            </SelectTrigger>
+                                                       </FormControl>
+                                                       <SelectContent>
+                                                            {getFilteredSubjects().map((optgroup,i)=>(
+                                                                 <SelectGroup key={i}>
+                                                                      <SelectLabel>{optgroup.title}</SelectLabel>
+                                                                      {optgroup.data.map((subject,i)=>(
+                                                                           <SelectItem key={i} value={subject.name}>{subject.title}</SelectItem>
+                                                                      ))}
+                                                                 </SelectGroup>
+                                                            ))}
+                                                       </SelectContent>
+                                                  </Select>
+                                                  <FormMessage/>
+                                             </FormItem>
+                                        )}
+                                   />
+                              </div>
+                              <Button type="submit" disabled={isPending}>{isPending ? "Խնդրում ենք սպասել․․․" : visibility==="public" ? "Հրատարակել" : "Պահպանել"}</Button>
+                         </div>
+                         {fields.map((questionField,i)=>(
+                              <QuizEditorQuestionCard
+                                   key={questionField.id}
+                                   index={i}
+                                   isPending={isPending}
+                                   totalQuestions={fields.length}
+                                   moveQuestion={moveQuestion}
+                                   removeQuestion={removeQuestion}
+                                   duplicateQuestion={duplicateQuestion}
+                              />
+                         ))}
+                    </form>
+               </Form>
+          </div>
+     </PageLayout>
+}

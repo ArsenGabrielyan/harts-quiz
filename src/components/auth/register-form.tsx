@@ -121,7 +121,7 @@ export default function RegisterForm(){
                                              <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                   <FormControl>
                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Ընտրել յաշվի տեսակը"/>
+                                                            <SelectValue placeholder="Ընտրել հաշվի տեսակը"/>
                                                        </SelectTrigger>
                                                   </FormControl>
                                                   <SelectContent>
