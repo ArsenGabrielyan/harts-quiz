@@ -1,13 +1,13 @@
 "use server"
-import { currentUser } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb/mongoose";
-import HartsQuiz from "@/models/quiz";
-import { QuizEditorSchema } from "@/schemas"
 import * as z from "zod"
+import { QuizEditorSchema } from "@/schemas"
+import { connectDB } from "@/lib/mongodb/mongoose";
+import { currentUser } from "@/lib/auth";
+import HartsQuiz from "@/models/quiz";
 
-export const addQuiz = async (values: z.infer<typeof QuizEditorSchema>) => {
+export const editQuiz = async (values: z.infer<typeof QuizEditorSchema>, id: string) => {
      const validatedFields = QuizEditorSchema.safeParse(values);
-
+     
      if(!validatedFields.success){
           return {error: "Բոլոր դաշտերը վալիդացրած չեն"}
      }
@@ -20,15 +20,16 @@ export const addQuiz = async (values: z.infer<typeof QuizEditorSchema>) => {
      if(currUser.accountType==="student"){
           return {error: "Միայն ուսուցիչը կամ անձնական հաշիվը կարող է ստեղծել հարցաշարեր"}
      }
-     const newQuiz = new HartsQuiz({
-          name,
-          teacher: currUser.name,
-          teacherEmail: currUser.email,
-          description,
-          questions,
-          visibility,
-          subject
-     })
-     await newQuiz.save();
-     return {success: "Հարցաշարը ավելացված է"}
+     await HartsQuiz.findByIdAndUpdate(id,{
+          $set: {
+               name,
+               teacher: currUser.name,
+               teacherEmail: currUser.email,
+               description,
+               questions,
+               visibility,
+               subject
+          }
+     });
+     return {success: "Հարցաշարը խմբագրված է"}
 }

@@ -1,8 +1,8 @@
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export default function LibraryPage(){
-     const user = useCurrentUser();
+export default async function LibraryPage(){
+     const user = await currentUser();
      if(user?.accountType==="student") redirect("/");
      return (
           <>

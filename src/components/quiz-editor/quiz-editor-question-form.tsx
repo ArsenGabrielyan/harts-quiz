@@ -1,6 +1,6 @@
 "use client";
 import * as z from "zod";
-import { useFormContext } from "react-hook-form";
+import { ControllerRenderProps, useFormContext } from "react-hook-form";
 import {
      FormField,
      FormItem,
@@ -19,7 +19,9 @@ import {
      SelectContent} from "@/components/ui/select"
 import { quizTypes } from "@/data/constants";
 import { Button } from "../ui/button";
-import { ArrowDown, ArrowUp, CheckCircle, CopyPlus, Trash } from "lucide-react";
+import { ArrowDown, ArrowUp, CheckCircle, CopyPlus, Minus, Plus, Trash } from "lucide-react";
+import { getInitialAnswers } from "@/data/helpers";
+import { QuestionType } from "@/data/types/other-types";
 
 interface QuizEditorQuestionCardProps{
      index: number,
@@ -44,6 +46,22 @@ export default function QuizEditorQuestionCard({
      const handleAnswerChange = (answerIndex: number, value: string) => {
           const updatedAnswers = [...answers];
           updatedAnswers[answerIndex] = value;
+          setValue(`questions.${index}.answers`,updatedAnswers);
+     }
+     const handleQuestionTypeChange = (value: string) => {
+          const questionType = value as QuestionType
+          const {answers,correct} = getInitialAnswers(questionType);
+          setValue(`questions.${index}.answers`,answers);
+          setValue(`questions.${index}.correct`,correct);
+          setValue(`questions.${index}.type`,questionType);
+     }
+     const addAnswer = () => {
+          const updatedAnswers = [...answers,""];
+          setValue(`questions.${index}.answers`,updatedAnswers);
+     }
+     const removeAnswer = () => {
+          const updatedAnswers = [...answers];
+          updatedAnswers.pop();
           setValue(`questions.${index}.answers`,updatedAnswers);
      }
      return (
@@ -104,41 +122,47 @@ export default function QuizEditorQuestionCard({
                     )}
                />
                {questionType==="pick-one" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
-                         {answers.map((answer,answerIndex)=>(
-                              <FormField
-                                   key={answerIndex}
-                                   control={control}
-                                   name={`questions.${index}.answers.${answerIndex}`}
-                                   render={({field})=>(
-                                        <FormItem>
-                                             <FormLabel>Պատասխան {answerIndex+1}</FormLabel>
-                                             <div className="flex items-center gap-2">
-                                                  <Button
-                                                       type="button"
-                                                       variant={answer!=="" && correctAnswer===answer ? 'success' : "outline"} 
-                                                       size="icon"
-                                                       onClick={()=>setValue(`questions.${index}.correct`,answer)}
-                                                  >
-                                                       <CheckCircle/>
-                                                  </Button>
-                                                  <FormControl>
-                                                       <Input
-                                                            {...field}
-                                                            value={answer}
-                                                            disabled={isPending}
-                                                            placeholder="Նշել պատասխանն այստեղ"
-                                                            onChange={e=>handleAnswerChange(answerIndex,e.target.value)}
-                                                       />
-                                                  </FormControl>
-                                             </div>
-                                             <FormMessage/>
-                                        </FormItem>
-                                   )}
-                              />
-                         ))}
-                         TODO: Add Counter To Add Or Remove Answers
-                    </div>
+                    <>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+                              {answers.map((answer,answerIndex)=>(
+                                   <FormField
+                                        key={answerIndex}
+                                        control={control}
+                                        name={`questions.${index}.answers.${answerIndex}`}
+                                        render={({field})=>(
+                                             <FormItem>
+                                                  <FormLabel>Պատասխան {answerIndex+1}</FormLabel>
+                                                  <div className="flex items-center gap-2">
+                                                       <Button
+                                                            type="button"
+                                                            variant={answer!=="" && correctAnswer===answer ? 'success' : "outline"} 
+                                                            size="icon"
+                                                            onClick={()=>setValue(`questions.${index}.correct`,answer)}
+                                                       >
+                                                            <CheckCircle/>
+                                                       </Button>
+                                                       <FormControl>
+                                                            <Input
+                                                                 {...field}
+                                                                 value={answer}
+                                                                 disabled={isPending}
+                                                                 placeholder="Նշել պատասխանն այստեղ"
+                                                                 onChange={e=>handleAnswerChange(answerIndex,e.target.value)}
+                                                            />
+                                                       </FormControl>
+                                                  </div>
+                                                  <FormMessage/>
+                                             </FormItem>
+                                        )}
+                                   />
+                              ))}
+                         </div>
+                         <div className="flex justify-between items-center gap-2 w-full">
+                              <Button type="button" size="icon" variant="outline" onClick={removeAnswer} disabled={answers.length<=2}><Minus/></Button>
+                              <span>{answers.length}</span>
+                              <Button type="button" size="icon" variant="outline" onClick={addAnswer} disabled={answers.length>=6}><Plus/></Button>
+                         </div>
+                    </>
                )}
                {questionType==="true-false" && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
@@ -172,7 +196,7 @@ export default function QuizEditorQuestionCard({
                          render={({field})=>(
                               <FormItem>
                                    <FormLabel>Հարցի տեսակ</FormLabel>
-                                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                   <Select onValueChange={(value)=>handleQuestionTypeChange(value)} defaultValue={field.value}>
                                         <FormControl>
                                              <SelectTrigger>
                                                   <SelectValue placeholder="Ընտրել հարցի տեսակը"/>

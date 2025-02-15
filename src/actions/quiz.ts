@@ -6,17 +6,17 @@ import { connectDB } from "@/lib/mongodb/mongoose"
 import HartsQuiz from "@/models/quiz";
 import { ExtendedUser } from "@/next-auth";
 
-export const getEveryQuiz = async () => {
+export const getEveryQuiz = async (): Promise<{quizzes: QuizDocument[] | null}> => {
      await connectDB();
      const quizzes = await getEveryQuizByVisibility("public");
      if(quizzes){
           const result = quizzes.map(val=>JSON.parse(JSON.stringify(val)));
-          return {quizzes: result as QuizDocument[]}
+          return {quizzes: result}
      }
      return {quizzes: null}
 }
 
-export const getQuizDetails = async (id: string) => {
+export const getQuizDetails = async (id: string): Promise<{quiz: QuizDocument}> => {
      await connectDB();
      const quiz = await getQuizById(id);
      return {quiz: JSON.parse(JSON.stringify(quiz))}

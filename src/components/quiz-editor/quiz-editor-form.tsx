@@ -29,51 +29,79 @@ import { IoRadioButtonOn } from "react-icons/io5"
 import PageLayout from "../page-layout"
 import { useState, useTransition } from "react";
 import { Textarea } from "../ui/textarea";
-import { getFilteredSubjects } from "@/data/helpers";
+import { getFilteredSubjects, getInitialAnswers } from "@/data/helpers";
 import { quizVisibilities } from "@/data/constants";
 import { QuestionType } from "@/data/types/other-types";
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
 import { addQuiz } from "@/actions/quiz/addQuiz";
+import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { editQuiz } from "@/actions/quiz/editQuiz";
+import useUnsavedChangesWarning from "@/hooks/use-before-unload";
+import { useRouter } from "next/navigation";
 
-export default function QuizEditorForm(){
-     // TODO: Add Feature To Edit The Quiz
+interface QuizEditorFormProps {
+     currQuiz: QuizDocument | null;
+}
+export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
      const [isPending, startTransition] = useTransition();
+     const router = useRouter()
      const form = useForm<z.infer<typeof QuizEditorSchema>>({
           resolver: zodResolver(QuizEditorSchema),
           defaultValues: {
-               name: "",
-               description: "",
-               visibility: "private",
-               subject: "others",
-               questions: []
+               name: currQuiz?.name ||"",
+               description: currQuiz?.description || undefined,
+               visibility: currQuiz?.visibility || "private",
+               subject: currQuiz?.subject || "others",
+               questions: currQuiz?.questions.map(question => ({
+                    ...question,
+                    correct: question.correct ?? "",
+               })) || []
           },
      })
+     const initialData = {
+          name: currQuiz?.name ||"",
+          description: currQuiz?.description || undefined,
+          visibility: currQuiz?.visibility || "private",
+          subject: currQuiz?.subject || "others",
+          questions: currQuiz?.questions || []
+     } as z.infer<typeof QuizEditorSchema>
+     const visibility = form.watch("visibility")
      const {fields,append,remove,move,insert} = useFieldArray<z.infer<typeof QuizEditorSchema>>({
           control: form.control,
           name: "questions"
      })
+     const isCurrData = () => {
+          const currData = form.watch()
+          return JSON.stringify(currData)===JSON.stringify(initialData)
+     }
      const handleSubmit = (values: z.infer<typeof QuizEditorSchema>) => {
-          console.log("hi")
           setError("");
           setSuccess("");
           startTransition(()=>{
-               addQuiz(values)
-               .then(data=>{
+               const action = !currQuiz ? addQuiz(values) : editQuiz(values,currQuiz._id);
+               action.then(data=>{
                     if(data.error) setError(data.error);
                     if(data.success) {
                          setSuccess(data.success);
                          form.reset();
+                         if(currQuiz) setTimeout(()=>{
+                              router.push(`/explore/${currQuiz._id}`);
+                         },1000)
                     }
                })
           })
      }
+     const handleReset = () => {
+          form.reset();
+          setError("");
+          setSuccess("");
+     }
      const addQuestion = (questionType: QuestionType) => {
           append({
                question: "",
-               answers: questionType==="text-answer" ? [] : questionType==="true-false" ? ["true", "false"] : ["","","",""],
-               correct: "",
+               ...getInitialAnswers(questionType),
                timer: 0,
                type: questionType,
                points: 0,
@@ -98,7 +126,7 @@ export default function QuizEditorForm(){
      const removeQuestion = (index: number) => {
           remove(index)
      }
-     const visibility = form.watch("visibility")
+     useUnsavedChangesWarning(!isCurrData());
      return <PageLayout removeCreateButton>
           <div className="p-4 w-full bg-background border-b shadow flex items-center justify-start fixed top-[80px] left-0 gap-2 z-20">
                <Button size="icon" variant="outline" title="Նշելով" onClick={()=>addQuestion("pick-one")}>
@@ -113,11 +141,11 @@ export default function QuizEditorForm(){
           </div>
           <div className="mt-[70px] flex items-center justify-center w-full">
                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="w-full max-w-4xl">
+                    <form onSubmit={form.handleSubmit(handleSubmit)} onReset={handleReset} className="w-full max-w-4xl">
                          <div className="p-4 w-full bg-background border shadow rounded-xl space-y-3">
                               <FormSuccess message={success}/>
                               <FormError message={error}/>
-                              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">Ստեղծել Հարցաշար</h1>
+                              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">{!currQuiz ? "Ստեղծել Հարցաշար" : "Խմբագրել Հարցաշարը"}</h1>
                               <div className="space-y-4 mb-4">
                                    <FormField
                                         control={form.control}
@@ -211,7 +239,10 @@ export default function QuizEditorForm(){
                                         )}
                                    />
                               </div>
-                              <Button type="submit" disabled={isPending}>{isPending ? "Խնդրում ենք սպասել․․․" : visibility==="public" ? "Հրատարակել" : "Պահպանել"}</Button>
+                              <div className="flex justify-start items-center flex-wrap gap-2">
+                                   <Button className="flex-1" type="submit" disabled={isPending || isCurrData()}>{isPending ? "Խնդրում ենք սպասել․․․" : !!currQuiz ? "Խմբագրել" : visibility==="public" ? "Հրատարակել" : "Պահպանել"}</Button>
+                                   <Button className="flex-1" type="reset" variant="outline" disabled={isPending || isCurrData()}>Չեղարկել</Button>
+                              </div>
                          </div>
                          {fields.map((questionField,i)=>(
                               <QuizEditorQuestionCard

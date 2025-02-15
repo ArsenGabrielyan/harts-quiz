@@ -67,6 +67,7 @@ export function getQuizDataFromType(type: QuestionType){
           },
           "text-answer": {
                question: '',
+               answers: [],
                correct: '',
                timer: 0,
                points: 0,
@@ -109,3 +110,7 @@ export const getFilteredSubjects = (list: ISubject[]=subjectList) => list.length
      !obj[first] ? obj[first] = {title: first, data: [val]} : obj[first].data.push(val)
      return obj;
 },{} as Record<string, { title: string, data: ISubject[] }>))
+export const getInitialAnswers = (type: QuestionType) => ({
+     answers: type==="text-answer" ? [] : type==="true-false" ? ["true", "false"] : ["","","",""],
+     correct: ""
+})

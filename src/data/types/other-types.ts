@@ -13,7 +13,7 @@ export interface ThemeColorStateParams{
 export type QuizVisibility = | "public" | "private" | "unlisted"
 export interface IQuestion{
      question: string,
-     answers?: string[],
+     answers: string[],
      correct: string | null,
      timer: number,
      type: QuestionType,

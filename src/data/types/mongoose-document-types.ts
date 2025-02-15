@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { AccountType, IQuestion, QuizVisibility } from "./other-types"
+import { AccountType, IQuestion, QuizVisibility, SubjectName } from "./other-types"
 
 interface MongooseDocument{
      _id: string
@@ -34,7 +34,7 @@ export interface QuizDocument extends MongooseDocument{
      description: string,
      questions: IQuestion[],
      visibility: QuizVisibility,
-     subject: string,
+     subject: SubjectName,
      createdAt: Date
 }
 export interface TwoFactorConfirmationDocument extends MongooseDocument{

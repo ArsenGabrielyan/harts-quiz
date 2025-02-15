@@ -45,7 +45,7 @@ export default function MainPage({user, questions}: MainPageProps) {
                               </div>
                          </div>
                          {questions && divideQuestionsBySubject(questions).map(((section,i)=>(
-                              <div key={i}>
+                              <div key={i} className="w-full">
                                    <h2 className="text-3xl md:text-4xl text-center my-3">{section.title}</h2>
                                    <div className="flex flex-wrap items-center justify-center gap-3">
                                         {section.data.slice(0,10).map(quiz=><QuizCard key={quiz._id} quiz={quiz}/>)}
