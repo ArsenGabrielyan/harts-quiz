@@ -60,7 +60,7 @@ export default function PageLayout({children,themeSwitcher=false,mainClassName, 
                     )}
                     <div className="flex gap-x-2">
                          {!user ? (
-                              <LoginButton>
+                              <LoginButton mode="modal">
                                    <Button>Մուտք</Button>
                               </LoginButton>
                          ) : (

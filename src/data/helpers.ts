@@ -3,6 +3,7 @@ import { subjectList } from "./constants";
 import { AccountType, IQuestion, ISubject, QuestionType } from "./types/other-types";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { QuizDocument } from "./types/mongoose-document-types";
+import axios from "axios";
 
 export function getOAuthNotLinkedError(searchParams: ReadonlyURLSearchParams){
      const error = searchParams.get("error");
@@ -114,3 +115,7 @@ export const getInitialAnswers = (type: QuestionType) => ({
      answers: type==="text-answer" ? [] : type==="true-false" ? ["true", "false"] : ["","","",""],
      correct: ""
 })
+export async function fetcher(url: string){
+     const res = await axios.get(url);
+     return res.data;
+}

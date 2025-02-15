@@ -5,7 +5,11 @@ import HartsQuiz from "@/models/quiz";
 import { QuizEditorSchema } from "@/schemas"
 import * as z from "zod"
 
-export const addQuiz = async (values: z.infer<typeof QuizEditorSchema>) => {
+export const addQuiz = async (values: z.infer<typeof QuizEditorSchema>): Promise<{
+     error?: string,
+     success?: string,
+     quizId?: string
+}> => {
      const validatedFields = QuizEditorSchema.safeParse(values);
 
      if(!validatedFields.success){
@@ -30,5 +34,5 @@ export const addQuiz = async (values: z.infer<typeof QuizEditorSchema>) => {
           subject
      })
      await newQuiz.save();
-     return {success: "Հարցաշարը ավելացված է"}
+     return {success: "Հարցաշարը ավելացված է", quizId: newQuiz._id}
 }

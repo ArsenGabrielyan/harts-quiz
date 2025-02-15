@@ -51,8 +51,8 @@ export const QuestionSchema = z.object({
      question: z.string().min(1, "Պարտադիր է լրացնել հարցը"),
      answers: z.array(z.string().min(1,"Պարտադիր է լրացնել պատասխանները")),
      correct: z.string().min(1,"Պարտադիր է ընտրել ճիշտ պատասխանը"),
-     timer: z.number().int("Տևողությունը պետք է լինի ամբողջ թիվ").nonnegative("Տևողությունը պետք է լինի դրական"),
-     points: z.number().int("Միավորը պետք է լինի ամբողջ թիվ").nonnegative("Միավորը պետք է լինի դրական"),
+     timer: z.number().int("Տևողությունը պետք է լինի ամբողջ թիվ").gte(0,"Տևողությունը պետք է լինի դրական").refine(val=>val!==0,"Տևողությունը պետք չէ լինի 0"),
+     points: z.number().int("Միավորը պետք է լինի ամբողջ թիվ").gte(0,"Միավորը պետք է լինի դրական").refine(val=>val!==0,"Միավորը պետք չէ լինի 0"),
      type: z.enum(QUESTION_TYPE_ENUM),
      description: z.optional(z.string())
  });

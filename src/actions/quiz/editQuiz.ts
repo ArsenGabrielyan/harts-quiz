@@ -5,7 +5,11 @@ import { connectDB } from "@/lib/mongodb/mongoose";
 import { currentUser } from "@/lib/auth";
 import HartsQuiz from "@/models/quiz";
 
-export const editQuiz = async (values: z.infer<typeof QuizEditorSchema>, id: string) => {
+export const editQuiz = async (values: z.infer<typeof QuizEditorSchema>, id: string): Promise<{
+     error?: string,
+     success?: string,
+     quizId?: string
+}> => {
      const validatedFields = QuizEditorSchema.safeParse(values);
      
      if(!validatedFields.success){

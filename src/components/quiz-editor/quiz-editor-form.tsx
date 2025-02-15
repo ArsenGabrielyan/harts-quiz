@@ -24,12 +24,12 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-import { CheckSquare, TextCursorInput } from "lucide-react"
+import { CheckSquare, Copy, TextCursorInput } from "lucide-react"
 import { IoRadioButtonOn } from "react-icons/io5"
 import PageLayout from "../page-layout"
 import { useState, useTransition } from "react";
 import { Textarea } from "../ui/textarea";
-import { getFilteredSubjects, getInitialAnswers } from "@/data/helpers";
+import { absoluteUrl, getFilteredSubjects, getInitialAnswers } from "@/data/helpers";
 import { quizVisibilities } from "@/data/constants";
 import { QuestionType } from "@/data/types/other-types";
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
@@ -38,11 +38,13 @@ import { QuizDocument } from "@/data/types/mongoose-document-types";
 import { editQuiz } from "@/actions/quiz/editQuiz";
 import useUnsavedChangesWarning from "@/hooks/use-before-unload";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface QuizEditorFormProps {
      currQuiz: QuizDocument | null;
 }
 export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
+     const [quizId, setQuizId] = useState(currQuiz?._id || "");
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
      const [isPending, startTransition] = useTransition();
@@ -85,12 +87,16 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
                     if(data.error) setError(data.error);
                     if(data.success) {
                          setSuccess(data.success);
+                         if(data.quizId){
+                              setQuizId(data.quizId)
+                         }
                          form.reset();
                          if(currQuiz) setTimeout(()=>{
                               router.push(`/explore/${currQuiz._id}`);
                          },1000)
                     }
                })
+               .catch(()=>setError("Վայ, մի բան սխալ տեղի ունեցավ "))
           })
      }
      const handleReset = () => {
@@ -125,6 +131,10 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
      }
      const removeQuestion = (index: number) => {
           remove(index)
+     }
+     const copyUrl = () => {
+          navigator.clipboard.writeText(absoluteUrl(`/explore/${quizId}`));
+          toast.success("Հղումը պատճենված է");
      }
      useUnsavedChangesWarning(!isCurrData());
      return <PageLayout removeCreateButton>
@@ -242,6 +252,9 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
                               <div className="flex justify-start items-center flex-wrap gap-2">
                                    <Button className="flex-1" type="submit" disabled={isPending || isCurrData()}>{isPending ? "Խնդրում ենք սպասել․․․" : !!currQuiz ? "Խմբագրել" : visibility==="public" ? "Հրատարակել" : "Պահպանել"}</Button>
                                    <Button className="flex-1" type="reset" variant="outline" disabled={isPending || isCurrData()}>Չեղարկել</Button>
+                                   {quizId && (
+                                        <Button type="button" variant="outline" onClick={copyUrl}><Copy/> Պատճենել</Button>
+                                   )}
                               </div>
                          </div>
                          {fields.map((questionField,i)=>(

@@ -1,6 +1,6 @@
 "use server"
 import { auth } from "@/auth";
-import { getEveryQuizByTeacherEmail, getEveryQuizByVisibility, getQuizById } from "@/data/db/quiz";
+import { getEveryQuizByVisibility, getQuizById } from "@/data/db/quiz";
 import { QuizDocument } from "@/data/types/mongoose-document-types";
 import { connectDB } from "@/lib/mongodb/mongoose"
 import HartsQuiz from "@/models/quiz";
@@ -16,9 +16,11 @@ export const getEveryQuiz = async (): Promise<{quizzes: QuizDocument[] | null}> 
      return {quizzes: null}
 }
 
-export const getQuizDetails = async (id: string): Promise<{quiz: QuizDocument}> => {
+export const getQuizDetails = async (id: string, user?: ExtendedUser): Promise<{quiz: QuizDocument| null}> => {
      await connectDB();
      const quiz = await getQuizById(id);
+     const isAuthenticated = user && user.email===quiz?.teacherEmail;
+     if(!isAuthenticated && quiz?.visibility==="private") return {quiz: null}
      return {quiz: JSON.parse(JSON.stringify(quiz))}
 }
 export const getCurrUser = async(): Promise<{
@@ -28,7 +30,7 @@ export const getCurrUser = async(): Promise<{
      const session = await auth();
      if(session?.user){
           await connectDB();
-          const questions = await HartsQuiz.find();
+          const questions = await HartsQuiz.find({visibility: "public"});
           return {user: session?.user, questions: JSON.parse(JSON.stringify(questions))}
      }
      return {user: null, questions: null}
