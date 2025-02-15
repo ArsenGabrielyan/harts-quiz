@@ -66,7 +66,7 @@ export default function PageLayout({children,mainClassName, searchBox, removeCre
                               <>
                                    {(!removeCreateButton && user?.accountType !== "student") && (
                                         <Button size="icon" variant="outline" asChild title="Ստեղծել հարցաշար">
-                                             <Link href={"/quiz-editor"}><PlusCircle/></Link>
+                                             <Link href="/quiz-editor"><PlusCircle/></Link>
                                         </Button>
                                    )}
                                    <UserButton/>

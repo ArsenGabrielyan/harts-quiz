@@ -39,7 +39,7 @@ export default function MainPage({user, questions}: MainPageProps) {
                                              <Link href="/settings">Կարգավորումներ</Link>
                                         </Button>
                                         <Button variant="outline" className="flex-1" asChild>
-                                             <Link href="/settings">Բոլոր հարցաշարերը</Link>
+                                             <Link href="/library">Բոլոր հարցաշարերը</Link>
                                         </Button>
                                    </div>
                               </div>
