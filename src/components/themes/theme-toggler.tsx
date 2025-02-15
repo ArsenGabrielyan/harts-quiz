@@ -11,6 +11,7 @@ export function ThemeModeToggle() {
 
   return (
     <Button
+      type="button"
       variant="outline"
       size="icon"
       title="Փոխել ռեժիմը"

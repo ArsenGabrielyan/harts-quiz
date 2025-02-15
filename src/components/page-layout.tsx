@@ -19,7 +19,6 @@ import Link from "next/link";
 
 interface PageLayoutProps{
      children: React.ReactNode,
-     themeSwitcher?: boolean
      mainClassName?: string,
      searchBox?: {
           search: string,
@@ -27,7 +26,7 @@ interface PageLayoutProps{
      },
      removeCreateButton?: boolean
 }
-export default function PageLayout({children,themeSwitcher=false,mainClassName, searchBox, removeCreateButton=false}: PageLayoutProps){
+export default function PageLayout({children,mainClassName, searchBox, removeCreateButton=false}: PageLayoutProps){
      const year = new Date().getFullYear();
      const user = useCurrentUser();
      return (
@@ -60,7 +59,7 @@ export default function PageLayout({children,themeSwitcher=false,mainClassName, 
                     )}
                     <div className="flex gap-x-2">
                          {!user ? (
-                              <LoginButton mode="modal">
+                              <LoginButton mode="modal" asChild>
                                    <Button>Մուտք</Button>
                               </LoginButton>
                          ) : (
@@ -81,7 +80,7 @@ export default function PageLayout({children,themeSwitcher=false,mainClassName, 
                <footer className="text-center bg-background text-foreground shadow p-5 flex justify-between items-center flex-col md:flex-row gap-2">
                     <Logo width={90} height={40}/>
                     <p>&copy; {year} | Բոլոր իրավունքները պաշտպանված են</p>
-                    {themeSwitcher && <ThemeSettings/>}
+                    {!user && <ThemeSettings/>}
                </footer>
           </>
      )

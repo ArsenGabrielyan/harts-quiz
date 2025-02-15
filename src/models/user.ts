@@ -18,7 +18,6 @@ const userSchema = new Schema<UserDocument>({
      organization: String,
      password: String,
      image: String,
-     birthDate: Date,
      accountType: String,
      emailVerified: Date,
      isTwoFactorEnabled: {

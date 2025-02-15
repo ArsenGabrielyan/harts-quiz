@@ -13,16 +13,16 @@ export default function QuestionCard({question,id}:QuestionCardProps){
                     <CardTitle>{id} - {question.question}</CardTitle>
                     <CardDescription>{getAnswerType(question.type)}</CardDescription>
                </CardHeader>
-               <CardContent>
-                    {question.description && <p className={question.answers && question.type==="pick-one" ? "mb-3" : ""}>{question.description}</p>}
-                    {(question.answers && question.type==="pick-one") && (
+               {(question.description || (question.answers && question.type==="pick-one")) && (
+                    <CardContent>
+                         {question.description && <p className={question.answers && question.type==="pick-one" ? "mb-3" : ""}>{question.description}</p>}
                          <ul className="space-y-2">
                               {question.answers.map((answer,i)=>(
                                    <li key={i}>{i+1}. {answer}</li>
                               ))}
                          </ul>
-                    )}
-               </CardContent>
+                    </CardContent>
+               )}
                <CardFooter className="gap-5 flex-col text-center sm:flex-row sm:text-left">
                     <p>{question.points} միավոր</p>
                     <p>{question.timer} վայրկյան</p>

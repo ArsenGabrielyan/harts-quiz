@@ -8,7 +8,7 @@ import User from "@/models/user"
 import { getTwoFactorConfirmationByUserId } from "@/data/db/two-factor-confirmation"
 import TwoFactorConfirmation from "./models/two-factor-confirmation"
 import { generateUsername } from "./data/helpers"
-import { AccountType } from "./data/types/other-types"
+import { AccountType, SubjectName } from "./data/types/other-types"
  
 export const { auth, handlers, signIn, signOut } = NextAuth({
   pages: {
@@ -61,9 +61,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
 
       if(session.user){
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
-        session.user.accountType = token.accountType as AccountType
+        session.user.name = token.name;
+        session.user.email = token.email as string;
         session.user.username = token.username as string
+        session.user.organization = token.organization as string;
+        session.user.accountType = token.accountType as AccountType
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
+        session.user.soundEffectOn = token.soundEffectOn as boolean
+        session.user.showFavoriteSubject = token.showFavoriteSubject as boolean;
+        session.user.bio = token.bio as string;
+        session.user.favoriteSubject = token.favoriteSubject as SubjectName;
+        session.user.isOauth = token.isOauth as boolean
       }
 
       return session
@@ -76,9 +84,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       if(!existingUser) return token;
 
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled
+      token.name = existingUser.name;
+      token.email = existingUser.email;
       token.username = existingUser.username
-      token.accountType = existingUser.accountType
+      token.organization = existingUser.organization;
+      token.accountType = existingUser.accountType;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled
+      token.soundEffectOn = existingUser.soundEffectOn;
+      token.showFavoriteSubject = existingUser.showFavoriteSubject;
+      token.bio = existingUser.bio;
+      token.favoriteSubject = existingUser.favoriteSubject;
+      token.isOauth = existingUser.isOauth;
 
       return token
     }

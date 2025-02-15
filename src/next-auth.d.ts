@@ -1,10 +1,16 @@
 import type {DefaultSession} from "next-auth"
-import { AccountType } from "./data/types/other-types"
+import { AccountType, SubjectName } from "./data/types/other-types"
 
 export type ExtendedUser = DefaultSession["user"] & {
-  isTwoFactorEnabled: boolean,
+  username: string,
+  organization: string,
   accountType: AccountType,
-  username: string
+  isTwoFactorEnabled: boolean,
+  soundEffectOn: boolean,
+  showFavoriteSubject: boolean,
+  bio: string,
+  favoriteSubject: SubjectName
+  isOauth: boolean
 }
 
 declare module "next-auth"{

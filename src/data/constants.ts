@@ -1,4 +1,4 @@
-import { AccountType, IQuestion, ISelectData, ISelectedQuiz, ISubject, QuestionType, QuizVisibility } from "@/data/types/other-types";
+import { AccountType, INameIcon, IQuestion, ISelectData, ISelectedQuiz, ISubject, QuestionType, QuizVisibility } from "@/data/types/other-types";
 import { BookOpenText, Globe, Link, Lock, User } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { CheckSquare, TextCursorInput } from "lucide-react"
@@ -45,7 +45,7 @@ export const accountTypesEnum: ISelectData<AccountType>[] = [
      {type: "personal", name: "Անձնական", Icon: User}
 ]
 export const quizVisibilities: ISelectData<QuizVisibility>[] = [
-     {type: "private", name: "Անձնական", Icon: Lock},
+     {type: "private", name: "Մասնավոր", Icon: Lock},
      {type: "public", name: "Ընդհանուր", Icon: Globe},
      {type: "unlisted", name: "Հղումով հասանելի", Icon: Link}
 ]
@@ -57,4 +57,9 @@ export const quizTypes: ISelectData<QuestionType>[] = [
 export const INITIAL_SELECTED_QUIZ: ISelectedQuiz = {
      question: {} as IQuestion,
      index: null
+}
+export const visibilities: Record<QuizVisibility,INameIcon> = {
+     private: {name: "Մասնավոր", Icon: Lock},
+     public: {name: "Ընդհանուր", Icon: Globe},
+     unlisted: {name: "Հղումով հասանելի", Icon: Link}
 }

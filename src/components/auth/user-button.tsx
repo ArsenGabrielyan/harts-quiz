@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/avatar"
 import { useCurrentUser } from "@/hooks/use-current-user"
 import { LogoutButton } from "./logout-button"
-import { User, LogOut, Settings, CircleHelp, Files } from "lucide-react"
+import { User, LogOut, Settings, Files } from "lucide-react"
 import Link from "next/link"
 
 export const UserButton = () => {
      const user = useCurrentUser();
-     // TODO: Replace # With Actual Links
      return (
           <DropdownMenu>
                <DropdownMenuTrigger>
@@ -47,11 +46,6 @@ export const UserButton = () => {
                     <DropdownMenuItem asChild className="cursor-pointer">
                          <Link href="/library">
                               <Files/> Բոլոր հարցաշարերը
-                         </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="cursor-pointer">
-                         <Link href="#">
-                              <CircleHelp/> Օգնության կենտրոն
                          </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator/>

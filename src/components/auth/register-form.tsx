@@ -118,7 +118,7 @@ export default function RegisterForm(){
                                    render={({field})=>(
                                         <FormItem>
                                              <FormLabel>Հաշվի տեսակ</FormLabel>
-                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                             <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isPending}>
                                                   <FormControl>
                                                        <SelectTrigger>
                                                             <SelectValue placeholder="Ընտրել հաշվի տեսակը"/>

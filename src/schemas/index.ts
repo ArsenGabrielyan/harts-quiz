@@ -64,3 +64,36 @@ export const QuizEditorSchema = z.object({
      subject: z.enum(SUBJECT_NAME_ENUM),
      questions: z.array(QuestionSchema).nonempty("Ավելացնել մի քանի հարցեր հարցաշար ստեղծելու համար")
 })
+
+export const SettingsSchema = z.object({
+     name: z.optional(z.string()),
+     email: z.optional(z.string().email("Մուտքագրեք վավերական էլ․ փոստ")),
+     username: z.optional(z.string()),
+     organization: z.optional(z.string()),
+     password: z.optional(z.string().min(8,"Գաղտնաբառը պետք է ունենա առնվազն 8 նիշ")),
+     newPassword: z.optional(z.string().min(8,"Գաղտնաբառը պետք է ունենա առնվազն 8 նիշ")),
+     accountType: z.enum(ACC_TYPE_ENUM),
+     isTwoFactorEnabled: z.optional(z.boolean()),
+     soundEffectOn: z.optional(z.boolean()),
+     showFavoriteSubject: z.optional(z.boolean()),
+     bio: z.optional(z.string()),
+     favoriteSubject: z.enum(SUBJECT_NAME_ENUM)
+})
+.refine(data=>{
+     if(data.password && !data.newPassword){
+          return false
+     }
+     return true;
+},{
+     message: "Պարտադիր է գրել նոր գաղտնաբառ",
+     path: ["newPassword"]
+})
+.refine(data=>{
+     if(data.newPassword && !data.password){
+          return false;
+     }
+     return true
+},{
+     message: "Պարտադիր է գրել գաղտնաբառ",
+     path: ["password"]
+})

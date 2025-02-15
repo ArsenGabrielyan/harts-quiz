@@ -49,3 +49,7 @@ export interface ISelectData<T>{
      name: string,
      Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
 }
+export interface INameIcon{
+     name: string,
+     Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
+}

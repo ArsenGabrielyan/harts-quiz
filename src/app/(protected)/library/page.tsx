@@ -1,12 +1,13 @@
+import { getQuizFromCurrEmail } from "@/actions/quiz";
+import LibraryQuizList from "@/components/client-components/library";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function LibraryPage(){
      const user = await currentUser();
+     const {quizzes} = await getQuizFromCurrEmail(user?.email!);
      if(user?.accountType==="student") redirect("/");
      return (
-          <>
-               TODO: Recreate Library Page
-          </>
+          <LibraryQuizList quizzes={quizzes}/>
      )
 }

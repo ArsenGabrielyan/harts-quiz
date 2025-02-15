@@ -1,6 +1,6 @@
 "use server"
 import { auth } from "@/auth";
-import { getEveryQuizByVisibility, getQuizById } from "@/data/db/quiz";
+import { getEveryQuizByTeacherEmail, getEveryQuizByVisibility, getQuizById } from "@/data/db/quiz";
 import { QuizDocument } from "@/data/types/mongoose-document-types";
 import { connectDB } from "@/lib/mongodb/mongoose"
 import HartsQuiz from "@/models/quiz";
@@ -30,8 +30,18 @@ export const getCurrUser = async(): Promise<{
      const session = await auth();
      if(session?.user){
           await connectDB();
-          const questions = await HartsQuiz.find({visibility: "public"});
+          const questions = await getEveryQuizByVisibility("public");
           return {user: session?.user, questions: JSON.parse(JSON.stringify(questions))}
      }
      return {user: null, questions: null}
+}
+export const getQuizFromCurrEmail = async(email: string): Promise<{
+     quizzes: QuizDocument[] | null
+}> => {
+     await connectDB();
+     const quizzes = await getEveryQuizByTeacherEmail(email);
+     if(quizzes){
+          return {quizzes: JSON.parse(JSON.stringify(quizzes))}
+     }
+     return {quizzes: null}
 }

@@ -16,7 +16,6 @@ export interface UserDocument extends MongooseDocument{
      organization: string,
      password: string,
      image: string,
-     birthDate: Date,
      accountType: AccountType,
      emailVerified: Date,
      isTwoFactorEnabled: boolean,
@@ -24,7 +23,7 @@ export interface UserDocument extends MongooseDocument{
      showFavoriteSubject: boolean,
      isOauth: boolean
      bio: string,
-     favoriteSubject: string,
+     favoriteSubject: SubjectName,
      favorites: string[]
 }
 export interface QuizDocument extends MongooseDocument{
