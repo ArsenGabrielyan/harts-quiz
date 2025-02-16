@@ -32,6 +32,7 @@ export const authRoutes: string[] = [
 export const dynamicRoutes: RegExp[] = [
      /^\/users\/[^/]+$/,
      /^\/explore\/[^/]+$/,
+     /^\/play\/[^/]+$/,
 ]
 
 /**
