@@ -23,7 +23,7 @@ app.prepare().then(()=>{
      io.on('connection',socket=>{
           devLog("Socket Connected")
           socket.on('disconnect',()=>{
-               for(let room in rooms){
+               for(const room in rooms){
                     if(rooms[room]){
                          rooms[room] = rooms[room].filter(p=>p.socketId!==socket.id);
                          io.to(room).emit("update players",rooms[room])
@@ -44,7 +44,7 @@ app.prepare().then(()=>{
                devLog(`${playerName} Joined Quiz ${quizId}`)
           })
           socket.on('leave',formData=>{
-               for(let room in rooms){
+               for(const room in rooms){
                     if(rooms[room]){
                          rooms[room] = rooms[room].filter(p=>p.userId!==formData.userId);
                          io.to(room).emit("update players",rooms[room])
@@ -83,6 +83,6 @@ app.prepare().then(()=>{
           process.exit(1);
      })
      .listen(port,()=>{
-          console.info(`> Ready on Port ${port}`)
+          console.info(`> Ready on http://localhost:${port}/`)
      })
 })
