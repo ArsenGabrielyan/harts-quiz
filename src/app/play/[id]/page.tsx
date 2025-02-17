@@ -1,12 +1,18 @@
+import { getQuizDetails } from "@/actions/quiz";
+import OnePlayerQuiz from "@/components/quiz/one-player-quiz";
+import { currentUser } from "@/lib/auth";
+import { notFound } from "next/navigation";
+
 export default async function OnePlayerQuizPage({
      params
 }: {
      params: Promise<{ id: string }>
 }){
-     const {id} = await params
+     const {id} = await params;
+     const {quiz} = await getQuizDetails(id);
+     if(!quiz) notFound();
+     const user = await currentUser();
      return (
-          <>
-               TODO: Recreate One Player Quiz game {id}
-          </>
+          <OnePlayerQuiz quiz={quiz} user={user}/>
      )
 }

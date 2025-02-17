@@ -93,3 +93,10 @@ body {
     @apply bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/50 via-accent to-background
   }
 }
+
+@media print {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

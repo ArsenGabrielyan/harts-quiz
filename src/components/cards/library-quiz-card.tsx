@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { duplicateQuiz } from "@/actions/quiz/duplicateQuiz";
 import { toast } from "sonner";
 import { deleteQuiz } from "@/actions/quiz/deleteQuiz";
-import { absoluteUrl, shareQuiz } from "@/data/helpers";
+import { absoluteUrl, formatDate, shareQuiz } from "@/data/helpers";
 import { useRouter } from "next/navigation";
 
 export interface LibraryQuizCardProps{
@@ -45,7 +45,7 @@ export default function LibraryQuizCard({quiz}: LibraryQuizCardProps){
           <div className="p-4 border shadow bg-card rounded-xl flex justify-between items-center flex-col md:flex-row gap-4 text-center md:text-left">
                <div className="space-y-2 cursor-pointer" onClick={handleClickInfo}>
                     <h2 className="text-2xl font-semibold">{name}</h2>
-                    <p className="text-muted-foreground">{teacher}&nbsp;&middot;&nbsp;{new Date(createdAt).toLocaleDateString()}</p>
+                    <p className="text-muted-foreground">{teacher}&nbsp;&middot;&nbsp;{formatDate(createdAt)}</p>
                     <p className="text-muted-foreground">{questions.length} Հարց</p>
                </div>
                <div className="flex items-center gap-2">

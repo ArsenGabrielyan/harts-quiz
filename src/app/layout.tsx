@@ -34,7 +34,12 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="hy" suppressHydrationWarning>
         <body>
-          <ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <ThemeDataProvider>
               <Toaster/>
               {children}

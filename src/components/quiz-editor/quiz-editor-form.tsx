@@ -58,7 +58,7 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
                subject: currQuiz?.subject || "others",
                questions: currQuiz?.questions.map(question => ({
                     ...question,
-                    correct: question.correct ?? "",
+                    correct: question.correct || "",
                })) || []
           },
      })

@@ -31,7 +31,7 @@ export default function PageLayout({children,mainClassName, searchBox, removeCre
      const user = useCurrentUser();
      return (
           <>
-               <header className="flex justify-between items-center fixed z-20 w-full top-0 left-0 p-4 bg-background text-foreground shadow gap-3 h-[80px]">
+               <header className="flex justify-between items-center fixed z-20 w-full top-0 left-0 p-4 bg-background text-foreground shadow gap-3 h-[80px] print:hidden">
                     <div className="flex gap-x-4">
                          <Logo width={100} height={45}/>
                          {searchBox && (
@@ -74,10 +74,10 @@ export default function PageLayout({children,mainClassName, searchBox, removeCre
                          )}
                     </div>
                </header>
-               <main className={cn("primary-main-bg min-h-screen mt-[80px] p-3 relative",mainClassName)}>
+               <main className={cn("primary-main-bg min-h-screen mt-[80px] p-3 relative print:mt-0",mainClassName)}>
                     {children}
                </main>
-               <footer className="text-center bg-background text-foreground shadow p-5 flex justify-between items-center flex-col md:flex-row gap-2">
+               <footer className="text-center bg-background text-foreground shadow p-5 flex justify-between items-center flex-col md:flex-row gap-2 print:hidden">
                     <Logo width={90} height={40}/>
                     <p>&copy; {year} | Բոլոր իրավունքները պաշտպանված են</p>
                     {!user && <ThemeSettings/>}

@@ -1,4 +1,4 @@
-import { AccountType, INameIcon, IQuestion, ISelectData, ISelectedQuiz, ISubject, QuestionType, QuizVisibility } from "@/data/types/other-types";
+import { AccountType, IMultiplayerHostState, IMultiplayerPlayState, INameIcon, IOnePlayerQuizState, IQuestion, IQuestionState, ISelectData, ISubject, QuestionType, QuizVisibility } from "@/data/types/other-types";
 import { BookOpenText, Globe, Link, Lock, User } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { CheckSquare, TextCursorInput } from "lucide-react"
@@ -54,12 +54,51 @@ export const quizTypes: ISelectData<QuestionType>[] = [
      {type: "true-false", name: "Այո և Ոչ", Icon: IoRadioButtonOn},
      {type: "text-answer", name: "Գրավոր", Icon: TextCursorInput}
 ]
-export const INITIAL_SELECTED_QUIZ: ISelectedQuiz = {
-     question: {} as IQuestion,
-     index: null
-}
 export const visibilities: Record<QuizVisibility,INameIcon> = {
      private: {name: "Մասնավոր", Icon: Lock},
      public: {name: "Ընդհանուր", Icon: Globe},
      unlisted: {name: "Հղումով հասանելի", Icon: Link}
 }
+
+// States
+export const QUIZ_START_TIME = 5;
+export const INITIAL_1P_QUIZ_STATE: IOnePlayerQuizState = {
+     isStarted: false,
+     startTimer: QUIZ_START_TIME,
+     currIdx: 0,
+     isNextRound: false,
+     correct: 0,
+     wrong: 0,
+     points: 0,
+}
+export const GET_INITIAL_QUESTION_STATE = (question: IQuestion): IQuestionState => ({
+     currTime: question.timer,
+     currAnswer: "",
+})
+export const INITIAL_MULTI_HOST_STATE: IMultiplayerHostState = {
+     currIdx: 0,
+     users: [],
+     isStarted: false,
+     startTimer: QUIZ_START_TIME,
+     showLeaderBoard: false,
+     isEnded: false,
+     placements: [],
+     showPlacements: false
+}
+export const GET_INITIAL_MULTI_PLAY_STATE = (userId: string): IMultiplayerPlayState => ({
+     isSubmitted: false,
+     isStarted: false,
+     startTimer: QUIZ_START_TIME,
+     currQuiz: null,
+     currIdx: 0,
+     isEnded: false,
+     place: 0,
+     score: 0,
+     formData: {
+          name: "",
+          quizId: "",
+          userId,
+          points: 0,
+          socketId: ""
+     }
+})

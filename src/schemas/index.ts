@@ -55,7 +55,7 @@ export const QuestionSchema = z.object({
      points: z.number().int("Միավորը պետք է լինի ամբողջ թիվ").gte(0,"Միավորը պետք է լինի դրական").refine(val=>val!==0,"Միավորը պետք չէ լինի 0"),
      type: z.enum(QUESTION_TYPE_ENUM),
      description: z.optional(z.string())
- });
+});
 
 export const QuizEditorSchema = z.object({
      name: z.string().min(2,"Պարտադիր է լրացնել հարցաշարի անունը"),
@@ -96,4 +96,18 @@ export const SettingsSchema = z.object({
 },{
      message: "Պարտադիր է գրել գաղտնաբառ",
      path: ["password"]
+})
+
+export const SoundSwitchFormSchema = z.object({
+     soundEffectOn: z.boolean(),
+})
+
+export const TextAnswerFormSchema = z.object({
+     answer: z.string().min(1,"Խնդրում ենք մուտքագրել Ձեր պատասխանը։")
+})
+
+export const MultiplayerQuizFormSchema = z.object({
+     quizCode: z.string().min(1,"Մուտքագրեք խաղի կոդը"),
+     name: z.string().min(1,"Մուտքագրեք աշակերտի անունը"),
+     soundEffectOn: z.boolean(),
 })

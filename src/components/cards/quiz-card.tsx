@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { formatDate } from "@/data/helpers";
 
 interface QuizCardProps{
      quiz: QuizDocument
 }
 export default function QuizCard({quiz}:QuizCardProps){
-     const {name,teacher,createdAt,questions,teacherEmail} = quiz
-     const date = new Date(createdAt);
+     const {name,teacher,createdAt,questions} = quiz
      const user = useCurrentUser();
      const isTeacher = user?.accountType==="teacher";
      const isStudent = user?.accountType==="student";
@@ -18,7 +18,7 @@ export default function QuizCard({quiz}:QuizCardProps){
           <Card className="w-full max-w-md">
                <CardHeader>
                     <CardTitle>{name}</CardTitle>
-                    <CardDescription>{teacher}&nbsp;&middot;&nbsp;{date.toLocaleDateString()}</CardDescription>
+                    <CardDescription>{teacher}&nbsp;&middot;&nbsp;{formatDate(createdAt)}</CardDescription>
                </CardHeader>
                <CardContent>
                     <p className="text-muted-foreground">{questions.length} Հարցեր</p>
@@ -26,7 +26,7 @@ export default function QuizCard({quiz}:QuizCardProps){
                <CardFooter className="flex-wrap gap-2">
                     {(isStudent || isPersonal || !user) &&(
                          <Button className="flex-1" asChild>
-                              <Link href={`/play?id=${quiz._id}`}>Խաղալ</Link>
+                              <Link href="/play">Խաղալ</Link>
                          </Button>
                     )}
                     {(isTeacher || isPersonal) &&(

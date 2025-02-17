@@ -33,6 +33,7 @@ export const dynamicRoutes: RegExp[] = [
      /^\/users\/[^/]+$/,
      /^\/explore\/[^/]+$/,
      /^\/play\/[^/]+$/,
+     /^\/sounds\/[^/]+$/,
 ]
 
 /**

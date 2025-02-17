@@ -43,7 +43,6 @@ export default function LoginForm(){
           setError("");
           setSuccess("");
           startTransition(()=>{
-               console.log(values)
                login(values,callbackUrl)
                .then(data=>{
                     if(data?.error){
