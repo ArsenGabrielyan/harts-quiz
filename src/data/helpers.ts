@@ -63,7 +63,7 @@ export function getSubjectInArmenian(subject: SubjectName): string{
      const currSubject = subjectList.find(val=>val.name===subject);
      return currSubject ? currSubject?.title : "";
 }
-export const absoluteUrl = (path: string) => `${process.env.NEXT_PUBLIC_BASE_URL}${path}`;
+export const absoluteUrl = (path: string) => `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
 export const divideQuestionsBySubject = (questions: QuizDocument[]) => questions.length===0 ? [] : Object.values(questions.reduce((obj,val)=>{
      const first = val.subject;
      if(!obj[first]){
