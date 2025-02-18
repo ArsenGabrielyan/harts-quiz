@@ -5,8 +5,9 @@ import { IQuizUser } from "@/data/types";
 
 const dev = process.env.NODE_ENV!=="production";
 const port = parseInt(process.env.PORT || "3000",10);
+const hostname = process.env.HOSTNAME || "localhost"
 
-const app = next({dev,port});
+const app = next({dev,hostname,port});
 const handler = app.getRequestHandler();
 
 function devLog(message: string){
@@ -83,6 +84,6 @@ app.prepare().then(()=>{
           process.exit(1);
      })
      .listen(port,()=>{
-          console.info(`> Ready on http://localhost:${port}/`)
+          console.info(`> Ready on http://${hostname}:${port}/`)
      })
 })
