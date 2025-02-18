@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PageLayout from "../page-layout";
 import { ExtendedUser } from "@/next-auth";
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import QuizCard from "../cards/quiz-card";
 
 interface MainPageProps {
@@ -48,7 +48,7 @@ export default function MainPage({user, questions}: MainPageProps) {
                               <div key={i} className="w-full">
                                    <h2 className="text-3xl md:text-4xl text-center my-3">{section.title}</h2>
                                    <div className="flex flex-wrap items-center justify-center gap-3">
-                                        {section.data.slice(0,10).map(quiz=><QuizCard key={quiz._id} quiz={quiz}/>)}
+                                        {section.data.slice(0,10).map(quiz=><QuizCard key={quiz.id} quiz={quiz}/>)}
                                    </div>
                               </div>
                          )))}

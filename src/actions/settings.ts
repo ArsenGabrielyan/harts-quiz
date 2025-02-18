@@ -1,26 +1,22 @@
 "use server"
 import * as z from "zod";
 import { SettingsSchema } from "@/schemas";
-import { connectDB } from "@/lib/mongodb/mongoose";
 import { getUserByEmail, getUserById, getUserByUsername } from "@/data/db/user";
-import User from "@/models/user";
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
 import bcrypt from "bcryptjs";
 import { generateUsername } from "@/data/helpers";
 import { getEveryQuizByTeacherEmail } from "@/data/db/quiz";
-import HartsQuiz from "@/models/quiz";
 import { signOut } from "@/auth";
-import client from "@/lib/mongodb/db";
+import { db } from "@/lib/db";
+import { getAccountByUserId } from "@/data/db/account";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
      const user = await currentUser();
      if(!user){
           return {error: "Մուտք գործեք հաշվին"}
      }
-
-     await connectDB();
      const dbUser = await getUserById(user.id!);
      if(!dbUser){
           return {error: "Մուտք գործեք հաշվին"}
@@ -35,7 +31,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
      if(values.email && values.email !== user.email){
           const existingUser = await getUserByEmail(values.email);
-          if(existingUser && existingUser._id!==user.id){
+          if(existingUser && existingUser.id!==user.id){
                return {error: "Էլ․ հասցեն արդեն օգտագործված է"}
           }
           const verificationToken = await generateVerificationToken(values.email);
@@ -52,7 +48,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
      if(values.username && values.username!==user.username){
           const existingUsername = await getUserByUsername(values.username);
-          if(existingUsername && existingUsername._id!==user.id){
+          if(existingUsername && existingUsername.id!==user.id){
                return {
                     error: "Այս օգտանունը արդեն գրանցված է",
                     newUsername: generateUsername(values.username)
@@ -74,30 +70,38 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
           values.newPassword = undefined;
      }
 
-     await User.findByIdAndUpdate(user.id,{
-          $set: {
+     await db.user.update({
+          where: {
+               id: user.id
+          },
+          data: {
                ...values
           }
-     });
+     })
 
      return {success: "Կարգավորումները թարմացված են"}
 }
 
 export const deleteAccount = async (email: string) => {
-     await connectDB();
      const user = await getUserByEmail(email);
      if(!user){
           return {error: "Այս օգտագործողը չի գրանցվել"}
      }
      const quizzes = await getEveryQuizByTeacherEmail(email);
      if(quizzes){
-          await HartsQuiz.deleteMany({teacherEmail: email});
+          await db.hartsQuiz.deleteMany({
+               where: {teacherEmail: email}
+          })
      }
-     if(user.isOauth){
-          const db = client.db("test");
-          await db.collection("accounts").deleteOne({userId: user._id});
+     const existingAccount = await getAccountByUserId(user.id);
+     if(existingAccount){
+          await db.account.deleteMany({
+               where: {userId: user.id}
+          })
      }
-     await User.deleteOne({email});
+     await db.user.delete({
+          where: {email}
+     })
      await signOut({redirectTo: "/"});
      return {success: "Այս հաշիվը ջնջվել է։"}
 }

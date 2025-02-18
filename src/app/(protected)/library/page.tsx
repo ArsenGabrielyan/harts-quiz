@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 export default async function LibraryPage(){
      const user = await currentUser();
-     const {quizzes} = await getQuizFromCurrEmail(user?.email!);
+     const {quizzes} = await getQuizFromCurrEmail(user?.email as string);
      if(user?.accountType==="student") redirect("/");
      return (
           <LibraryQuizList quizzes={quizzes}/>

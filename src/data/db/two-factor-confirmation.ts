@@ -1,8 +1,10 @@
-import TwoFactorConfirmation from "@/models/two-factor-confirmation";
+import { db } from "@/lib/db";
 
 export const getTwoFactorConfirmationByUserId = async(userId: string) => {
      try{
-          const twoFactorConfirmation = await TwoFactorConfirmation.findOne({userId});
+          const twoFactorConfirmation = await db.twoFactorConfirmation.findUnique({
+               where: {userId}
+          })
           return twoFactorConfirmation
      } catch {
           return null

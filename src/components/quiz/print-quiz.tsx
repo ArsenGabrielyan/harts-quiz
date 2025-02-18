@@ -1,5 +1,5 @@
 import { formatCorrectAnswer, formatDate, getSubjectInArmenian } from "@/data/helpers";
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import Image from "next/image";
 
 interface PrintQuizProps{
@@ -41,7 +41,7 @@ export default function PrintQuiz({quiz}:PrintQuizProps){
                               <div key={i} className="w-full">
                                    <strong className="mb-3">{i+1}. {question.question}</strong>
                                    {question.description && <p>{quiz.description}</p>}
-                                   {question.type==="text-answer" ? (
+                                   {question.type==="text" ? (
                                         <div className="h-8 border-black border-b"/>
                                    ) : (
                                         <div className="grid grid-cols-2 gap-2">

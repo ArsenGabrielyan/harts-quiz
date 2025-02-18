@@ -36,7 +36,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { getFilteredSubjects } from "@/data/helpers";
 import { Label } from "@/components/ui/label";
 import ThemeSettings from "@/components/themes/theme-changer";
-import { logout } from "@/actions/auth/logout";
 
 export default function SettingsPage(){
      const user = useCurrentUser();
@@ -83,7 +82,7 @@ export default function SettingsPage(){
      }
      const handleDeleteAccount = () => {
           if(confirm("Իսկապե՞ս ջնջել այս հաշիվը։ Եթե այո, ձեր բոլոր տվյալները նույնիսկ կջնջվեն և հետդարձ չկա")){
-               deleteAccount(user?.email!)
+               deleteAccount(user?.email as string)
                .then((data)=>{
                     if(data.error) setError(data.error);
                     if(data.success) setSuccess(data.success)

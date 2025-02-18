@@ -8,10 +8,8 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema } from "@/schemas"
 import { AuthError } from "next-auth";
 import { getTwoFactorTokenByEmail } from "@/data/db/two-factor-token";
-import TwoFactorToken from "@/models/two-factor-token";
 import { getTwoFactorConfirmationByUserId } from "@/data/db/two-factor-confirmation";
-import TwoFactorConfirmation from "@/models/two-factor-confirmation";
-import { connectDB } from "@/lib/mongodb/mongoose";
+import { db } from "@/lib/db";
 
 const authErrorMessages: Record<string, string> = {
      CredentialsSignin: "Սխալ էլ․ փոստ կամ գաղտնաբառ։",
@@ -32,7 +30,6 @@ export const login = async (
      values: z.infer<typeof LoginSchema>,
      callbackUrl?: string | null
 ) => {
-     await connectDB()
      const validatedFields = LoginSchema.safeParse(values);
 
      if(!validatedFields.success){
@@ -69,17 +66,22 @@ export const login = async (
                     return {error: "Վավերացման կոդի ժամկետը անցել է։"}
                }
 
-               await TwoFactorToken.findByIdAndDelete(twoFactorToken._id)
+               await db.twoFactorToken.delete({
+                    where: {id: twoFactorToken.id}
+               })
 
-               const existingConfirmation = await getTwoFactorConfirmationByUserId(existingUser._id);
+               const existingConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
                if(existingConfirmation){
-                    await TwoFactorConfirmation.findByIdAndDelete(existingConfirmation._id)
+                    await db.twoFactorConfirmation.delete({
+                         where: {id: existingConfirmation.id}
+                    })
                }
 
-               const newConfirmation = new TwoFactorConfirmation({
-                    userId: existingUser._id
-               });
-               await newConfirmation.save();
+               await db.twoFactorConfirmation.create({
+                    data: {
+                         userId: existingUser.id
+                    }
+               })
           } else {
                const twoFactorToken = await generateTwoFactorToken(existingUser.email);
                await sendTwoFactorEmail(

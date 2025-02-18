@@ -2,7 +2,7 @@
 import { useState } from "react";
 import PageLayout from "../page-layout";
 import QuizCard from "@/components/cards/quiz-card";
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import { Button } from "@/components/ui/button";
 import { subjectList } from "@/data/constants";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
@@ -44,7 +44,7 @@ export default function QuizList({quizzes}:QuizListProps){
                          return val.subject===selectedSubject
                     })
                     .slice(0,visibleItems)
-                    .map(quiz=><QuizCard quiz={quiz} key={quiz._id}/>)}
+                    .map(quiz=><QuizCard quiz={quiz} key={quiz.id}/>)}
                </div>
                {quizzes && visibleItems < quizzes.length && (
                     <Button variant="outline" onClick={handleLoadMore}>Ցույց տալ ավելին</Button>

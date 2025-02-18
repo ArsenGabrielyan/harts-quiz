@@ -1,4 +1,4 @@
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -31,11 +31,11 @@ export default function QuizCard({quiz}:QuizCardProps){
                     )}
                     {(isTeacher || isPersonal) &&(
                          <Button className="flex-1" asChild>
-                              <Link href={`/host?id=${quiz._id}`}>Կազմակերպել</Link>
+                              <Link href={`/host?id=${quiz.id}`}>Կազմակերպել</Link>
                          </Button>
                     )}
                     <Button variant="outline" className="flex-1" asChild>
-                         <Link href={`/explore/${quiz._id}`}>Իմանալ ավելին</Link>
+                         <Link href={`/explore/${quiz.id}`}>Իմանալ ավելին</Link>
                     </Button>
                </CardFooter>
           </Card>

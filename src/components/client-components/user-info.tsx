@@ -2,7 +2,7 @@
 import { User } from "lucide-react";
 import PageLayout from "../page-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { QuizDocument, UserDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument, UserDocument } from "@/data/types";
 import {accTypeInArmenian, getSubjectInArmenian} from "@/data/helpers"
 import { Button } from "../ui/button";
 import { toast } from "sonner";
@@ -80,7 +80,7 @@ export default function UserInfo({user, questions}: UserInfoProps){
                          <>
                               <h2 className="text-3xl md:text-4xl text-center my-3">Հարցաշարեր</h2>
                               <div className="flex flex-wrap justify-center items-center gap-4">
-                                   {questions.map(question=><QuizCard key={question._id} quiz={question}/>)}
+                                   {questions.map(question=><QuizCard key={question.id} quiz={question}/>)}
                               </div>
                          </>
                     )}

@@ -1,12 +1,10 @@
 "use server"
 import * as z from "zod"
 import { NewPasswordSchema } from "@/schemas"
-import { connectDB } from "@/lib/mongodb/mongoose"
 import { getPasswordResetTokenByToken } from "@/data/db/password-reset-token"
 import { getUserByEmail } from "@/data/db/user"
 import bcrypt from "bcryptjs"
-import User from "@/models/user"
-import PasswordResetToken from "@/models/pass-reset-token"
+import { db } from "@/lib/db"
 
 export const newPassword = async(
      values: z.infer<typeof NewPasswordSchema>,
@@ -22,7 +20,6 @@ export const newPassword = async(
           return {error: "Բոլոր դաշտերը վալիդացված չեն"}
      }
 
-     await connectDB();
      const {password} = validatedFields.data
      
      const existingToken = await getPasswordResetTokenByToken(token);
@@ -42,11 +39,17 @@ export const newPassword = async(
 
      const hashedPassword = await bcrypt.hash(password,10);
 
-     await User.findByIdAndUpdate(existingUser._id,{
-          $set: {password: hashedPassword}
+     await db.user.update({
+          where: {
+               id: existingUser.id
+          },
+          data: {
+               password: hashedPassword
+          }
      })
-
-     await PasswordResetToken.findByIdAndDelete(existingToken._id)
+     await db.passwordResetToken.delete({
+          where: {id: existingToken.id}
+     })
 
      return {success: "Գաղտնաբառը թարմացված է"}
 }

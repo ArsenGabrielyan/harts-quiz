@@ -31,10 +31,10 @@ import { useState, useTransition } from "react";
 import { Textarea } from "../ui/textarea";
 import { absoluteUrl, getFilteredSubjects, getInitialAnswers } from "@/data/helpers";
 import { quizVisibilities } from "@/data/constants";
-import { QuestionType } from "@/data/types/other-types";
+import { QuestionType } from "@/data/types";
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
 import { addQuiz } from "@/actions/quiz/addQuiz";
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import { editQuiz } from "@/actions/quiz/editQuiz";
 import useUnsavedChangesWarning from "@/hooks/use-before-unload";
 import { useRouter } from "next/navigation";
@@ -44,7 +44,7 @@ interface QuizEditorFormProps {
      currQuiz: QuizDocument | null;
 }
 export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
-     const [quizId, setQuizId] = useState(currQuiz?._id || "");
+     const [quizId, setQuizId] = useState(currQuiz?.id || "");
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
      const [isPending, startTransition] = useTransition();
@@ -82,7 +82,7 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
           setError("");
           setSuccess("");
           startTransition(()=>{
-               const action = !currQuiz ? addQuiz(values) : editQuiz(values,currQuiz._id);
+               const action = !currQuiz ? addQuiz(values) : editQuiz(values,currQuiz.id);
                action.then(data=>{
                     if(data.error) setError(data.error);
                     if(data.success) {
@@ -92,7 +92,7 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
                          }
                          form.reset();
                          if(currQuiz) setTimeout(()=>{
-                              router.push(`/explore/${currQuiz._id}`);
+                              router.push(`/explore/${currQuiz.id}`);
                          },1000)
                     }
                })
@@ -139,13 +139,13 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
      useUnsavedChangesWarning(!isCurrData());
      return <PageLayout removeCreateButton>
           <div className="p-4 w-full bg-background border-b shadow flex items-center justify-start fixed top-[80px] left-0 gap-2 z-20">
-               <Button size="icon" variant="outline" title="Նշելով" onClick={()=>addQuestion("pick-one")}>
+               <Button size="icon" variant="outline" title="Նշելով" onClick={()=>addQuestion("pick_one")}>
                     <CheckSquare/>
                </Button>
-               <Button size="icon" variant="outline" title="Այո և Ոչ" onClick={()=>addQuestion("true-false")}>
+               <Button size="icon" variant="outline" title="Այո և Ոչ" onClick={()=>addQuestion("true_false")}>
                     <IoRadioButtonOn/>
                </Button>
-               <Button size="icon" variant="outline" title="Գրավոր" onClick={()=>addQuestion("text-answer")}>
+               <Button size="icon" variant="outline" title="Գրավոր" onClick={()=>addQuestion("text")}>
                     <TextCursorInput/>
                </Button>
           </div>

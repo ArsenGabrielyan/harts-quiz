@@ -1,9 +1,6 @@
 import { LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { IconType } from "react-icons/lib";
-import { QuizDocument } from "./mongoose-document-types";
-import * as z from "zod";
-import { MultiplayerQuizFormSchema } from "@/schemas";
 
 // Themes
 export type ThemeColors = "Zinc" | "Rose" | "Blue" | "Green" | "Orange";
@@ -23,18 +20,25 @@ export interface IQuestion{
      points: number,
      description: string
 }
+export interface QuizDocument extends IQuiz{
+     id: string,
+     teacher: string,
+     teacherEmail: string,
+     createdAt: Date,
+     updatedAt?: Date
+}
 export interface IQuiz{
      name: string,
      description: string,
      questions: IQuestion[],
      visibility: QuizVisibility,
-     subject: string,
+     subject: SubjectName,
 }
 export interface ISelectedQuiz{
      question: IQuestion,
      index: number | null
 }
-export type QuestionType = "pick-one" | "true-false" | "text-answer"
+export type QuestionType = "pick_one" | "true_false" | "text"
 
 // Subjects
 export type SubjectType = "Հումանիտար" | "Մաթեմատիկական" | "Բնագիտական" | "Սպորտ և Առողջ Ապրելակերպ" | "Արվեստ և Արհեստ" | "Ուրիշ Առարկաներ"
@@ -104,4 +108,23 @@ export interface IMultiplayerPlayState{
      place: number,
      score: number,
      formData: IQuizUser
+}
+export interface UserDocument{
+     id: string,
+     name: string,
+     email: string,
+     username: string,
+     organization: string,
+     password: string,
+     image: string,
+     accountType: AccountType,
+     emailVerified: Date,
+     isTwoFactorEnabled: boolean,
+     soundEffectOn: boolean,
+     showFavoriteSubject: boolean,
+     bio: string,
+     favorites: string[],
+     favoriteSubject: SubjectName,
+     createdAt?: Date,
+     updatedAt?: Date
 }

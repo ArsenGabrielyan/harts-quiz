@@ -1,5 +1,5 @@
 import { visibilities } from "@/data/constants";
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import { Edit, CopyPlus, Trash, Share, Copy } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,11 @@ export interface LibraryQuizCardProps{
      quiz: QuizDocument
 }
 export default function LibraryQuizCard({quiz}: LibraryQuizCardProps){
-     const {questions,teacher,name,createdAt,_id,visibility} = quiz
+     const {questions,teacher,name,createdAt,id,visibility} = quiz
      const {name: visibilityName,Icon: VisibilityIcon} = visibilities[visibility];
      const router = useRouter();
      const handleDuplicateQuiz = () => {
-          duplicateQuiz(quiz?._id || "")
+          duplicateQuiz(quiz?.id || "")
           .then(data=>{
                if(data.error) toast.error(data.error)
                if(data.success) toast.success(data.success)
@@ -26,7 +26,7 @@ export default function LibraryQuizCard({quiz}: LibraryQuizCardProps){
      }
      const handleDeleteQuiz = () => {
           if(confirm("Իսկապե՞ս ջնջել այս հարցաշարը")){
-               deleteQuiz(quiz?._id || "")
+               deleteQuiz(quiz?.id || "")
                .then(data=>{
                     if(data.error) toast.error(data.error)
                     if(data.success) toast.success(data.success)
@@ -35,11 +35,11 @@ export default function LibraryQuizCard({quiz}: LibraryQuizCardProps){
           }
      }
      const handleCopyLink = () => {
-          navigator.clipboard.writeText(absoluteUrl(`/explore/${_id}`))
+          navigator.clipboard.writeText(absoluteUrl(`/explore/${id}`))
           toast.success("Հղումը պատճենված է")
      }
      const handleClickInfo = () => {
-          router.push(`/explore/${_id}`)
+          router.push(`/explore/${id}`)
      }
      return (
           <div className="p-4 border shadow bg-card rounded-xl flex justify-between items-center flex-col md:flex-row gap-4 text-center md:text-left">
@@ -60,7 +60,7 @@ export default function LibraryQuizCard({quiz}: LibraryQuizCardProps){
                          <Copy/>
                     </Button>
                     <Button variant="ghost" size="icon" title="Խմբագրել" asChild className="flex-1">
-                         <Link href={`/quiz-editor?id=${quiz._id}`}><Edit/></Link>
+                         <Link href={`/quiz-editor?id=${quiz.id}`}><Edit/></Link>
                     </Button>
                     <Button variant="ghost" size="icon" title="Կրկնօրինակել" onClick={handleDuplicateQuiz} className="flex-1">
                          <CopyPlus/>

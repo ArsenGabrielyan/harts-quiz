@@ -1,5 +1,5 @@
 "use client"
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import QuizWrapper from "./quiz-wrapper";
 import { Button } from "../ui/button";
 import * as z from "zod";
@@ -19,7 +19,7 @@ import { Switch } from "../ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { useState } from "react";
 import { INITIAL_1P_QUIZ_STATE, QUIZ_START_TIME } from "@/data/constants";
-import { IOnePlayerQuizState } from "@/data/types/other-types";
+import { IOnePlayerQuizState } from "@/data/types";
 import Timer from "./timer";
 import QuizQuestion from "./quiz-question";
 import { CircleCheck, CircleX } from "lucide-react";

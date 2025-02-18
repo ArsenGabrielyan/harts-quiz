@@ -1,13 +1,12 @@
 "use server";
-
-import { connectDB } from "@/lib/mongodb/mongoose";
-import HartsQuiz from "@/models/quiz";
+import { db } from "@/lib/db";
 
 export const deleteQuiz = async (quizId: string) => {
      if(!quizId){
           return {error: "Հարցաշարի ID-ն բացակայում է"}
      }
-     await connectDB();
-     await HartsQuiz.findByIdAndDelete(quizId);
+     await db.hartsQuiz.delete({
+          where: {id: quizId}
+     })
      return {success: "Հարցաշարը ջնջվել է"}
 }

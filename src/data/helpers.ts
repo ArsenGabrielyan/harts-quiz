@@ -1,8 +1,8 @@
 import { toast } from "sonner";
 import { subjectList } from "./constants";
-import { AccountType, IQuestionState, ISubject, QuestionType, SubjectName } from "./types/other-types";
+import { AccountType, IQuestionState, ISubject, QuestionType, SubjectName } from "./types";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { QuizDocument } from "./types/mongoose-document-types";
+import { QuizDocument } from "./types";
 import axios from "axios";
 
 export function getOAuthNotLinkedError(searchParams: ReadonlyURLSearchParams){
@@ -24,17 +24,17 @@ export function generateUsername(prefix="user",length=8){
 export const getSocketUrl = () => process.env.NODE_ENV==="development" ? "http://localhost:4000" : "https://harts-quiz-backend.onrender.com"
 export function getAnswerFormat(type: QuestionType){
      const result: Record<QuestionType, string[] | string> = {
-          "pick-one": ["Ա","Բ","Գ","Դ","Ե","Զ"],
-          "true-false": ["Այո", "Ոչ"],
-          "text-answer": ""
+          "pick_one": ["Ա","Բ","Գ","Դ","Ե","Զ"],
+          "true_false": ["Այո", "Ոչ"],
+          "text": ""
      }
      return result[type]
 }
 export function getAnswerType(type: QuestionType){
      const result: Record<QuestionType, string> = {
-          "pick-one": "Նշել Պատասխանը",
-          "true-false": "Այո կամ ոչ",
-          "text-answer": "Գրավոր հարց"
+          "pick_one": "Նշել Պատասխանը",
+          "true_false": "Այո կամ ոչ",
+          "text": "Գրավոր հարց"
      }
      return result[type];
 }
@@ -83,7 +83,7 @@ export const getFilteredSubjects = (list: ISubject[]=subjectList) => list.length
      return obj;
 },{} as Record<string, { title: string, data: ISubject[] }>))
 export const getInitialAnswers = (type: QuestionType) => ({
-     answers: type==="text-answer" ? [] : type==="true-false" ? ["true", "false"] : ["","","",""],
+     answers: type==="text" ? [] : type==="true_false" ? ["true", "false"] : ["","","",""],
      correct: ""
 })
 export async function fetcher(url: string){

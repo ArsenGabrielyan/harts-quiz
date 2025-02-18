@@ -1,6 +1,6 @@
 "use client"
 import setGlobalColorTheme, { getSavedThemeColor } from "@/lib/theme-colors"
-import { ThemeColors, ThemeColorStateParams } from "@/data/types/other-types"
+import { ThemeColors, ThemeColorStateParams } from "@/data/types"
 import { useTheme } from "next-themes"
 import { ThemeProviderProps } from "next-themes"
 

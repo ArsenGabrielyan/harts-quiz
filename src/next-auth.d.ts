@@ -1,5 +1,5 @@
 import type {DefaultSession} from "next-auth"
-import { AccountType, SubjectName } from "./data/types/other-types"
+import { AccountType, SubjectName } from "./data/types"
 
 export type ExtendedUser = DefaultSession["user"] & {
   username: string,

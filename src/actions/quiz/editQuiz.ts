@@ -1,9 +1,8 @@
 "use server"
 import * as z from "zod"
 import { QuizEditorSchema } from "@/schemas"
-import { connectDB } from "@/lib/mongodb/mongoose";
 import { currentUser } from "@/lib/auth";
-import HartsQuiz from "@/models/quiz";
+import { db } from "@/lib/db";
 
 export const editQuiz = async (values: z.infer<typeof QuizEditorSchema>, id: string): Promise<{
      error?: string,
@@ -15,7 +14,6 @@ export const editQuiz = async (values: z.infer<typeof QuizEditorSchema>, id: str
      if(!validatedFields.success){
           return {error: "Բոլոր դաշտերը վալիդացրած չեն"}
      }
-     await connectDB();
      const {name,subject,visibility,questions,description} = validatedFields.data;
      const currUser = await currentUser();
      if(!currUser){
@@ -24,16 +22,17 @@ export const editQuiz = async (values: z.infer<typeof QuizEditorSchema>, id: str
      if(currUser.accountType==="student"){
           return {error: "Միայն ուսուցիչը կամ անձնական հաշիվը կարող է ստեղծել հարցաշարեր"}
      }
-     await HartsQuiz.findByIdAndUpdate(id,{
-          $set: {
+     await db.hartsQuiz.update({
+          where: { id },
+          data: {
                name,
-               teacher: currUser.name,
-               teacherEmail: currUser.email,
+               teacher: currUser.name as string,
+               teacherEmail: currUser.email as string,
                description,
                questions,
                visibility,
                subject
           }
-     });
+     })
      return {success: "Հարցաշարը խմբագրված է"}
 }

@@ -21,14 +21,14 @@ export default auth(async (req) => {
      const isDynamicProtectedRoute = dynamicRoutes.some((route) => route.test(nextUrl.pathname))
 
      if(isApiAuthRoute) {
-          return null
+          return new Response(null, { status: 204 })
      }
 
      if(isAuthRoute){
           if(isLoggedIn){
                return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
           }
-          return null
+          return new Response(null, { status: 204 })
      }
 
      if(!isLoggedIn && !isPublicRoute && !isDynamicProtectedRoute) {
@@ -42,7 +42,7 @@ export default auth(async (req) => {
                nextUrl
           ))
      }
-     return null
+     return new Response(null, { status: 204 })
 })
 
 export const config = {

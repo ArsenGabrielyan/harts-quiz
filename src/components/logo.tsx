@@ -15,7 +15,7 @@ export default function Logo({width,height}: LogoProps){
      const handleMouseLeave = () => setImage(initialImage)
      useEffect(()=>{
           setImage(initialImage)
-     },[theme])
+     },[theme,initialImage])
      return (
           <Link href="/" onMouseOver={handleMouseOver} onMouseLeave={handleMouseLeave}>
                <Image src={image} alt="Harts" width={width} height={height}/>

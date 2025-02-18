@@ -1,6 +1,6 @@
 "use client";
 import * as z from "zod";
-import { ControllerRenderProps, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import {
      FormField,
      FormItem,
@@ -21,7 +21,7 @@ import { quizTypes } from "@/data/constants";
 import { Button } from "../ui/button";
 import { ArrowDown, ArrowUp, CheckCircle, CopyPlus, Minus, Plus, Trash } from "lucide-react";
 import { getInitialAnswers } from "@/data/helpers";
-import { QuestionType } from "@/data/types/other-types";
+import { QuestionType } from "@/data/types";
 
 interface QuizEditorQuestionCardProps{
      index: number,
@@ -121,7 +121,7 @@ export default function QuizEditorQuestionCard({
                          </FormItem>
                     )}
                />
-               {questionType==="pick-one" && (
+               {questionType==="pick_one" && (
                     <>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                               {answers.map((answer,answerIndex)=>(
@@ -164,13 +164,13 @@ export default function QuizEditorQuestionCard({
                          </div>
                     </>
                )}
-               {questionType==="true-false" && (
+               {questionType==="true_false" && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
                          <Button type="button" variant={correctAnswer==="true" ? "default" : 'outline'} onClick={()=>setValue(`questions.${index}.correct`,"true")}>Այո</Button>
                          <Button type="button" variant={correctAnswer==="false" ? "default" : 'outline'} onClick={()=>setValue(`questions.${index}.correct`,"false")}>Ոչ</Button>
                     </div>
                )}
-               {questionType==="text-answer" && (
+               {questionType==="text" && (
                     <FormField
                          control={control}
                          name={`questions.${index}.correct`}

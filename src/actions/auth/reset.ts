@@ -2,7 +2,6 @@
 import * as z from "zod"
 import { ResetSchema } from "@/schemas"
 import { getUserByEmail } from "@/data/db/user"
-import { connectDB } from "@/lib/mongodb/mongoose"
 import { sendPasswordResetEmail } from "@/lib/mail"
 import { generatePasswordResetToken } from "@/lib/tokens"
 
@@ -12,7 +11,6 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
      if(!validatedFields.success){
           return {error: "Էլ․ հասցեն վալիդացված չէ։"}
      }
-     await connectDB();
      const {email} = validatedFields.data;
 
      const existingUser = await getUserByEmail(email);

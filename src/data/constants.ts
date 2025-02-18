@@ -1,4 +1,4 @@
-import { AccountType, IMultiplayerHostState, IMultiplayerPlayState, INameIcon, IOnePlayerQuizState, IQuestion, IQuestionState, ISelectData, ISubject, QuestionType, QuizVisibility } from "@/data/types/other-types";
+import { AccountType, IMultiplayerHostState, IMultiplayerPlayState, INameIcon, IOnePlayerQuizState, IQuestion, IQuestionState, ISelectData, ISubject, QuestionType, QuizVisibility } from "@/data/types";
 import { BookOpenText, Globe, Link, Lock, User } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { CheckSquare, TextCursorInput } from "lucide-react"
@@ -50,9 +50,9 @@ export const quizVisibilities: ISelectData<QuizVisibility>[] = [
      {type: "unlisted", name: "Հղումով հասանելի", Icon: Link}
 ]
 export const quizTypes: ISelectData<QuestionType>[] = [
-     {type: 'pick-one', name: "Նշելով", Icon: CheckSquare},
-     {type: "true-false", name: "Այո և Ոչ", Icon: IoRadioButtonOn},
-     {type: "text-answer", name: "Գրավոր", Icon: TextCursorInput}
+     {type: 'pick_one', name: "Նշելով", Icon: CheckSquare},
+     {type: "true_false", name: "Այո և Ոչ", Icon: IoRadioButtonOn},
+     {type: "text", name: "Գրավոր", Icon: TextCursorInput}
 ]
 export const visibilities: Record<QuizVisibility,INameIcon> = {
      private: {name: "Մասնավոր", Icon: Lock},

@@ -1,6 +1,5 @@
+import { getUserById } from "@/data/db/user";
 import { currentUser } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb/mongoose";
-import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 
 export type LikeQuizResponse = {
@@ -14,8 +13,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<LikeQuizRespon
           return NextResponse.json({error: "Հարցաշարի ID-ն բացակայում է"},{status: 400});
      }
      const user = await currentUser();
-     await connectDB();
-     const existingUser = await User.findById(user?.id);
+     const existingUser = await getUserById(user?.id as string);
      if(!existingUser){
           return NextResponse.json({error: "Օգտատերը մուտք չի գործել"},{status: 401});
      }

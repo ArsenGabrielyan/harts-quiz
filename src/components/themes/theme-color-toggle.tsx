@@ -11,7 +11,7 @@ import {
 import { useThemeContext } from "@/context/theme-data-provider";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
-import { ThemeColors } from "@/data/types/other-types";
+import { ThemeColors } from "@/data/types";
 
 const availableThemeColors = [
   { name: "Zinc", light: "bg-zinc-900", dark: "bg-zinc-700", title: "Սև / Սպիտակ"},

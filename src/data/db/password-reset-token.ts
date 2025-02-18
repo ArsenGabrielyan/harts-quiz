@@ -1,8 +1,10 @@
-import PassResetToken from "@/models/pass-reset-token";
+import { db } from "@/lib/db";
 
 export const getPasswordResetTokenByToken = async (token: string) => {
      try{
-          const passwordResetToken = await PassResetToken.findOne({token})
+          const passwordResetToken = await db.passwordResetToken.findUnique({
+               where: {token}
+          })
           return passwordResetToken
      } catch{
           return null
@@ -11,7 +13,9 @@ export const getPasswordResetTokenByToken = async (token: string) => {
 
 export const getPasswordResetTokenByEmail = async (email: string) => {
      try{
-          const passwordResetToken = await PassResetToken.findOne({email})
+          const passwordResetToken = await db.passwordResetToken.findFirst({
+               where: {email}
+          })
           return passwordResetToken
      } catch{
           return null

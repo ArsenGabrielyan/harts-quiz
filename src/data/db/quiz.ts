@@ -1,9 +1,11 @@
-import HartsQuiz from "@/models/quiz"
-import { QuizVisibility } from "../types/other-types";
+import { QuizVisibility } from "../types";
+import { db } from "@/lib/db";
 
 export async function getQuizById(id: string){
      try{
-          const quiz = await HartsQuiz.findById(id);
+          const quiz = await db.hartsQuiz.findUnique({
+               where: {id}
+          })
           return quiz
      } catch {
           return null
@@ -12,7 +14,9 @@ export async function getQuizById(id: string){
 
 export async function getEveryQuizByTeacherEmail(email: string){
      try{
-          const quiz = await HartsQuiz.find({teacherEmail: email})
+          const quiz = await db.hartsQuiz.findUnique({
+               where: {teacherEmail: email}
+          })
           return quiz
      } catch {
           return null
@@ -21,7 +25,9 @@ export async function getEveryQuizByTeacherEmail(email: string){
 
 export async function getEveryQuizByVisibility(visibility: QuizVisibility){
      try{
-          const quizzes = await HartsQuiz.find({visibility});
+          const quizzes = await db.hartsQuiz.findMany({
+               where: {visibility}
+          })
           return quizzes
      } catch {
           return null;

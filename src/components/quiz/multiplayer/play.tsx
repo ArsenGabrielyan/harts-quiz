@@ -20,9 +20,9 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { formatNumberSuffix, playSound } from "@/data/helpers";
 import { GET_INITIAL_MULTI_PLAY_STATE, QUIZ_START_TIME } from "@/data/constants";
-import { IMultiplayerPlayState, IQuizPlacement, IQuizUser } from "@/data/types/other-types";
+import { IMultiplayerPlayState, IQuizPlacement, IQuizUser } from "@/data/types";
 import { v4 as uuidv4 } from "uuid";
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import { GridLoader } from "react-spinners";
 import {socket} from "@/socket";
 import QuizQuestion from "../quiz-question";
@@ -81,7 +81,8 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
                socket.off("start round");
                socket.off("end quiz");
           }
-     },[])
+          // eslint-disable-next-line
+     },[state.formData.userId])
      const handleSubmitToHost = (values: z.infer<typeof MultiplayerQuizFormSchema>) => {
           const data: IQuizUser = {
                ...state.formData,

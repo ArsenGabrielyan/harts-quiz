@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Progress } from "../ui/progress";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +17,7 @@ export default function Timer({time, onTimeChange, initialTime, isInQuizQuestion
           return () => {
                if(interval) clearInterval(interval)
           }
+          // eslint-disable-next-line
      },[time])
      return (
           <div className={cn("flex items-center justify-between gap-4",isInQuizQuestion && "mt-6")}>

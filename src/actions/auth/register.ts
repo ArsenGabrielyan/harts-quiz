@@ -2,8 +2,7 @@
 import { RegisterSchema } from "@/schemas"
 import * as z from "zod"
 import bcrypt from "bcryptjs"
-import { connectDB } from "@/lib/mongodb/mongoose"
-import User from "@/models/user"
+import { db } from "@/lib/db"
 import { getUserByEmail, getUserByUsername } from "@/data/db/user"
 import { generateVerificationToken } from "@/lib/tokens"
 import { sendVerificationEmail } from "@/lib/mail"
@@ -15,7 +14,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
      if(!validatedFields.success){
           return {error: "Բոլոր դաշտերը վալիդացված չեն"}
      }
-     await connectDB();
      const {email,password,name, username, accountType} = validatedFields.data;
      const hashedPassword = await bcrypt.hash(password,10);
      const existingUser = await getUserByEmail(email);
@@ -24,15 +22,16 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
      }
      const existingUsername = await getUserByUsername(username);
      const newUsername = existingUsername ? generateUsername(username) : username
-     const user = new User({
-          name,
-          email,
-          password: hashedPassword,
-          username: newUsername,
-          accountType,
-          isOauth: false,
+
+     await db.user.create({
+          data: {
+               name,
+               email,
+               password: hashedPassword,
+               username: newUsername,
+               accountType,
+          }
      })
-     await user.save()
      
      const verificationToken = await generateVerificationToken(email);
      await sendVerificationEmail(name,verificationToken.email,verificationToken.token)

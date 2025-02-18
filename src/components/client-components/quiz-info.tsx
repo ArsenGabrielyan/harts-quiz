@@ -1,5 +1,5 @@
 "use client"
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import PageLayout from "../page-layout";
 import { Button } from "../ui/button";
 import { CopyPlus, Edit, Heart, Printer, Share, Trash, Loader, Link2, Lock } from "lucide-react";
@@ -27,9 +27,9 @@ export default function QuizInfo({quiz}: QuizInfoProps){
      const isTeacher = user?.accountType==="teacher";
      const isStudent = user?.accountType==="student";
      const isPersonal = user?.accountType==="personal";
-     const {data, isLoading, isValidating, mutate: update} = useSWR<LikeQuizResponse>(`/api/like-quiz?quizId=${quiz?._id}`,fetcher)
+     const {data, isLoading, isValidating, mutate: update} = useSWR<LikeQuizResponse>(`/api/like-quiz?quizId=${quiz?.id}`,fetcher)
      const handleDuplicateQuiz = () => {
-          duplicateQuiz(quiz?._id || "")
+          duplicateQuiz(quiz?.id || "")
           .then(data=>{
                if(data.error) toast.error(data.error)
                if(data.success) toast.success(data.success)
@@ -38,7 +38,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
      }
      const handleDeleteQuiz = () => {
           if(confirm("Իսկապե՞ս ջնջել այս հարցաշարը")){
-               deleteQuiz(quiz?._id || "")
+               deleteQuiz(quiz?.id || "")
                .then(data=>{
                     if(data.error) toast.error(data.error)
                     if(data.success) router.push("/library");
@@ -51,7 +51,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                toast.error(data.error)
                return;
           }
-          likeQuiz(quiz?._id || "")
+          likeQuiz(quiz?.id || "")
           .then(data=>{
                if(data.error) toast.error(data.error)
                if(data.success) update();
@@ -88,7 +88,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                                              {isCurrUser && (
                                                   <>
                                                        <Button variant="ghost" size="icon" title="Խմբագրել" asChild>
-                                                            <Link href={`/quiz-editor?id=${quiz._id}`}><Edit/></Link>
+                                                            <Link href={`/quiz-editor?id=${quiz.id}`}><Edit/></Link>
                                                        </Button>
                                                        <Button variant="ghost" size="icon" title="Կրկնօրինակել" onClick={handleDuplicateQuiz}>
                                                             <CopyPlus/>
@@ -108,11 +108,11 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                                         )}
                                         {(isTeacher || isPersonal) && (
                                              <Button className="flex-1" asChild>
-                                                  <Link href={`/host?id=${quiz._id}`}>Կազմակերպել</Link>
+                                                  <Link href={`/host?id=${quiz.id}`}>Կազմակերպել</Link>
                                              </Button>
                                         )}
                                         <Button variant="outline" className="flex-1" asChild>
-                                             <Link href={`/play/${quiz._id}`}>Խաղալ մենակ</Link>
+                                             <Link href={`/play/${quiz.id}`}>Խաղալ մենակ</Link>
                                         </Button>
                                    </div>
                               </div>

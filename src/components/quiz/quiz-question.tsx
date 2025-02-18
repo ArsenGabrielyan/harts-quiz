@@ -1,6 +1,6 @@
 import { GET_INITIAL_QUESTION_STATE } from "@/data/constants";
 import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/data/helpers";
-import { IQuestion, IQuestionState } from "@/data/types/other-types";
+import { IQuestion, IQuestionState } from "@/data/types";
 import { useEffect, useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -71,6 +71,7 @@ export default function QuizQuestion({
      useEffect(()=>{
           if(state.currTime <= 0 && afterCheck)
                afterCheck(state.currAnswer,question.correct,question.points)
+          // eslint-disable-next-line
      },[state.currTime])
      useEffect(()=>{
           if(soundEffectOn)
@@ -94,7 +95,7 @@ export default function QuizQuestion({
                     <h2 className="text-2xl font-semibold text-center w-full">Ճիշտ պատասխան՝ {formatCorrectAnswer(question.correct)}</h2>
                )}
                {!isTeacher && (
-                    question.type==="text-answer" ? (
+                    question.type==="text" ? (
                          <Form {...form}>
                               <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmitAnswer)}>
                                    <div className="space-y-4">
@@ -127,10 +128,10 @@ export default function QuizQuestion({
                                         type="button"
                                         key={i}
                                         onClick={()=>checkAnswer(answer)}
-                                        className={cn("w-full",question.type==="pick-one" && "justift-start")}
+                                        className={cn("w-full",question.type==="pick_one" && "justift-start")}
                                         disabled={currAnswer!=="" || currTime<=0}
                                    >
-                                        {question.type==="true-false" ? answerFormat[i] : `${answerFormat[i]}. ${answer}`}
+                                        {question.type==="true_false" ? answerFormat[i] : `${answerFormat[i]}. ${answer}`}
                                    </Button>
                               ))}
                          </div>

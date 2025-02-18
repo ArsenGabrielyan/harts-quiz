@@ -1,5 +1,5 @@
 "use client"
-import { QuizDocument } from "@/data/types/mongoose-document-types";
+import { QuizDocument } from "@/data/types";
 import QuizWrapper from "../quiz-wrapper";
 import { formatNumberSuffix, generateGameCode, playSound } from "@/data/helpers";
 import * as z from "zod";
@@ -20,7 +20,7 @@ import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { INITIAL_MULTI_HOST_STATE, QUIZ_START_TIME } from "@/data/constants";
-import { IMultiplayerHostState, IQuizPlacement, IQuizUser } from "@/data/types/other-types";
+import { IMultiplayerHostState, IQuizPlacement, IQuizUser } from "@/data/types";
 import {produce} from "immer"
 import {socket} from "@/socket";
 import Timer from "../timer";
@@ -62,7 +62,7 @@ export default function MultiplayerQuizHost({quiz, user}: MultiplayerQuizHostPro
                socket.off("end round");
                socket.off("update players");
           }
-     },[])
+     },[gameCode])
      const nextQuestion = () => {
           const nextIndex = state.currIdx+1;
           socket.emit("next round",nextIndex,gameCode)

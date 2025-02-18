@@ -1,4 +1,4 @@
-import { IQuestion } from "@/data/types/other-types";
+import { IQuestion } from "@/data/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAnswerType } from "@/data/helpers";
 
@@ -13,9 +13,9 @@ export default function QuestionCard({question,id}:QuestionCardProps){
                     <CardTitle>{id} - {question.question}</CardTitle>
                     <CardDescription>{getAnswerType(question.type)}</CardDescription>
                </CardHeader>
-               {(question.description || (question.answers && question.type==="pick-one")) && (
+               {(question.description || (question.answers && question.type==="pick_one")) && (
                     <CardContent>
-                         {question.description && <p className={question.answers && question.type==="pick-one" ? "mb-3" : ""}>{question.description}</p>}
+                         {question.description && <p className={question.answers && question.type==="pick_one" ? "mb-3" : ""}>{question.description}</p>}
                          <ul className="space-y-2">
                               {question.answers.map((answer,i)=>(
                                    <li key={i}>{i+1}. {answer}</li>

@@ -1,14 +1,12 @@
 import NextAuth from "next-auth"
 import authConfig from "@/auth.config"
-import {MongoDBAdapter} from "@auth/mongodb-adapter"
-import client from "./lib/mongodb/db"
-import { connectDB } from "./lib/mongodb/mongoose"
 import { getUserById } from "@/data/db/user"
-import User from "@/models/user"
 import { getTwoFactorConfirmationByUserId } from "@/data/db/two-factor-confirmation"
-import TwoFactorConfirmation from "./models/two-factor-confirmation"
 import { generateUsername } from "./data/helpers"
-import { AccountType, SubjectName } from "./data/types/other-types"
+import { AccountType, SubjectName } from "./data/types"
+import { db } from "./lib/db"
+import { getAccountByUserId } from "./data/db/account"
+import { PrismaAdapter } from "@auth/prisma-adapter"
  
 export const { auth, handlers, signIn, signOut } = NextAuth({
   pages: {
@@ -17,16 +15,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   events: {
     async linkAccount({user}){
-      await connectDB();
-      const existingUser = await User.findById(user.id);
+      const existingUser = await db.user.findUnique({
+        where: {
+          id: user?.id
+        }
+      })
       const username = generateUsername(existingUser?.name.toLowerCase().split(" ")[0])
-      await User.findByIdAndUpdate(user.id,{
-        $set: {
+      await db.user.update({
+        where: {
+          id: user.id
+        },
+        data: {
           emailVerified: new Date(),
           username,
-          soundEffectOn: false,
-          showFavoriteSubject: true,
-          isOauth: true,
           accountType: "personal",
           favorites: []
         }
@@ -38,19 +39,22 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // Allow OAuth Without Email Verification
       if(account?.provider!=="credentials") return true;
 
-      await connectDB();
       const existingUser = await getUserById(user.id as string)
 
       // Prevent Sign In Without a Verification
       if(!existingUser?.emailVerified) return false
 
       if(existingUser.isTwoFactorEnabled) {
-        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser._id);
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
 
         if(!twoFactorConfirmation) return false;
 
         // Delete 2FA Confimration For Next Sign In
-        await TwoFactorConfirmation.findByIdAndDelete(twoFactorConfirmation._id)
+        await db.twoFactorConfirmation.delete({
+          where: {
+            id: twoFactorConfirmation.id
+          }
+        })
       }
 
       return true;
@@ -79,10 +83,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async jwt({token}){
       if(!token.sub) return token
 
-      await connectDB();
       const existingUser = await getUserById(token.sub)
 
       if(!existingUser) return token;
+
+      const existingAccount = await getAccountByUserId(existingUser.id);
 
       token.name = existingUser.name;
       token.email = existingUser.email;
@@ -94,12 +99,12 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       token.showFavoriteSubject = existingUser.showFavoriteSubject;
       token.bio = existingUser.bio;
       token.favoriteSubject = existingUser.favoriteSubject;
-      token.isOauth = existingUser.isOauth;
+      token.isOauth = !!existingAccount;
 
       return token
     }
   },
-  adapter: MongoDBAdapter(client),
+  adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
     maxAge: 3*24*60*60,
