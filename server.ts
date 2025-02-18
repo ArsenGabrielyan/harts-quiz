@@ -5,8 +5,9 @@ import { IQuizUser } from "@/data/types";
 
 const dev = process.env.NODE_ENV!=="production";
 const port = parseInt(process.env.PORT || "3000",10);
+const hostname = process.env.HOSTNAME || "localhost"
 
-const app = next({dev,turbopack: true});
+const app = next({dev,hostname,port,turbopack: true});
 const handle = app.getRequestHandler();
 
 function devLog(message: string){

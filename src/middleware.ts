@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
-
+import { NextResponse } from "next/server";
 import {
      DEFAULT_LOGIN_REDIRECT,
      apiAuthPrefix,
@@ -21,14 +21,14 @@ export default auth(async (req) => {
      const isDynamicProtectedRoute = dynamicRoutes.some((route) => route.test(nextUrl.pathname))
 
      if(isApiAuthRoute) {
-          return new Response(null, { status: 204 })
+          return NextResponse.next()
      }
 
      if(isAuthRoute){
           if(isLoggedIn){
-               return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
+               return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
           }
-          return new Response(null, { status: 204 })
+          return NextResponse.next()
      }
 
      if(!isLoggedIn && !isPublicRoute && !isDynamicProtectedRoute) {
@@ -37,12 +37,12 @@ export default auth(async (req) => {
                callbackUrl += nextUrl.search
           }
           const encodedCallbackUrl = encodeURI(callbackUrl)
-          return Response.redirect(new URL(
+          return NextResponse.redirect(new URL(
                `/auth/login?callbackUrl=${encodedCallbackUrl}`,
                nextUrl
           ))
      }
-     return new Response(null, { status: 204 })
+     return NextResponse.next()
 })
 
 export const config = {
