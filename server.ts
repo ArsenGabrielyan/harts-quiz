@@ -84,6 +84,6 @@ app.prepare().then(()=>{
           process.exit(1);
      })
      .listen(port,()=>{
-          console.info(`> Ready on http://localhost:${port}/`)
+          console.info(`> Ready on http://${hostname}:${port}/`)
      })
 })
