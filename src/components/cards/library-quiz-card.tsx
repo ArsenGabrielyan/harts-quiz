@@ -1,4 +1,4 @@
-import { visibilities } from "@/data/constants";
+import { VISIBILITIES } from "@/data/constants/mappings";
 import { QuizDocument } from "@/data/types";
 import { Edit, CopyPlus, Trash, Share, Copy } from "lucide-react";
 import Link from "next/link";
@@ -14,7 +14,7 @@ export interface LibraryQuizCardProps{
 }
 export default function LibraryQuizCard({quiz}: LibraryQuizCardProps){
      const {questions,teacher,name,createdAt,id,visibility} = quiz
-     const {name: visibilityName,Icon: VisibilityIcon} = visibilities[visibility];
+     const {name: visibilityName,Icon: VisibilityIcon} = VISIBILITIES[visibility];
      const router = useRouter();
      const handleDuplicateQuiz = () => {
           duplicateQuiz(quiz?.id || "")

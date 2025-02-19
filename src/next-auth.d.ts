@@ -1,5 +1,6 @@
 import type {DefaultSession} from "next-auth"
-import { AccountType, SubjectName } from "./data/types"
+import { SubjectName } from "./data/types"
+import { AccountType } from "@prisma/client"
 
 export type ExtendedUser = DefaultSession["user"] & {
   username: string,

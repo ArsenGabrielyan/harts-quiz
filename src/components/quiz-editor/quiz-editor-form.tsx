@@ -30,8 +30,8 @@ import PageLayout from "../page-layout"
 import { useState, useTransition } from "react";
 import { Textarea } from "../ui/textarea";
 import { absoluteUrl, getFilteredSubjects, getInitialAnswers } from "@/data/helpers";
-import { quizVisibilities } from "@/data/constants";
-import { QuestionType } from "@/data/types";
+import { VISIBILITIES_LIST } from "@/data/constants/others";
+import { QuestionType } from "@prisma/client"
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
 import { addQuiz } from "@/actions/quiz/addQuiz";
 import { QuizDocument } from "@/data/types";
@@ -204,7 +204,7 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
                                                             </SelectTrigger>
                                                        </FormControl>
                                                        <SelectContent>
-                                                            {quizVisibilities.map(({type,Icon,name},i)=>(
+                                                            {VISIBILITIES_LIST.map(({type,Icon,name},i)=>(
                                                                  <SelectItem
                                                                       key={i}
                                                                       value={type}

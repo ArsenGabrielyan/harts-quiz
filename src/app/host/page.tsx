@@ -1,5 +1,6 @@
 import { getQuizDetails } from "@/actions/quiz";
 import MultiplayerQuizHost from "@/components/quiz/multiplayer/host";
+import { QuizDocument } from "@/data/types";
 import { currentUser } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 
@@ -11,10 +12,9 @@ export default async function HostQuizPage({
      const {id} = await searchParams;
      const user = await currentUser();
      const {quiz} = await getQuizDetails(id as string,user)
-     if(!user) redirect("/auth/login");
-     if(user.accountType==="student") redirect("/explore");
+     if(user && user.accountType==="student") redirect("/explore");
      if(!quiz) notFound();
      return (
-          <MultiplayerQuizHost quiz={quiz}/>
+          <MultiplayerQuizHost quiz={quiz as QuizDocument}/>
      )
 }

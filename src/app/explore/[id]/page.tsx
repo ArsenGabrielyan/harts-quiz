@@ -1,5 +1,6 @@
 import { getQuizDetails } from "@/actions/quiz"
 import QuizInfo from "@/components/client-components/quiz-info"
+import { QuizDocument } from "@/data/types"
 import { currentUser } from "@/lib/auth"
 import { notFound } from "next/navigation"
 
@@ -13,6 +14,6 @@ export default async function SingleQuizPage({
      const {quiz} = await getQuizDetails(id,user)
      if(!quiz) notFound();
      return (
-          <QuizInfo quiz={quiz}/>
+          <QuizInfo quiz={quiz as QuizDocument}/>
      )
 }

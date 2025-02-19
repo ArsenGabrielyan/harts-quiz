@@ -30,7 +30,7 @@ import { Input } from "@/components/ui/input";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { FormSuccess } from "@/components/form-success";
 import { FormError } from "@/components/form-error";
-import { accountTypesEnum } from "@/data/constants";
+import { ENUM_ACCOUNT_TYPES } from "@/data/constants/others";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { getFilteredSubjects } from "@/data/helpers";
@@ -183,7 +183,7 @@ export default function SettingsPage(){
                                                             </SelectTrigger>
                                                        </FormControl>
                                                        <SelectContent>
-                                                            {accountTypesEnum.map((accType,i)=>(
+                                                            {ENUM_ACCOUNT_TYPES.map((accType,i)=>(
                                                                  <SelectItem
                                                                       key={i}
                                                                       value={accType.type}

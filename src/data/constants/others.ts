@@ -1,10 +1,12 @@
-import { AccountType, IMultiplayerHostState, IMultiplayerPlayState, INameIcon, IOnePlayerQuizState, IQuestion, IQuestionState, ISelectData, ISubject, QuestionType, QuizVisibility } from "@/data/types";
+import { ISelectData, ISubject } from "@/data/types";
+import { AccountType, QuestionType, QuizVisibility } from "@prisma/client";
 import { BookOpenText, Globe, Link, Lock, User } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { CheckSquare, TextCursorInput } from "lucide-react"
 import { IoRadioButtonOn } from "react-icons/io5"
 
-export const subjectList: ISubject[] = [
+export const QUIZ_START_TIME = 5;
+export const SUBJECT_LIST: ISubject[] = [
      {name: "mayreni", title: "Մայրենի", type: "Հումանիտար"},
      {name: "armenian", title: "Հայոց լեզու", type: "Հումանիտար"},
      {name: "russian", title: "Ռուսաց լեզու (Ռուսերեն)", type: "Հումանիտար"},
@@ -38,67 +40,19 @@ export const subjectList: ISubject[] = [
      {name: "art", title: "Կերպարվեստ",type: "Արվեստ և Արհեստ"},
      {name: "reading", title: "Ինքնուրույն ընթերցանություն", type: "Հումանիտար"},
      {name: "others", title: "Ուրիշներ",type: "Ուրիշ Առարկաներ"},
-]
-export const accountTypesEnum: ISelectData<AccountType>[] = [
+] as const;
+export const ENUM_ACCOUNT_TYPES: ISelectData<AccountType>[] = [
      {type: "student", name: "Ուսանող", Icon: BookOpenText},
      {type: "teacher", name: "Ուսուցիչ", Icon: FaChalkboardTeacher},
      {type: "personal", name: "Անձնական", Icon: User}
 ]
-export const quizVisibilities: ISelectData<QuizVisibility>[] = [
+export const VISIBILITIES_LIST: ISelectData<QuizVisibility>[] = [
      {type: "private", name: "Մասնավոր", Icon: Lock},
      {type: "public", name: "Ընդհանուր", Icon: Globe},
      {type: "unlisted", name: "Հղումով հասանելի", Icon: Link}
 ]
-export const quizTypes: ISelectData<QuestionType>[] = [
+export const QUIZ_TYPES_LIST: ISelectData<QuestionType>[] = [
      {type: 'pick_one', name: "Նշելով", Icon: CheckSquare},
      {type: "true_false", name: "Այո և Ոչ", Icon: IoRadioButtonOn},
      {type: "text", name: "Գրավոր", Icon: TextCursorInput}
 ]
-export const visibilities: Record<QuizVisibility,INameIcon> = {
-     private: {name: "Մասնավոր", Icon: Lock},
-     public: {name: "Ընդհանուր", Icon: Globe},
-     unlisted: {name: "Հղումով հասանելի", Icon: Link}
-}
-
-// States
-export const QUIZ_START_TIME = 5;
-export const INITIAL_1P_QUIZ_STATE: IOnePlayerQuizState = {
-     isStarted: false,
-     startTimer: QUIZ_START_TIME,
-     currIdx: 0,
-     isNextRound: false,
-     correct: 0,
-     wrong: 0,
-     points: 0,
-}
-export const GET_INITIAL_QUESTION_STATE = (question: IQuestion): IQuestionState => ({
-     currTime: question.timer,
-     currAnswer: "",
-})
-export const INITIAL_MULTI_HOST_STATE: IMultiplayerHostState = {
-     currIdx: 0,
-     users: [],
-     isStarted: false,
-     startTimer: QUIZ_START_TIME,
-     showLeaderBoard: false,
-     isEnded: false,
-     placements: [],
-     showPlacements: false
-}
-export const GET_INITIAL_MULTI_PLAY_STATE = (userId: string): IMultiplayerPlayState => ({
-     isSubmitted: false,
-     isStarted: false,
-     startTimer: QUIZ_START_TIME,
-     currQuiz: null,
-     currIdx: 0,
-     isEnded: false,
-     place: 0,
-     score: 0,
-     formData: {
-          name: "",
-          quizId: "",
-          userId,
-          points: 0,
-          socketId: ""
-     }
-})

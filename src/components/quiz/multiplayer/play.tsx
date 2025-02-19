@@ -19,7 +19,8 @@ import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { formatNumberSuffix, playSound } from "@/data/helpers";
-import { GET_INITIAL_MULTI_PLAY_STATE, QUIZ_START_TIME } from "@/data/constants";
+import { GET_INITIAL_MULTI_PLAY_STATE } from "@/data/constants/states";
+import { QUIZ_START_TIME } from "@/data/constants/others";
 import { IMultiplayerPlayState, IQuizPlacement, IQuizUser } from "@/data/types";
 import { v4 as uuidv4 } from "uuid";
 import { QuizDocument } from "@/data/types";
@@ -27,6 +28,7 @@ import { GridLoader } from "react-spinners";
 import {socket} from "@/socket";
 import QuizQuestion from "../quiz-question";
 import Timer from "../timer";
+import { toast } from "sonner";
 
 interface MultiplayerQuizPlayProps{
      user?: ExtendedUser,
@@ -103,7 +105,7 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
           socket.emit("round end",answer,points,correctAnswer,state.formData.userId,state.formData.quizId);
           setState(prev=>({...prev, score: isCorrect ? prev.score+points : prev.score}));
           if(soundEffectOn)
-               playSound(isCorrect ? "correct.mp3" : "wrong.mp3");
+               playSound(isCorrect ? "correct.mp3" : "wrong.mp3",error=>toast.error(error));
      }
      const handleChangeTime = (time: number) => {
           updateState({startTimer: time})

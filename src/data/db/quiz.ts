@@ -1,4 +1,4 @@
-import { QuizVisibility } from "../types";
+import { QuizVisibility } from "@prisma/client";
 import { db } from "@/lib/db";
 
 export async function getQuizById(id: string){

@@ -1,3 +1,4 @@
+import { AccountType, QuestionType, QuizVisibility } from "@prisma/client";
 import { LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { IconType } from "react-icons/lib";
@@ -10,7 +11,6 @@ export interface ThemeColorStateParams{
 }
 
 // Quiz Types
-export type QuizVisibility = | "public" | "private" | "unlisted"
 export interface IQuestion{
      question: string,
      answers: string[],
@@ -20,13 +20,6 @@ export interface IQuestion{
      points: number,
      description: string
 }
-export interface QuizDocument extends IQuiz{
-     id: string,
-     teacher: string,
-     teacherEmail: string,
-     createdAt: Date,
-     updatedAt?: Date
-}
 export interface IQuiz{
      name: string,
      description: string,
@@ -34,31 +27,12 @@ export interface IQuiz{
      visibility: QuizVisibility,
      subject: SubjectName,
 }
-export interface ISelectedQuiz{
-     question: IQuestion,
-     index: number | null
-}
-export type QuestionType = "pick_one" | "true_false" | "text"
-
-// Subjects
-export type SubjectType = "Հումանիտար" | "Մաթեմատիկական" | "Բնագիտական" | "Սպորտ և Առողջ Ապրելակերպ" | "Արվեստ և Արհեստ" | "Ուրիշ Առարկաներ"
-export type SubjectName = "mayreni" | "armenian" | "russian" | "english" | "literature" | "foreign-lang" | "foreign-literature" | "algebra" | "geometry" | "mathematics" | "arithmetics" | "advanced-math" | "physics" | "chemistry" | "natural-env" | "natural-history" | "geography" | "astronomy" | "biology" | "informatics" | "pe" | "health" | "music" | "nzp" | "chess" | "local-history" | "history" | "social-studies" | "technology" | "religious-studies" | "art" | "reading" | "others"
-export interface ISubject{
-     name: SubjectName,
-     title: string,
-     type: SubjectType
-}
-
-// Other
-export type AccountType = "student" | "teacher" | "personal"
-export interface ISelectData<T>{
-     type: T,
-     name: string,
-     Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
-}
-export interface INameIcon{
-     name: string,
-     Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
+export interface QuizDocument extends IQuiz{
+     id: string,
+     teacher: string,
+     teacherEmail: string,
+     createdAt: Date,
+     updatedAt?: Date
 }
 export interface IQuizUser{
      name: string,
@@ -72,6 +46,14 @@ export interface IQuizPlacement{
      points: number,
      place: number
      userId: string,
+}
+
+// Subjects
+export type SubjectName = "mayreni" | "armenian" | "russian" | "english" | "literature" | "foreign-lang" | "foreign-literature" | "algebra" | "geometry" | "mathematics" | "arithmetics" | "advanced-math" | "physics" | "chemistry" | "natural-env" | "natural-history" | "geography" | "astronomy" | "biology" | "informatics" | "pe" | "health" | "music" | "nzp" | "chess" | "local-history" | "history" | "social-studies" | "technology" | "religious-studies" | "art" | "reading" | "others"
+export interface ISubject{
+     name: SubjectName,
+     title: string,
+     type: "Հումանիտար" | "Մաթեմատիկական" | "Բնագիտական" | "Սպորտ և Առողջ Ապրելակերպ" | "Արվեստ և Արհեստ" | "Ուրիշ Առարկաներ"
 }
 
 // States
@@ -108,6 +90,17 @@ export interface IMultiplayerPlayState{
      place: number,
      score: number,
      formData: IQuizUser
+}
+
+// Other
+export interface ISelectData<T>{
+     type: T,
+     name: string,
+     Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
+}
+export interface INameIcon{
+     name: string,
+     Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
 }
 export interface UserDocument{
      id: string,

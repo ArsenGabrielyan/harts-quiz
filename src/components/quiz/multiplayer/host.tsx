@@ -19,12 +19,14 @@ import { Switch } from "@/components/ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { INITIAL_MULTI_HOST_STATE, QUIZ_START_TIME } from "@/data/constants";
+import { INITIAL_MULTI_HOST_STATE } from "@/data/constants/states";
+import { QUIZ_START_TIME } from "@/data/constants/others";
 import { IMultiplayerHostState, IQuizPlacement, IQuizUser } from "@/data/types";
 import {produce} from "immer"
 import {socket} from "@/socket";
 import Timer from "../timer";
 import QuizQuestion from "../quiz-question";
+import { toast } from "sonner";
 
 interface MultiplayerQuizHostProps{
      quiz: QuizDocument,
@@ -86,7 +88,7 @@ export default function MultiplayerQuizHost({quiz, user}: MultiplayerQuizHostPro
                     placements: placementArr
                });
                if(soundEffectOn)
-                    playSound("winner.mp3");
+                    playSound("winner.mp3",error=>toast.error(error));
           },5000);
      }
      const resetGame = () => {

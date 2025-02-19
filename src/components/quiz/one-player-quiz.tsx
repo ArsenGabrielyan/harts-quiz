@@ -18,7 +18,8 @@ import {
 import { Switch } from "../ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { useState } from "react";
-import { INITIAL_1P_QUIZ_STATE, QUIZ_START_TIME } from "@/data/constants";
+import { INITIAL_1P_QUIZ_STATE } from "@/data/constants/states";
+import { QUIZ_START_TIME} from "@/data/constants/others"
 import { IOnePlayerQuizState } from "@/data/types";
 import Timer from "./timer";
 import QuizQuestion from "./quiz-question";

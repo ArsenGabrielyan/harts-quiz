@@ -1,5 +1,6 @@
 import { getQuizDetails } from "@/actions/quiz";
 import OnePlayerQuiz from "@/components/quiz/one-player-quiz";
+import { QuizDocument } from "@/data/types";
 import { currentUser } from "@/lib/auth";
 import { notFound } from "next/navigation";
 
@@ -13,6 +14,6 @@ export default async function OnePlayerQuizPage({
      if(!quiz) notFound();
      const user = await currentUser();
      return (
-          <OnePlayerQuiz quiz={quiz} user={user}/>
+          <OnePlayerQuiz quiz={quiz as QuizDocument} user={user}/>
      )
 }

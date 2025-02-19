@@ -20,7 +20,7 @@ import { FormSuccess } from "../form-success";
 import { register } from "@/actions/auth/register";
 import { PasswordStrengthInput } from "../password-input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../ui/select";
-import { accountTypesEnum } from "@/data/constants";
+import { ENUM_ACCOUNT_TYPES } from "@/data/constants/others";
 
 export default function RegisterForm(){
      const [isPending, startTransition] = useTransition();
@@ -125,7 +125,7 @@ export default function RegisterForm(){
                                                        </SelectTrigger>
                                                   </FormControl>
                                                   <SelectContent>
-                                                       {accountTypesEnum.map((accType,i)=>(
+                                                       {ENUM_ACCOUNT_TYPES.map((accType,i)=>(
                                                             <SelectItem
                                                                  key={i}
                                                                  value={accType.type}

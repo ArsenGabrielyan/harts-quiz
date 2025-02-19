@@ -1,17 +1,29 @@
 "use client"
-import { accTypeInArmenian, divideQuestionsBySubject } from "@/data/helpers";
+import { accTypeInArmenian, groupBy } from "@/data/helpers";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PageLayout from "../page-layout";
 import { ExtendedUser } from "@/next-auth";
 import { QuizDocument } from "@/data/types";
 import QuizCard from "../cards/quiz-card";
+import { SUBJECT_LIST } from "@/data/constants/others";
+import { useMemo } from "react";
 
 interface MainPageProps {
      user: ExtendedUser | null,
      questions: QuizDocument[] | null
 }
 export default function MainPage({user, questions}: MainPageProps) {
+     const groupedQuestions = useMemo(()=>{
+          return questions ? groupBy(
+               questions,
+               q=>q.subject,
+               subjectKey=>{
+                    const foundSubject = SUBJECT_LIST.find(v=>v.name===subjectKey);
+                    return foundSubject ? foundSubject.title : ""
+               }
+          ) : []
+     },[questions])
      return (
           <PageLayout mainClassName={`flex-1 flex flex-col items-center ${!user ? "justify-center" : "jsutify-start"}`}>
                {!user ? (
@@ -44,7 +56,7 @@ export default function MainPage({user, questions}: MainPageProps) {
                                    </div>
                               </div>
                          </div>
-                         {questions && divideQuestionsBySubject(questions).map(((section,i)=>(
+                         {groupedQuestions.map(((section,i)=>(
                               <div key={i} className="w-full">
                                    <h2 className="text-3xl md:text-4xl text-center my-3">{section.title}</h2>
                                    <div className="flex flex-wrap items-center justify-center gap-3">

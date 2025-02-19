@@ -4,7 +4,7 @@ import PageLayout from "../page-layout";
 import QuizCard from "@/components/cards/quiz-card";
 import { QuizDocument } from "@/data/types";
 import { Button } from "@/components/ui/button";
-import { subjectList } from "@/data/constants";
+import { SUBJECT_LIST } from "@/data/constants/others";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 interface QuizListProps{
@@ -26,7 +26,7 @@ export default function QuizList({quizzes}:QuizListProps){
                               <CarouselItem className="basis-1/8">
                                    <Button variant={selectedSubject==="" ? "default" : "outline"} onClick={()=>setSelectedSubject("")}>Ցույց տալ բոլորը</Button>
                               </CarouselItem>
-                              {subjectList.map((subject,i)=>(
+                              {SUBJECT_LIST.map((subject,i)=>(
                                    <CarouselItem className="basis-1/8" key={i}>
                                         <Button variant={subject.name===selectedSubject ? "default" : "outline"} onClick={()=>setSelectedSubject(subject.name)}>{subject.title}</Button>
                                    </CarouselItem>

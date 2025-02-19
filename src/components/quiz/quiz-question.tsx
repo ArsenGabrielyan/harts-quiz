@@ -1,4 +1,4 @@
-import { GET_INITIAL_QUESTION_STATE } from "@/data/constants";
+import { GET_INITIAL_QUESTION_STATE } from "@/data/constants/states";
 import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/data/helpers";
 import { IQuestion, IQuestionState } from "@/data/types";
 import { useEffect, useState } from "react";

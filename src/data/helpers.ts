@@ -1,53 +1,32 @@
 import { toast } from "sonner";
-import { subjectList } from "./constants";
-import { AccountType, IQuestionState, ISubject, QuestionType, SubjectName } from "./types";
+import { SUBJECT_LIST } from "./constants/others";
+import {ACCOUNT_TYPES, ANSWER_FORMATS, ANSWER_TYPES} from "./constants/mappings"
+import { IQuestionState, SubjectName } from "./types";
+import { AccountType, QuestionType } from "@prisma/client";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { QuizDocument } from "./types";
 import axios from "axios";
 
-export function getOAuthNotLinkedError(searchParams: ReadonlyURLSearchParams){
-     const error = searchParams.get("error");
-     if(error){
-          return error.includes("OAuthAccountNotLinked") ? "Այս էլ․ փոստով արդեն կա հաշիվ, բայց այլ մուտքի մեթոդով։" : ""
+const generateRandomString = (chars: string, length: number) => {
+     let result = "";
+     for (let i = 0; i < length; i++) {
+          const randI = Math.floor(Math.random() * chars.length);
+          result += chars[randI];
      }
-     return ""
+     return result;
+};
+export const getOAuthNotLinkedError = (searchParams: ReadonlyURLSearchParams) => {
+     const error = searchParams.get("error") || "";
+     return error.includes("OAuthAccountNotLinked") ? "Այս էլ․ փոստով արդեն կա հաշիվ, բայց այլ մուտքի մեթոդով։" : ""
 }
-export function generateUsername(prefix="user",length=8){
+export const generateUsername = (prefix="user",length=8) => {
      const chars = "abcdefghijklmnopqrstuvwxyz0123456789-";
-     let str = prefix+"-";
-     for(let i=0;i<length;i++){
-          const randI = Math.floor(Math.random()*chars.length);
-          str+=chars[randI];
-     }
-     return str
+     return `${prefix}-${generateRandomString(chars,length)}`
 }
-export const getSocketUrl = () => process.env.NODE_ENV==="development" ? "http://localhost:4000" : "https://harts-quiz-backend.onrender.com"
-export function getAnswerFormat(type: QuestionType){
-     const result: Record<QuestionType, string[] | string> = {
-          "pick_one": ["Ա","Բ","Գ","Դ","Ե","Զ"],
-          "true_false": ["Այո", "Ոչ"],
-          "text": ""
-     }
-     return result[type]
-}
-export function getAnswerType(type: QuestionType){
-     const result: Record<QuestionType, string> = {
-          "pick_one": "Նշել Պատասխանը",
-          "true_false": "Այո կամ ոչ",
-          "text": "Գրավոր հարց"
-     }
-     return result[type];
-}
-export function accTypeInArmenian(accountType: AccountType){
-     const result: Record<AccountType, string> = {
-          teacher: "Ուսուցիչ",
-          student: "Աշակերտ",
-          personal: "Անձնական",
-     }
-     return result[accountType]
-}
+export const getAnswerFormat = (type: QuestionType) => ANSWER_FORMATS[type]
+export const getAnswerType = (type: QuestionType) => ANSWER_TYPES[type];
+export const accTypeInArmenian = (accountType: AccountType) => ACCOUNT_TYPES[accountType]
 export const formatNumberSuffix = (n: number) => n===1 ? `${n}-ին` : `${n}-րդ`;
-export async function shareQuiz(url=location.href){
+export const shareQuiz = async (url=location.href) => {
      const shareData = {
           title: 'Հարց',
           text: "Եկեք խաղացեք այս հարցաշարը",
@@ -59,36 +38,39 @@ export async function shareQuiz(url=location.href){
           toast.success("Հղումը պատճենված է")
      }
 }
-export function getSubjectInArmenian(subject: SubjectName): string{
-     const currSubject = subjectList.find(val=>val.name===subject);
-     return currSubject ? currSubject?.title : "";
+export const getSubjectInArmenian = (subject: SubjectName): string => {
+     const currSubject = SUBJECT_LIST.find(val=>val.name===subject);
+     return currSubject ? currSubject.title : "";
 }
 export const absoluteUrl = (path: string) => `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
-export const divideQuestionsBySubject = (questions: QuizDocument[]) => questions.length===0 ? [] : Object.values(questions.reduce((obj,val)=>{
-     const first = val.subject;
-     if(!obj[first]){
-          obj[first] = {title: subjectList.find(v=>v.name===first)?.title as string, data: [val]}
-     } else {
-          obj[first].data.push(val)
-     }
-     return obj;
-},{} as Record<string, { title: string, data: QuizDocument[] }>))
-export const getFilteredSubjects = (list: ISubject[]=subjectList) => list.length===0 ? [] : Object.values(list.reduce((obj,val)=>{
-     const first = val.type;
-     if(!obj[first]){
-          obj[first] = {title: first, data: [val]}
-     } else {
-          obj[first].data.push(val)
-     }
-     return obj;
-},{} as Record<string, { title: string, data: ISubject[] }>))
+export function groupBy<T, K extends string | number>(
+     arr: T[],
+     getKey: (item: T) => K,
+     getTitle: (key: K) => string
+): {title: string, data: T[]}[]{
+     if(arr.length===0) return [];
+     return Object.values(arr.reduce((acc,item)=>{
+          const key = getKey(item)
+          if(!acc[key]){
+               acc[key] = {title: getTitle(key), data: [item]}
+          } else {
+               acc[key].data.push(item)
+          }
+          return acc;
+     },{} as Record<K, {title: string, data: T[]}>))
+}
+export const getFilteredSubjects = () => groupBy(SUBJECT_LIST,subject=>subject.type,type=>type);
 export const getInitialAnswers = (type: QuestionType) => ({
      answers: type==="text" ? [] : type==="true_false" ? ["true", "false"] : ["","","",""],
      correct: ""
 })
-export async function fetcher(url: string){
-     const res = await axios.get(url);
-     return res.data;
+export const fetcher = async (url: string) => {
+     try{
+          const res = await axios.get(url);
+          return res.data;
+     } catch(err) {
+          console.error(err);
+     }
 }
 export const getButtonVariantDependingOnAnswer = (
      answer: string,
@@ -116,18 +98,12 @@ export const playSound = (soundName: string,onError?:(message: string) => void) 
 }
 export const generateGameCode = () => {
      const chars = "0123456789";
-     let str = "";
-     for(let i=0;i<8;i++){
-          const randI = Math.floor(Math.random()*chars.length);
-          str += chars[randI];
-     }
-     return str;
+     return generateRandomString(chars,8)
 }
 export const formatCorrectAnswer = (correct: string) => correct==="true" ? "Այո" : correct==="false" ? "Ոչ" : correct
-export function formatDate(date: Date){
-     const d = new Date(date);
-     const month = (d.getMonth()+1).toString().padStart(2,"0");
-     const day = d.getDate().toString().padStart(2,"0");
-     const year = d.getFullYear();
+export const formatDate = (date: Date) => {
+     const month = (date.getMonth()+1).toString().padStart(2,"0");
+     const day = date.getDate().toString().padStart(2,"0");
+     const year = date.getFullYear();
      return `${day}-${month}-${year}`
 }

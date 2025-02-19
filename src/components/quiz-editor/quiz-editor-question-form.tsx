@@ -17,11 +17,11 @@ import {
      SelectValue,
      SelectItem,
      SelectContent} from "@/components/ui/select"
-import { quizTypes } from "@/data/constants";
+import { QUIZ_TYPES_LIST } from "@/data/constants/others";
 import { Button } from "../ui/button";
 import { ArrowDown, ArrowUp, CheckCircle, CopyPlus, Minus, Plus, Trash } from "lucide-react";
 import { getInitialAnswers } from "@/data/helpers";
-import { QuestionType } from "@/data/types";
+import { QuestionType } from "@prisma/client";
 
 interface QuizEditorQuestionCardProps{
      index: number,
@@ -98,7 +98,7 @@ export default function QuizEditorQuestionCard({
                                    <Input
                                         {...field}
                                         disabled={isPending}
-                                        placeholder="Ինչու՞ է աղմկում գետը"
+                                        placeholder="Տեղադրեք հարցը այստեղ։"
                                    />
                               </FormControl>
                               <FormMessage/>
@@ -203,7 +203,7 @@ export default function QuizEditorQuestionCard({
                                              </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                             {quizTypes.map(({type,Icon,name},i)=>(
+                                             {QUIZ_TYPES_LIST.map(({type,Icon,name},i)=>(
                                                   <SelectItem key={i} value={type}>
                                                        <div className="flex item-center justify-center gap-x-3">
                                                             <Icon className="w-[20px] h-[20px]"/>

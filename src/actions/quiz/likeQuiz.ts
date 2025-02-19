@@ -17,18 +17,18 @@ export const likeQuiz = async (quizId: string) => {
           await db.user.update({
                where: {id: existingUser.id},
                data: {
-                    favorites: {
-                         push: quizId
-                    }
+                    favorites: existingUser.favorites.filter(val=>val!==quizId)
                }
           })
      } else {
           await db.user.update({
                where: {id: existingUser.id},
                data: {
-                    favorites: existingUser.favorites.filter(val=>val!==quizId)
+                    favorites: {
+                         push: quizId
+                    }
                }
           })
      }
-     return {success: "Հարցաշարը հավանվել է"}
+     return {success: isLiked ? "Հարցաշարը ջնջվել է հավանած հարցաշարերի ցուցակից" : "Հարցաշարը հավանվել է"}
 }

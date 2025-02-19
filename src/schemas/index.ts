@@ -1,28 +1,28 @@
-import { accountTypesEnum, quizVisibilities, quizTypes, subjectList } from "@/data/constants"
+import { ENUM_ACCOUNT_TYPES, VISIBILITIES_LIST, QUIZ_TYPES_LIST, SUBJECT_LIST } from "@/data/constants/others"
 import * as z from "zod"
 
-type AccountTypeEnum = typeof accountTypesEnum[number]["type"]
+type AccountTypeEnum = typeof ENUM_ACCOUNT_TYPES[number]["type"]
 const ACC_TYPE_ENUM: [AccountTypeEnum, ...AccountTypeEnum[]] = [
-     accountTypesEnum[0].type,
-     ...accountTypesEnum.slice(1).map(p=>p.type)
+     ENUM_ACCOUNT_TYPES[0].type,
+     ...ENUM_ACCOUNT_TYPES.slice(1).map(p=>p.type)
 ]
 
-type QuizVisibilityEnum = typeof quizVisibilities[number]["type"];
+type QuizVisibilityEnum = typeof VISIBILITIES_LIST[number]["type"];
 const QUIZ_VISIBILITY_ENUM: [QuizVisibilityEnum,...QuizVisibilityEnum[]] = [
-     quizVisibilities[0].type,
-     ...quizVisibilities.slice(1).map(p=>p.type)
+     VISIBILITIES_LIST[0].type,
+     ...VISIBILITIES_LIST.slice(1).map(p=>p.type)
 ]
 
-type QuestionTypeEnum = typeof quizTypes[number]["type"];
+type QuestionTypeEnum = typeof QUIZ_TYPES_LIST[number]["type"];
 const QUESTION_TYPE_ENUM: [QuestionTypeEnum,...QuestionTypeEnum[]] = [
-     quizTypes[0].type,
-     ...quizTypes.slice(1).map(p=>p.type)
+     QUIZ_TYPES_LIST[0].type,
+     ...QUIZ_TYPES_LIST.slice(1).map(p=>p.type)
 ]
 
-type SubjectNameEnum = typeof subjectList[number]["name"];
+type SubjectNameEnum = typeof SUBJECT_LIST[number]["name"];
 const SUBJECT_NAME_ENUM: [SubjectNameEnum,...SubjectNameEnum[]] = [
-     subjectList[0].name,
-     ...subjectList.slice(1).map(p=>p.name)
+     SUBJECT_LIST[0].name,
+     ...SUBJECT_LIST.slice(1).map(p=>p.name)
 ]
 
 export const ResetSchema = z.object({
