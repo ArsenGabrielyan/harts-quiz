@@ -5,8 +5,7 @@ import { ExtendedUser } from "@/next-auth";
 
 export const getEveryQuiz = async () => {
      const quizzes = await getEveryQuizByVisibility("public");
-     if(quizzes) return {quizzes}
-     return {quizzes: null}
+     return {quizzes}
 }
 
 export const getQuizDetails = async (id: string, user?: ExtendedUser) => {
@@ -25,8 +24,5 @@ export const getCurrUser = async() => {
 }
 export const getQuizFromCurrEmail = async(email: string) => {
      const quizzes = await getEveryQuizByTeacherEmail(email);
-     if(quizzes){
-          return {quizzes}
-     }
-     return {quizzes: null}
+     return {quizzes}
 }
