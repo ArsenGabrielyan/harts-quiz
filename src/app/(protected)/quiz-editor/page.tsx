@@ -1,5 +1,6 @@
 import { getQuizDetails } from "@/actions/quiz";
 import QuizEditorForm from "@/components/quiz-editor/quiz-editor-form";
+import { QuizDocument } from "@/data/types";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -13,6 +14,6 @@ export default async function QuizEditorPage({
      const quizData = !id ? null : await getQuizDetails(id as string);
      if(user?.accountType==="student") redirect("/");
      return (
-          <QuizEditorForm currQuiz={quizData?.quiz || null}/>
+          <QuizEditorForm currQuiz={quizData?.quiz as QuizDocument || null}/>
      )
 }
