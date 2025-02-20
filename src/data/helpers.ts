@@ -102,8 +102,9 @@ export const generateGameCode = () => {
 }
 export const formatCorrectAnswer = (correct: string) => correct==="true" ? "Այո" : correct==="false" ? "Ոչ" : correct
 export const formatDate = (date: Date) => {
-     const month = (date.getMonth()+1).toString().padStart(2,"0");
-     const day = date.getDate().toString().padStart(2,"0");
-     const year = date.getFullYear();
+     const d = new Date(date)
+     const month = (d.getMonth()+1).toString().padStart(2,"0");
+     const day = d.getDate().toString().padStart(2,"0");
+     const year = d.getFullYear();
      return `${day}-${month}-${year}`
 }
