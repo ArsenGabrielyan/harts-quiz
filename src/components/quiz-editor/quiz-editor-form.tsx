@@ -29,16 +29,16 @@ import { IoRadioButtonOn } from "react-icons/io5"
 import PageLayout from "../page-layout"
 import { useState, useTransition } from "react";
 import { Textarea } from "../ui/textarea";
-import { absoluteUrl, getFilteredSubjects, getInitialAnswers } from "@/data/helpers";
+import { absoluteUrl, getFilteredSubjects, getInitialAnswers, mapQuizToForm } from "@/data/helpers";
 import { VISIBILITIES_LIST } from "@/data/constants/others";
 import { QuestionType } from "@prisma/client"
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
-import { addQuiz } from "@/actions/quiz/addQuiz";
+import { addQuiz, editQuiz } from "@/actions/quiz";
 import { QuizDocument } from "@/data/types";
-import { editQuiz } from "@/actions/quiz/editQuiz";
 import useUnsavedChangesWarning from "@/hooks/use-before-unload";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { QuizEditorType } from "@/data/types/schema";
 
 interface QuizEditorFormProps {
      currQuiz: QuizDocument | null;
@@ -49,28 +49,41 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
      const [success, setSuccess] = useState<string | undefined>("");
      const [isPending, startTransition] = useTransition();
      const router = useRouter()
-     const form = useForm<z.infer<typeof QuizEditorSchema>>({
+     const form = useForm<QuizEditorType>({
           resolver: zodResolver(QuizEditorSchema),
-          defaultValues: {
+          defaultValues: currQuiz ? mapQuizToForm(currQuiz) : {
                name: currQuiz?.name ||"",
                description: currQuiz?.description || undefined,
                visibility: currQuiz?.visibility || "private",
                subject: currQuiz?.subject || "others",
-               questions: currQuiz?.questions.map(question => ({
-                    ...question,
-                    correct: question.correct || "",
-               })) || []
+               questions: currQuiz?.questions.map((question) => {
+                    const answers = question.answers.map((a) => ({
+                         text: a.text,
+                    }));
+                    const correctIndex = question.answers.findIndex(
+                         (a) => a.id === question.correctAnswerId
+                    );
+                    return {
+                         question: question.question,
+                         description: question.description ?? "",
+                         timer: question.timer,
+                         points: question.points,
+                         type: question.type,
+                         answers,
+                         correct: correctIndex >= 0 ? correctIndex : 0,
+                    };
+               }) || []
           },
      })
-     const initialData = {
+     const initialData = currQuiz ? mapQuizToForm(currQuiz) : {
           name: currQuiz?.name ||"",
           description: currQuiz?.description || undefined,
           visibility: currQuiz?.visibility || "private",
           subject: currQuiz?.subject || "others",
           questions: currQuiz?.questions || []
-     } as z.infer<typeof QuizEditorSchema>
+     } as QuizEditorType
      const visibility = form.watch("visibility")
-     const {fields,append,remove,move,insert} = useFieldArray<z.infer<typeof QuizEditorSchema>>({
+     const {fields,append,remove,move,insert} = useFieldArray<QuizEditorType>({
           control: form.control,
           name: "questions"
      })
@@ -78,7 +91,7 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
           const currData = form.watch()
           return JSON.stringify(currData)===JSON.stringify(initialData)
      }
-     const handleSubmit = (values: z.infer<typeof QuizEditorSchema>) => {
+     const handleSubmit = (values: QuizEditorType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{
@@ -116,15 +129,15 @@ export default function QuizEditorForm({currQuiz}: QuizEditorFormProps){
      }
      const duplicateQuestion = (index: number) => {
           const {question,answers,correct,timer,type,points,description} = fields[index]
-          insert(index+1,{
+          insert(index + 1, {
                question,
-               answers,
+               answers: answers.map(a => ({ ...a })),
                correct,
                timer,
                type,
                points,
                description,
-          })
+          });
      }
      const moveQuestion = (from: number,to: number) => {
           move(from,to)

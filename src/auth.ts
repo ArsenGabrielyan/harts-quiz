@@ -30,7 +30,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           emailVerified: new Date(),
           username,
           accountType: "personal",
-          favorites: []
         }
       })
     }

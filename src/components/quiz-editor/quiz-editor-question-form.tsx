@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 import { ArrowDown, ArrowUp, CheckCircle, CopyPlus, Minus, Plus, Trash } from "lucide-react";
 import { getInitialAnswers } from "@/data/helpers";
 import { QuestionType } from "@prisma/client";
+import { QuizEditorType } from "@/data/types/schema";
 
 interface QuizEditorQuestionCardProps{
      index: number,
@@ -39,15 +40,10 @@ export default function QuizEditorQuestionCard({
      removeQuestion,
      duplicateQuestion
 }:QuizEditorQuestionCardProps){
-     const {control,watch,setValue} = useFormContext<z.infer<typeof QuizEditorSchema>>();
+     const {control,watch,setValue} = useFormContext<QuizEditorType>();
      const questionType = watch(`questions.${index}.type`);
      const correctAnswer = watch(`questions.${index}.correct`);
      const answers = watch(`questions.${index}.answers`)
-     const handleAnswerChange = (answerIndex: number, value: string) => {
-          const updatedAnswers = [...answers];
-          updatedAnswers[answerIndex] = value;
-          setValue(`questions.${index}.answers`,updatedAnswers);
-     }
      const handleQuestionTypeChange = (value: string) => {
           const questionType = value as QuestionType
           const {answers,correct} = getInitialAnswers(questionType);
@@ -56,8 +52,7 @@ export default function QuizEditorQuestionCard({
           setValue(`questions.${index}.type`,questionType);
      }
      const addAnswer = () => {
-          const updatedAnswers = [...answers,""];
-          setValue(`questions.${index}.answers`,updatedAnswers);
+          setValue(`questions.${index}.answers`, [...answers, { text: "" }]);
      }
      const removeAnswer = () => {
           const updatedAnswers = [...answers];
@@ -124,35 +119,38 @@ export default function QuizEditorQuestionCard({
                {questionType==="pick_one" && (
                     <>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
-                              {answers.map((answer,answerIndex)=>(
+                              {answers.map((_,answerIndex)=>(
                                    <FormField
                                         key={answerIndex}
                                         control={control}
-                                        name={`questions.${index}.answers.${answerIndex}`}
-                                        render={({field})=>(
-                                             <FormItem>
-                                                  <FormLabel>Պատասխան {answerIndex+1}</FormLabel>
-                                                  <div className="flex items-center gap-2">
-                                                       <Button
-                                                            type="button"
-                                                            variant={answer!=="" && correctAnswer===answer ? 'success' : "outline"} 
-                                                            size="icon"
-                                                            onClick={()=>setValue(`questions.${index}.correct`,answer)}
-                                                       >
-                                                            <CheckCircle/>
-                                                       </Button>
-                                                       <FormControl>
-                                                            <Input
-                                                                 {...field}
-                                                                 value={answer}
-                                                                 disabled={isPending}
-                                                                 placeholder="Նշել պատասխանն այստեղ"
-                                                                 onChange={e=>handleAnswerChange(answerIndex,e.target.value)}
-                                                            />
-                                                       </FormControl>
-                                                  </div>
-                                                  <FormMessage/>
-                                             </FormItem>
+                                        name={`questions.${index}.answers.${answerIndex}.text`}
+                                        render={({ field }) => (
+                                        <FormItem>
+                                             <FormLabel>Պատասխան {answerIndex + 1}</FormLabel>
+                                             <div className="flex items-center gap-2">
+                                             <Button
+                                                  type="button"
+                                                  variant={
+                                                       field.value !== "" && correctAnswer === answerIndex
+                                                       ? "success"
+                                                       : "outline"
+                                                  }
+                                                  size="icon"
+                                                  onClick={() =>setValue(`questions.${index}.correct`, answerIndex)}
+                                             >
+                                                  <CheckCircle />
+                                             </Button>
+
+                                             <FormControl>
+                                                  <Input
+                                                  {...field}
+                                                  disabled={isPending}
+                                                  placeholder="Նշել պատասխանն այստեղ"
+                                                  />
+                                             </FormControl>
+                                             </div>
+                                             <FormMessage />
+                                        </FormItem>
                                         )}
                                    />
                               ))}

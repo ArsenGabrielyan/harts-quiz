@@ -1,34 +1,31 @@
 "use server"
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth"
-import { getUserById } from "@/data/db/user";
 
 export const likeQuiz = async (quizId: string) => {
      const user = await currentUser();
-     if(!user){
-          return {error: "Այս օգտագործողը մուտք չի գործել"}
-     }
-     const existingUser = await getUserById(user.id as string)
-     if(!existingUser){
-          return {error: "Այս օգտագործողը չի գտնվել"}
-     }
-     const isLiked = existingUser.favorites.includes(quizId);
-     if(isLiked){
-          await db.user.update({
-               where: {id: existingUser.id},
-               data: {
-                    favorites: existingUser.favorites.filter(val=>val!==quizId)
+     if (!user) return { error: "Այս օգտագործողը մուտք չի գործել" };
+     const existing = await db.favorite.findUnique({
+          where: {
+               userId_quizId: {
+                    userId: user.id!,
+                    quizId
                }
-          })
-     } else {
-          await db.user.update({
-               where: {id: existingUser.id},
-               data: {
-                    favorites: {
-                         push: quizId
+          }
+     });
+     if (existing) {
+          await db.favorite.delete({
+               where: {
+                    userId_quizId: {
+                         userId: user.id!,
+                         quizId
                     }
                }
-          })
+          });
+          return { success: "Հարցաշարը ջնջվել է հավանած հարցաշարերի ցուցակից" };
      }
-     return {success: isLiked ? "Հարցաշարը ջնջվել է հավանած հարցաշարերի ցուցակից" : "Հարցաշարը հավանվել է"}
-}
+     await db.favorite.create({
+          data: { userId: user.id!, quizId }
+     });
+     return { success: "Հարցաշարը հավանվել է" };
+};

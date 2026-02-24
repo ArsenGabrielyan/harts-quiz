@@ -22,6 +22,7 @@ import Timer from "./timer";
 import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { TextAnswerFormType } from "@/data/types/schema";
 
 interface QuizQuestionProps{
      question: IQuestion,
@@ -41,7 +42,7 @@ export default function QuizQuestion({
 }:QuizQuestionProps){
      const answerFormat = getAnswerFormat(question.type);
      const [state, setState] = useState(GET_INITIAL_QUESTION_STATE(question));
-     const form = useForm<z.infer<typeof TextAnswerFormSchema>>({
+     const form = useForm<TextAnswerFormType>({
           resolver: zodResolver(TextAnswerFormSchema),
           defaultValues: {
                answer: ""
@@ -60,7 +61,7 @@ export default function QuizQuestion({
      const updateState = (overrides: Partial<IQuestionState>) => {
           setState(prev=>({...prev,...overrides}))
      }
-     const handleSubmitAnswer = (values: z.infer<typeof TextAnswerFormSchema>)=>{
+     const handleSubmitAnswer = (values: TextAnswerFormType)=>{
           checkAnswer(values.answer);
           if(mode==="multiplayer" && soundEffectOn)
                playSound("tick.mp3",error=>toast.error(error))

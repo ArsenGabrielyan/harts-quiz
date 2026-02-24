@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { duplicateQuiz } from "@/actions/quiz/duplicateQuiz";
 import { toast } from "sonner";
-import { deleteQuiz } from "@/actions/quiz/deleteQuiz";
+import { deleteQuiz } from "@/actions/quiz";
 import { absoluteUrl, formatDate, shareQuiz } from "@/data/helpers";
 import { useRouter } from "next/navigation";
 

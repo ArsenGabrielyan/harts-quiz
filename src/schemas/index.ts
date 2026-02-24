@@ -47,10 +47,14 @@ export const RegisterSchema = z.object({
      password: z.string().min(8,"Գաղտնաբառը պետք է ունենա առնվազն 8 նիշ")
 })
 
+export const AnswerSchema = z.object({
+     text: z.string().min(1,"Պարտադիր է լրացնել պատասխանները")
+})
+
 export const QuestionSchema = z.object({
      question: z.string().min(1, "Պարտադիր է լրացնել հարցը"),
-     answers: z.array(z.string().min(1,"Պարտադիր է լրացնել պատասխանները")),
-     correct: z.string().min(1,"Պարտադիր է ընտրել ճիշտ պատասխանը"),
+     answers: z.array(AnswerSchema).nonempty("Ավելացնել մի քանի պատասխանել և ընտրել ճիշտ պատասխանը"),
+     correct: z.number().int().min(0, "Պարտադիր է ընտրել ճիշտ պատասխանը"),
      timer: z.number().int("Տևողությունը պետք է լինի ամբողջ թիվ").gte(0,"Տևողությունը պետք է լինի դրական").refine(val=>val!==0,"Տևողությունը պետք չէ լինի 0"),
      points: z.number().int("Միավորը պետք է լինի ամբողջ թիվ").gte(0,"Միավորը պետք է լինի դրական").refine(val=>val!==0,"Միավորը պետք չէ լինի 0"),
      type: z.enum(QUESTION_TYPE_ENUM),

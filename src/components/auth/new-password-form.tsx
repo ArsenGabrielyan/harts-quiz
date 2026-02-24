@@ -19,12 +19,13 @@ import { FormSuccess } from "../form-success";
 import { PasswordStrengthInput } from "../password-input";
 import { useSearchParams } from "next/navigation";
 import { newPassword } from "@/actions/auth/new-password";
+import { NewPasswordType } from "@/data/types/schema";
 
 export default function NewPasswordForm(){
      const [isPending, startTransition] = useTransition();
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
-     const form = useForm<z.infer<typeof NewPasswordSchema>>({
+     const form = useForm<NewPasswordType>({
           resolver: zodResolver(NewPasswordSchema),
           defaultValues: {
                password: ''
@@ -32,7 +33,7 @@ export default function NewPasswordForm(){
      });
      const searchParams = useSearchParams();
      const token = searchParams.get("token");
-     const handleSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
+     const handleSubmit = (values: NewPasswordType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{

@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { SUBJECT_LIST } from "./constants/others";
 import {ACCOUNT_TYPES, ANSWER_FORMATS, ANSWER_TYPES} from "./constants/mappings"
-import { IQuestionState, SubjectName } from "./types";
+import { IQuestionState, QuizDocument, SubjectName } from "./types";
 import { AccountType, QuestionType } from "@prisma/client";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import axios from "axios";
@@ -61,9 +61,18 @@ export function groupBy<T, K extends string | number>(
 }
 export const getFilteredSubjects = () => groupBy(SUBJECT_LIST,subject=>subject.type,type=>type);
 export const getInitialAnswers = (type: QuestionType) => ({
-     answers: type==="text" ? [] : type==="true_false" ? ["true", "false"] : ["","","",""],
-     correct: ""
-})
+     answers: type === "text" ? [] :
+          type === "true_false" ? [
+               { text: "true" },
+               { text: "false" }
+          ] : [
+               { text: "" },
+               { text: "" },
+               { text: "" },
+               { text: "" }
+          ],
+     correct: 0
+});
 export const fetcher = async (url: string) => {
      try{
           const res = await axios.get(url);
@@ -108,3 +117,27 @@ export const formatDate = (date: Date) => {
      const year = d.getFullYear();
      return `${day}-${month}-${year}`
 }
+
+export const mapQuizToForm = (quiz: QuizDocument) => ({
+     name: quiz.name,
+     description: quiz.description ?? undefined,
+     visibility: quiz.visibility,
+     subject: quiz.subject,
+     questions: quiz.questions.map((question) => {
+          const answers = question.answers.map((a) => ({
+               text: a.text,
+          }));
+          const correctIndex = question.answers.findIndex(
+               (a) => a.id === question.correctAnswerId
+          );
+          return {
+               question: question.question,
+               description: question.description ?? "",
+               timer: question.timer,
+               points: question.points,
+               type: question.type,
+               answers,
+               correct: correctIndex >= 0 ? correctIndex : 0,
+          };
+     }),
+});

@@ -22,6 +22,7 @@ import { FormSuccess } from "../form-success";
 import { login } from "@/actions/auth/login";
 import { getOAuthNotLinkedError } from "@/data/helpers";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
+import { LoginType } from "@/data/types/schema";
 
 export default function LoginForm(){
      const searchParams = useSearchParams();
@@ -31,7 +32,7 @@ export default function LoginForm(){
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
      const [isPending, startTransition] = useTransition();
-     const form = useForm<z.infer<typeof LoginSchema>>({
+     const form = useForm<LoginType>({
           resolver: zodResolver(LoginSchema),
           defaultValues: {
                email: "",
@@ -39,7 +40,7 @@ export default function LoginForm(){
                code: "",
           }
      });
-     const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
+     const handleSubmit = (values: LoginType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{

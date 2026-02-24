@@ -27,6 +27,7 @@ import {socket} from "@/socket";
 import Timer from "../timer";
 import QuizQuestion from "../quiz-question";
 import { toast } from "sonner";
+import { SoundSwitchFormType } from "@/data/types/schema";
 
 interface MultiplayerQuizHostProps{
      quiz: QuizDocument,
@@ -39,7 +40,7 @@ export default function MultiplayerQuizHost({quiz, user}: MultiplayerQuizHostPro
      const updateState = (overrides: Partial<IMultiplayerHostState>) => {
           setState(prev=>({...prev,...overrides}));
      }
-     const form = useForm<z.infer<typeof SoundSwitchFormSchema>>({
+     const form = useForm<SoundSwitchFormType>({
           resolver: zodResolver(SoundSwitchFormSchema),
           defaultValues: {
                soundEffectOn: user?.soundEffectOn || false

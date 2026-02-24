@@ -36,6 +36,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getFilteredSubjects } from "@/data/helpers";
 import { Label } from "@/components/ui/label";
 import ThemeSettings from "@/components/themes/theme-changer";
+import { SettingsType } from "@/data/types/schema";
 
 export default function SettingsPage(){
      const user = useCurrentUser();
@@ -45,7 +46,7 @@ export default function SettingsPage(){
      const [isPending, startTransition] = useTransition();
      const {update} = useSession()
 
-     const form = useForm<z.infer<typeof SettingsSchema>>({
+     const form = useForm<SettingsType>({
           resolver: zodResolver(SettingsSchema),
           defaultValues: {
                password: undefined,
@@ -63,7 +64,7 @@ export default function SettingsPage(){
           }
      })
 
-     const handleSubmit = (values: z.infer<typeof SettingsSchema>) => {
+     const handleSubmit = (values: SettingsType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{

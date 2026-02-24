@@ -26,6 +26,7 @@ import QuizQuestion from "./quiz-question";
 import { CircleCheck, CircleX } from "lucide-react";
 import { playSound } from "@/data/helpers";
 import { toast } from "sonner";
+import { SoundSwitchFormType } from "@/data/types/schema";
 
 interface QuizFormProps{
      quiz: QuizDocument,
@@ -37,7 +38,7 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
           setState(prev=>({...prev,...overrides}))
      }
      const {name,teacher,subject,createdAt,questions} = quiz;
-     const form = useForm<z.infer<typeof SoundSwitchFormSchema>>({
+     const form = useForm<SoundSwitchFormType>({
           resolver: zodResolver(SoundSwitchFormSchema),
           defaultValues: {
                soundEffectOn: user?.soundEffectOn || false

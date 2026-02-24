@@ -9,11 +9,11 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { fetcher, shareQuiz } from "@/data/helpers";
 import { duplicateQuiz } from "@/actions/quiz/duplicateQuiz";
 import { toast } from "sonner";
-import { deleteQuiz } from "@/actions/quiz/deleteQuiz";
 import { useRouter } from "next/navigation";
 import useSWR from "swr"
 import { LikeQuizResponse } from "@/app/api/like-quiz/route";
 import { likeQuiz } from "@/actions/quiz/likeQuiz";
+import { deleteQuiz } from "@/actions/quiz"
 import ReactMarkdown from "react-markdown";
 import PrintQuiz from "../quiz/print-quiz";
 

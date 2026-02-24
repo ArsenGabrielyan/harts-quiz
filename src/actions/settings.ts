@@ -11,8 +11,9 @@ import { getEveryQuizByTeacherEmail } from "@/data/db/quiz";
 import { signOut } from "@/auth";
 import { db } from "@/lib/db";
 import { getAccountByUserId } from "@/data/db/account";
+import { SettingsType } from "@/data/types/schema";
 
-export const settings = async (values: z.infer<typeof SettingsSchema>) => {
+export const settings = async (values: SettingsType) => {
      const user = await currentUser();
      if(!user){
           return {error: "Մուտք գործեք հաշվին"}

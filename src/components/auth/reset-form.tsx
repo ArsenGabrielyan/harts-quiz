@@ -18,18 +18,19 @@ import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { reset } from "@/actions/auth/reset";
+import { ResetType } from "@/data/types/schema";
 
 export default function ResetForm(){
      const [isPending, startTransition] = useTransition();
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
-     const form = useForm<z.infer<typeof ResetSchema>>({
+     const form = useForm<ResetType>({
           resolver: zodResolver(ResetSchema),
           defaultValues: {
                email: ""
           }
      });
-     const handleSubmit = (values: z.infer<typeof ResetSchema>) => {
+     const handleSubmit = (values: ResetType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{

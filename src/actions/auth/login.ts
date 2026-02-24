@@ -10,6 +10,7 @@ import { AuthError } from "next-auth";
 import { getTwoFactorTokenByEmail } from "@/data/db/two-factor-token";
 import { getTwoFactorConfirmationByUserId } from "@/data/db/two-factor-confirmation";
 import { db } from "@/lib/db";
+import { LoginType } from "@/data/types/schema";
 
 const authErrorMessages: Record<string, string> = {
      CredentialsSignin: "Սխալ էլ․ փոստ կամ գաղտնաբառ։",
@@ -27,7 +28,7 @@ const authErrorMessages: Record<string, string> = {
 };
 
 export const login = async (
-     values: z.infer<typeof LoginSchema>,
+     values: LoginType,
      callbackUrl?: string | null
 ) => {
      const validatedFields = LoginSchema.safeParse(values);

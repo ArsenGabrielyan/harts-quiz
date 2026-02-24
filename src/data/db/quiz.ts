@@ -1,10 +1,20 @@
 import { QuizVisibility } from "@prisma/client";
 import { db } from "@/lib/db";
+import * as z from "zod"
+import { QuizEditorSchema } from "@/schemas";
 
 export async function getQuizById(id: string){
      try{
           const quiz = await db.hartsQuiz.findUnique({
-               where: {id}
+               where: {id},
+               include: {
+                    questions: {
+                         include: {
+                              answers: true,
+                              correctAnswer: true
+                         }
+                    }
+               }
           })
           return quiz
      } catch {
@@ -14,8 +24,10 @@ export async function getQuizById(id: string){
 
 export async function getEveryQuizByTeacherEmail(email: string){
      try{
-          const quiz = await db.hartsQuiz.findUnique({
-               where: {teacherEmail: email}
+          const quiz = await db.hartsQuiz.findFirst({
+               where: {
+                    teacherEmail: email
+               }
           })
           return quiz
      } catch {

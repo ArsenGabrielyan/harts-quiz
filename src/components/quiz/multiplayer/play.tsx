@@ -29,6 +29,7 @@ import {socket} from "@/socket";
 import QuizQuestion from "../quiz-question";
 import Timer from "../timer";
 import { toast } from "sonner";
+import { MultiplayerQuizFormType } from "@/data/types/schema";
 
 interface MultiplayerQuizPlayProps{
      user?: ExtendedUser,
@@ -39,7 +40,7 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
      const updateState = (overrides: Partial<IMultiplayerPlayState>) => {
           setState(prev=>({...prev,...overrides}));
      }
-     const form = useForm<z.infer<typeof MultiplayerQuizFormSchema>>({
+     const form = useForm<MultiplayerQuizFormType>({
           resolver: zodResolver(MultiplayerQuizFormSchema),
           defaultValues: {
                quizCode: code || "",
@@ -85,7 +86,7 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
           }
           // eslint-disable-next-line
      },[state.formData.userId])
-     const handleSubmitToHost = (values: z.infer<typeof MultiplayerQuizFormSchema>) => {
+     const handleSubmitToHost = (values: MultiplayerQuizFormType) => {
           const data: IQuizUser = {
                ...state.formData,
                name: values.name,
