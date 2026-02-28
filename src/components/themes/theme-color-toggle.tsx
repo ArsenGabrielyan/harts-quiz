@@ -1,6 +1,4 @@
 "use client";
-import * as React from "react";
-
 import {
   Select,
   SelectContent,
@@ -9,9 +7,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useThemeContext } from "@/context/theme-data-provider";
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { ThemeColors } from "@/lib/types";
+import { useCurrentTheme } from "@/hooks/use-current-theme";
 
 const availableThemeColors = [
   { name: "Zinc", light: "bg-zinc-900", dark: "bg-zinc-700", title: "Սև / Սպիտակ"},
@@ -23,7 +21,7 @@ const availableThemeColors = [
 
 export function ThemeColorToggle() {
   const { themeColor, setThemeColor } = useThemeContext();
-  const { theme } = useTheme();
+  const theme = useCurrentTheme()
 
   const createSelectItems = () => {
     return availableThemeColors.map(({ name, light, dark, title }) => (

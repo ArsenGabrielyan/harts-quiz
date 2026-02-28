@@ -7,7 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 
 export const metadata: Metadata = {
-  title: "Հարց (Բետա 2)",
+  title: "Հարց (Բետա 3)",
   description: "Հարցը խաղ է, որտեղ դուք կպատասխանեք հարցաշարին և կստանաք միավորներ։ Ձեր գիտելիքը՝ Ձեր հաղթանակը",
   authors: {
     url: "https://github.com/ArsenGabrielyan",

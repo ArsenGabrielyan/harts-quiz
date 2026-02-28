@@ -1,4 +1,4 @@
-import { useTheme } from "next-themes";
+import { useCurrentTheme } from "@/hooks/use-current-theme";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ interface LogoProps{
      height: number
 }
 export default function Logo({width,height}: LogoProps){
-     const {theme} = useTheme()
+     const theme = useCurrentTheme()
      const initialImage = theme && theme==="dark" ? "/logos/logo-white.svg" : "/logos/logo.svg";
      const [image, setImage] = useState(initialImage)
      const handleMouseOver = () => setImage("/logos/logo-colorful.svg");
