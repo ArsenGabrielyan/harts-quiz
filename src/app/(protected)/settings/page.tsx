@@ -1,8 +1,7 @@
 "use client"
-import * as z from "zod";
 import {useForm} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SettingsSchema } from "@/schemas";
+import { SettingsSchema } from "@/lib/schemas";
 import { useSession } from "next-auth/react";
 import { useTransition, useState } from "react";
 import { deleteAccount, settings } from "@/actions/settings";
@@ -30,12 +29,13 @@ import { Input } from "@/components/ui/input";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { FormSuccess } from "@/components/form-success";
 import { FormError } from "@/components/form-error";
-import { ENUM_ACCOUNT_TYPES } from "@/data/constants/others";
+import { ENUM_ACCOUNT_TYPES } from "@/lib/constants/others";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { getFilteredSubjects } from "@/data/helpers";
+import { getFilteredSubjects } from "@/lib/helpers";
 import { Label } from "@/components/ui/label";
 import ThemeSettings from "@/components/themes/theme-changer";
+import { SettingsType } from "@/lib/types/schema";
 
 export default function SettingsPage(){
      const user = useCurrentUser();
@@ -45,7 +45,7 @@ export default function SettingsPage(){
      const [isPending, startTransition] = useTransition();
      const {update} = useSession()
 
-     const form = useForm<z.infer<typeof SettingsSchema>>({
+     const form = useForm<SettingsType>({
           resolver: zodResolver(SettingsSchema),
           defaultValues: {
                password: undefined,
@@ -63,7 +63,7 @@ export default function SettingsPage(){
           }
      })
 
-     const handleSubmit = (values: z.infer<typeof SettingsSchema>) => {
+     const handleSubmit = (values: SettingsType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{

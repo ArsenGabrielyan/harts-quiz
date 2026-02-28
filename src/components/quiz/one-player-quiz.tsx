@@ -1,11 +1,10 @@
 "use client"
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import QuizWrapper from "./quiz-wrapper";
 import { Button } from "../ui/button";
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SoundSwitchFormSchema } from "@/schemas";
+import { SoundSwitchFormSchema } from "@/lib/schemas";
 import {
      Form,
      FormControl,
@@ -18,14 +17,16 @@ import {
 import { Switch } from "../ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { useState } from "react";
-import { INITIAL_1P_QUIZ_STATE } from "@/data/constants/states";
-import { QUIZ_START_TIME} from "@/data/constants/others"
-import { IOnePlayerQuizState } from "@/data/types";
+import { INITIAL_1P_QUIZ_STATE } from "@/lib/constants/states";
+import { ROUND_START_TIME} from "@/lib/constants/others"
+import { IOnePlayerQuizState } from "@/lib/types";
 import Timer from "./timer";
 import QuizQuestion from "./quiz-question";
 import { CircleCheck, CircleX } from "lucide-react";
-import { playSound } from "@/data/helpers";
-import { toast } from "sonner";
+import { formatCorrectAnswer, playSound, toPlaybackQuestion } from "@/lib/helpers";
+import { SoundSwitchFormType } from "@/lib/types/schema";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-success";
 
 interface QuizFormProps{
      quiz: QuizDocument,
@@ -37,7 +38,7 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
           setState(prev=>({...prev,...overrides}))
      }
      const {name,teacher,subject,createdAt,questions} = quiz;
-     const form = useForm<z.infer<typeof SoundSwitchFormSchema>>({
+     const form = useForm<SoundSwitchFormType>({
           resolver: zodResolver(SoundSwitchFormSchema),
           defaultValues: {
                soundEffectOn: user?.soundEffectOn || false
@@ -46,92 +47,52 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
      const soundEffectOn = form.watch("soundEffectOn");
      const handleStartQuiz = () => {
           updateState({
-               isStarted: true
+               phase: "countdown",
+               startTimer: ROUND_START_TIME
           })
      }
      const handleTimeChange = (time: number) => {
           updateState({
                startTimer: time
           })
+          if (time <= 0 && state.phase === "countdown") {
+               updateState({phase: "question"})
+          }
      }
-     const handleAfterCheck = (answer: string, correct: string, points: number) => {
-          const isCorrect = answer.toLowerCase()===correct.toLowerCase();
-          setState(prev=>({
+     const handleAfterCheck = (answerId: number, correctAnswerId: number, points?: number, text?: string) => {
+          const isCorrect = answerId===correctAnswerId;
+          setState(prev => ({
                ...prev,
-               correct: isCorrect ? prev.correct+1 : prev.correct,
-               wrong: !isCorrect ? prev.wrong+1 : prev.wrong,
-               points: isCorrect ? prev.points+points : prev.points,
-               isNextRound: true
-          }))
-          if(soundEffectOn)
-               playSound(isCorrect? 'correct.mp3' : 'wrong.mp3',error=>toast.error(error))
+               correct: isCorrect ? prev.correct + 1 : prev.correct,
+               wrong: !isCorrect ? prev.wrong + 1 : prev.wrong,
+               points: isCorrect ? prev.points + (points ?? 0) : prev.points,
+               phase: "result",
+               correctText: !isCorrect ? text ?? "" : null
+          }));
+          if (soundEffectOn)
+               playSound(isCorrect ? "correct.mp3" : "wrong.mp3");
      }
      const handleNextRound = () => {
-          setState(prev=>({
+          if (state.currIdx === questions.length - 1) {
+               setState(prev => ({ ...prev, phase: "ended" }));
+               if (soundEffectOn) playSound(correct > wrong ? "winner.mp3" : "tick.mp3");
+               return;
+          }
+          setState(prev => ({
                ...prev,
-               currIdx: prev.currIdx+1,
-               isNextRound: state.currIdx!==questions.length-1 ? false : true
-          }))
-          if(state.currIdx===questions.length-1 && soundEffectOn)
-               playSound("winner.mp3",error=>toast.error(error));
-     }
+               currIdx: prev.currIdx + 1,
+               phase: "question"
+          }));
+     };
      const reset = () => {
           setState(INITIAL_1P_QUIZ_STATE);
           form.reset();
      }
-     const {isStarted, startTimer,currIdx, isNextRound, correct, wrong, points} = state
+     const {phase, currIdx, correct, wrong, points, startTimer, correctText} = state
+     const currentQuestion = questions[currIdx]
      return (
           <QuizWrapper quizDetails={{name,teacher,subject,createdAt}}>
-               {isStarted ? (
-                    startTimer>0 ? (
-                         <Timer
-                              time={startTimer}
-                              initialTime={QUIZ_START_TIME}
-                              onTimeChange={handleTimeChange}
-                         />
-                    ) : (
-                         <>
-                              {currIdx<=questions.length && questions.map((question,i)=>{
-                                   if(i===currIdx) return (
-                                        <QuizQuestion
-                                             key={i}
-                                             question={question}
-                                             mode="one-player"
-                                             soundEffectOn={soundEffectOn}
-                                             questionNumber={i+1}
-                                             afterCheck={handleAfterCheck}
-                                        />
-                                   )
-                              })}
-                              {isNextRound && (
-                                   currIdx!==questions.length ? (
-                                        <Button
-                                             type="button"
-                                             variant="outline"
-                                             onClick={handleNextRound}
-                                             className="w-full mt-4"
-                                        >
-                                             Անցնել հաջորդ հարցին
-                                        </Button>
-                                   ) : (
-                                        <div className="flex flex-col items-center justify-center gap-5">
-                                             <h2 className="text-xl md:text-2xl font-semibold">Խաղը ավարտված է</h2>
-                                             <p className="flex items-center gap-2"><CircleCheck className="text-emerald-500"/><span>Ճիշտ պատասխաններ՝ {correct}</span></p>
-                                             <p className="flex items-center gap-2"><CircleX className="text-destructive"/><span>Սխալ պատասխաններ՝ {wrong}</span></p>
-                                             <p className="text-center">Հավաքած միավորներ՝ {points}</p>
-                                             <Button
-                                                  type="button"
-                                                  className="w-full"
-                                                  onClick={reset}
-                                             >
-                                                  Վերսկսել
-                                             </Button>
-                                        </div>
-                                   )
-                              )}
-                         </>
-                    )
-               ) : (
+               {phase==="lobby" && (
                     <Form {...form}>
                          <form className="space-y-6" onSubmit={form.handleSubmit(handleStartQuiz)}>
                               <div className="space-y-4">
@@ -158,6 +119,52 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
                               <Button type="submit" className="w-full">Սկսել</Button>
                          </form>
                     </Form>
+               )}
+               {phase==="countdown" && (
+                    <Timer
+                         time={startTimer}
+                         initialTime={ROUND_START_TIME}
+                         onTimeChange={handleTimeChange}
+                    />
+               )}
+               {(phase==="question" && currentQuestion) && (
+                    <QuizQuestion
+                         key={currIdx}
+                         question={toPlaybackQuestion(currentQuestion)}
+                         mode="one-player"
+                         soundEffectOn={soundEffectOn}
+                         questionNumber={currIdx+1}
+                         afterCheck={handleAfterCheck}
+                    />
+               )}
+               {phase==="result" && (
+                    <>
+                    {correctText===null ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(correctText)}`}/>}
+                    <Button
+                         type="button"
+                         variant="outline"
+                         onClick={handleNextRound}
+                         className="w-full mt-4"
+                    >
+                         Անցնել հաջորդ հարցին
+                    </Button>
+                    </>
+                    
+               )}
+               {phase==="ended" && (
+                    <div className="flex flex-col items-center justify-center gap-5">
+                         <h2 className="text-xl md:text-2xl font-semibold">Խաղը ավարտված է</h2>
+                         <p className="flex items-center gap-2"><CircleCheck className="text-emerald-500"/><span>Ճիշտ պատասխաններ՝ {correct}</span></p>
+                         <p className="flex items-center gap-2"><CircleX className="text-destructive"/><span>Սխալ պատասխաններ՝ {wrong}</span></p>
+                         <p className="text-center">Հավաքած միավորներ՝ {points}</p>
+                         <Button
+                              type="button"
+                              className="w-full"
+                              onClick={reset}
+                         >
+                              Վերսկսել
+                         </Button>
+                    </div>
                )}
           </QuizWrapper>
      )

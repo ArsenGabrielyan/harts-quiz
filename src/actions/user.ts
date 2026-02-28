@@ -1,6 +1,6 @@
 "use server"
-import { getEveryQuizByTeacherEmail } from "@/data/db/quiz";
-import { getUserById } from "@/data/db/user";
+import { getEveryQuizByTeacherEmail } from "@/data/quiz";
+import { getUserById } from "@/data/user";
 
 export const getUserDetails = async(id: string) => {
      const user = await getUserById(id);

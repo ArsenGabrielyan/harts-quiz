@@ -1,11 +1,10 @@
-import { GET_INITIAL_QUESTION_STATE } from "@/data/constants/states";
-import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/data/helpers";
-import { IQuestion, IQuestionState } from "@/data/types";
+import { GET_INITIAL_QUESTION_STATE } from "@/lib/constants/states";
+import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/lib/helpers";
+import { IQuestion, IQuestionState } from "@/lib/types";
 import { useEffect, useState } from "react";
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextAnswerFormSchema } from "@/schemas";
+import { TextAnswerFormSchema } from "@/lib/schemas";
 import {
      Form,
      FormControl,
@@ -20,16 +19,17 @@ import { FormSuccess } from "../form-success";
 import { FormError } from "../form-error";
 import Timer from "./timer";
 import { cn } from "@/lib/utils";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { TextAnswerFormType } from "@/lib/types/schema";
 
 interface QuizQuestionProps{
      question: IQuestion,
      mode: "multiplayer" | "one-player",
      soundEffectOn: boolean,
      questionNumber: number,
-     afterCheck?: (answer: string, correctAnswer: string, points: number) => void
+     afterCheck?: (answerId: number, correctAnswerId: number, points?: number, text?: string) => void
      isTeacher?: boolean;
+     finishQuizWithNoAnswer?: () => void
 }
 export default function QuizQuestion({
      question,
@@ -37,62 +37,63 @@ export default function QuizQuestion({
      soundEffectOn,
      questionNumber,
      afterCheck,
+     finishQuizWithNoAnswer,
      isTeacher=false
 }:QuizQuestionProps){
      const answerFormat = getAnswerFormat(question.type);
      const [state, setState] = useState(GET_INITIAL_QUESTION_STATE(question));
-     const form = useForm<z.infer<typeof TextAnswerFormSchema>>({
+     const form = useForm<TextAnswerFormType>({
           resolver: zodResolver(TextAnswerFormSchema),
           defaultValues: {
                answer: ""
           }
      })
-     const checkAnswer = (answer: string) => {
+     const checkAnswer = (answerId: number, correctId: number) => {
           updateState(mode==="multiplayer" ? {
-               currAnswer: answer,
+               currAnswerId: answerId,
           } : {
-               currAnswer: answer,
+               currAnswerId: answerId,
                currTime: 0
           })
-          if(mode==="multiplayer" && soundEffectOn)
-               playSound("tick.mp3",error=>toast.error(error))
+          if(afterCheck) afterCheck(
+               answerId,
+               correctId,
+               mode==="one-player" ? question.points : undefined,
+               mode==="one-player" ? question.correct?.text ?? "" : undefined
+          );
      }
      const updateState = (overrides: Partial<IQuestionState>) => {
           setState(prev=>({...prev,...overrides}))
      }
-     const handleSubmitAnswer = (values: z.infer<typeof TextAnswerFormSchema>)=>{
-          checkAnswer(values.answer);
-          if(mode==="multiplayer" && soundEffectOn)
-               playSound("tick.mp3",error=>toast.error(error))
+     const handleSubmitAnswer = (values: TextAnswerFormType)=>{
+          const answerId = question.answers.find(val=>val.text.toLowerCase().includes(values.answer))?.id
+          checkAnswer(answerId ?? -1, question.correct?.id ?? -1);
      }
      const handleChangeTime = (time: number) => {
           updateState({currTime: time})
      }
-     useEffect(()=>{
-          if(state.currTime <= 0 && afterCheck)
-               afterCheck(state.currAnswer,question.correct,question.points)
-          // eslint-disable-next-line
-     },[state.currTime])
+     useEffect(() => {
+          if (state.currTime !== 0) return;
+          if (state.currAnswerId !== null) return;
+          finishQuizWithNoAnswer?.()
+     }, [state.currTime, state.currAnswerId]);
      useEffect(()=>{
           if(soundEffectOn)
                playSound("start.mp3",error=>toast.error(error))
      },[soundEffectOn])
-     const {currAnswer,currTime} = state
-     const isCorrect = currAnswer.toLowerCase()===question.correct.toLowerCase();
+     const {currAnswerId,currTime} = state
+     const isCorrect = currAnswerId===question.correct?.id
      return (
           <>
-               <div className={cn("space-y-4",(currAnswer==="" || currTime>=0) && "mb-4")}>
+               <div className={cn("space-y-4",(currAnswerId===null || currTime>0) && "mb-4")}>
                     <h2 className="text-2xl font-semibold">{questionNumber}. {question.question}</h2>
-                    {(mode==="multiplayer" && (currAnswer!=="" && currTime>0)) && (
-                         <p className="text-muted-foreground flex items-center gap-2"><Loader/> Խնդրում ենք սպասել․․․</p>
-                    )}
-                    {(currAnswer==="" || currTime!==0) ? null : isCorrect ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(question.correct)}`}/>}
+                    {currAnswerId===null ? null : isCorrect ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(question.correct?.text ?? "")}`}/>}
                     {question.description && (
                          <p className="text-muted-foreground">{question.description}</p>
                     )}
                </div>
                {isTeacher && currTime<=0 && (
-                    <h2 className="text-2xl font-semibold text-center w-full">Ճիշտ պատասխան՝ {formatCorrectAnswer(question.correct)}</h2>
+                    <h2 className="text-2xl font-semibold text-center w-full">Ճիշտ պատասխան՝ {formatCorrectAnswer(question.correct?.text ?? "")}</h2>
                )}
                {!isTeacher && (
                     question.type==="text" ? (
@@ -109,7 +110,7 @@ export default function QuizQuestion({
                                                             <Input
                                                                  {...field}
                                                                  placeholder="Մուտքագրեք Ձեր պատասխանը այստեղ"
-                                                                 disabled={currAnswer!==""}
+                                                                 disabled={currAnswerId!==null}
                                                             />
                                                        </FormControl>
                                                        <FormMessage/>
@@ -117,27 +118,27 @@ export default function QuizQuestion({
                                              )}
                                         />
                                    </div>
-                                   <Button type="submit" className="w-full" disabled={currAnswer!==""}>Հաստատել</Button>
+                                   <Button type="submit" className="w-full" disabled={currAnswerId!==null}>Հաստատել</Button>
                               </form>
                          </Form>
                     ) : (
                          <div className="flex flex-col items-center justify-center gap-y-3">
                               {question.answers.map((answer,i)=>(
                                    <Button
-                                        variant={getButtonVariantDependingOnAnswer(answer,question.correct,mode,state)}
+                                        variant={getButtonVariantDependingOnAnswer(answer.id,question.correct?.id ?? -1,mode,state)}
                                         type="button"
-                                        key={i}
-                                        onClick={()=>checkAnswer(answer)}
+                                        key={answer.id}
+                                        onClick={()=>checkAnswer(answer.id,question.correct?.id ?? -1)}
                                         className={cn("w-full",question.type==="pick_one" && "justift-start")}
-                                        disabled={currAnswer!=="" || currTime<=0}
+                                        disabled={currAnswerId!==null || currTime<=0}
                                    >
-                                        {question.type==="true_false" ? answerFormat[i] : `${answerFormat[i]}. ${answer}`}
+                                        {question.type==="true_false" ? answerFormat[i] : `${answerFormat[i]}. ${answer.text}`}
                                    </Button>
                               ))}
                          </div>
                     )
                )}
-               {currTime>0 && (
+               {(currAnswerId===null && currTime>0) && (
                     <Timer time={currTime} initialTime={question.timer} onTimeChange={handleChangeTime} isInQuizQuestion/>
                )}
           </>

@@ -1,11 +1,10 @@
 "use client"
-import * as z from "zod";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form"
 import { useSearchParams } from "next/navigation";
 import {zodResolver} from "@hookform/resolvers/zod"
-import { LoginSchema } from "@/schemas";
+import { LoginSchema } from "@/lib/schemas";
 import { CardWrapper } from "./card-wrapper";
 import {
      Form,
@@ -20,8 +19,9 @@ import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { login } from "@/actions/auth/login";
-import { getOAuthNotLinkedError } from "@/data/helpers";
+import { getOAuthNotLinkedError } from "@/lib/helpers";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
+import { LoginType } from "@/lib/types/schema";
 
 export default function LoginForm(){
      const searchParams = useSearchParams();
@@ -31,7 +31,7 @@ export default function LoginForm(){
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
      const [isPending, startTransition] = useTransition();
-     const form = useForm<z.infer<typeof LoginSchema>>({
+     const form = useForm<LoginType>({
           resolver: zodResolver(LoginSchema),
           defaultValues: {
                email: "",
@@ -39,7 +39,7 @@ export default function LoginForm(){
                code: "",
           }
      });
-     const handleSubmit = (values: z.infer<typeof LoginSchema>) => {
+     const handleSubmit = (values: LoginType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{

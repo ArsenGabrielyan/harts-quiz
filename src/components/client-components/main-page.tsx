@@ -1,12 +1,12 @@
 "use client"
-import { accTypeInArmenian, groupBy } from "@/data/helpers";
+import { accTypeInArmenian, groupBy } from "@/lib/helpers";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PageLayout from "../page-layout";
 import { ExtendedUser } from "@/next-auth";
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import QuizCard from "../cards/quiz-card";
-import { SUBJECT_LIST } from "@/data/constants/others";
+import { SUBJECT_LIST } from "@/lib/constants/others";
 import { useMemo } from "react";
 
 interface MainPageProps {
@@ -42,7 +42,7 @@ export default function MainPage({user, questions}: MainPageProps) {
                ) : (
                     <>
                          <div className="bg-background shadow rounded-xl p-5 flex justify-center items-center flex-col sm:flex-row gap-4">
-                              <div className="flex flex-col justify-center items-center text-center sm:items-start sm:text-left gap-1">
+                              <div className="flex flex-col justify-center items-center text-center sm:items-start sm:text-left gap-2">
                                    <h1 className="text-3xl font-semibold">Բարև {user.name?.split(' ')[0]}!</h1>
                                    <p className="text-muted-foreground">@{user.username}</p>
                                    <p>{accTypeInArmenian(user?.accountType)}</p>

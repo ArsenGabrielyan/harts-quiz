@@ -1,10 +1,10 @@
 "use client"
+import { useCurrentTheme } from "@/hooks/use-current-theme"
 import setGlobalColorTheme, { getSavedThemeColor } from "@/lib/theme-colors"
-import { ThemeColors, ThemeColorStateParams } from "@/data/types"
+import { ThemeColors, ThemeColorStateParams } from "@/lib/types"
 import { useTheme } from "next-themes"
 import { ThemeProviderProps } from "next-themes"
-
-import React, { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 const ThemeContext = createContext<ThemeColorStateParams>(
      {} as ThemeColorStateParams
@@ -13,11 +13,11 @@ const ThemeContext = createContext<ThemeColorStateParams>(
 export default function ThemeDataProvider({children}: ThemeProviderProps){
      const [themeColor, setThemeColor] = useState<ThemeColors>(getSavedThemeColor())
      const [isMounted, setIsMounted] = useState(false);
-     const {theme} = useTheme();
+     const theme = useCurrentTheme()
 
      useEffect(()=>{
           localStorage.setItem("themeColor",themeColor)
-          setGlobalColorTheme(theme as "light" | "dark",themeColor);
+          setGlobalColorTheme(theme || "light", themeColor);
           if(!isMounted) setIsMounted(true)
      },[themeColor,theme,isMounted])
 

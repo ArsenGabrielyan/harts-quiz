@@ -1,19 +1,18 @@
 "use client"
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import PageLayout from "../page-layout";
 import { Button } from "../ui/button";
 import { CopyPlus, Edit, Heart, Printer, Share, Trash, Loader, Link2, Lock } from "lucide-react";
 import QuestionCard from "../cards/question-card";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { fetcher, shareQuiz } from "@/data/helpers";
-import { duplicateQuiz } from "@/actions/quiz/duplicateQuiz";
+import { fetcher, shareQuiz } from "@/lib/helpers";
 import { toast } from "sonner";
-import { deleteQuiz } from "@/actions/quiz/deleteQuiz";
 import { useRouter } from "next/navigation";
 import useSWR from "swr"
 import { LikeQuizResponse } from "@/app/api/like-quiz/route";
-import { likeQuiz } from "@/actions/quiz/likeQuiz";
+import { likeQuiz } from "@/actions/quiz";
+import { deleteQuiz, duplicateQuiz } from "@/actions/quiz/crud"
 import ReactMarkdown from "react-markdown";
 import PrintQuiz from "../quiz/print-quiz";
 
@@ -82,7 +81,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                                              </Button>
                                              {user && (
                                                   <Button variant="ghost" size="icon" title={data?.isLiked ? "Չհավանել" : 'Հավանել'} onClick={handleLikeQuiz} disabled={isLoading || isValidating}>
-                                                       {(isLoading || isValidating) ? <Loader/> : <Heart className={data?.isLiked ? "text-primary" : "text-foreground"}/>}
+                                                       {(isLoading || isValidating) ? <Loader className="animate-spin"/> : <Heart className={data?.isLiked ? "text-primary" : "text-foreground"}/>}
                                                   </Button>
                                              )}
                                              {isCurrUser && (
@@ -127,7 +126,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                                    </>    
                               )}
                               <h2 className="text-3xl md:text-4xl text-center my-3">Հարցեր</h2>
-                              <div className="flex flex-col gap-y-3">
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                    {quiz.questions.map((question,i)=><QuestionCard key={i} question={question} id={i+1}/>)}
                               </div>
                          </>

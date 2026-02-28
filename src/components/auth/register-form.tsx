@@ -1,9 +1,8 @@
 "use client"
-import * as z from "zod";
 import { useState, useTransition } from "react";
 import {useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
-import { RegisterSchema } from "@/schemas";
+import { RegisterSchema } from "@/lib/schemas";
 import { CardWrapper } from "./card-wrapper";
 import {
      Form,
@@ -20,13 +19,14 @@ import { FormSuccess } from "../form-success";
 import { register } from "@/actions/auth/register";
 import { PasswordStrengthInput } from "../password-input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../ui/select";
-import { ENUM_ACCOUNT_TYPES } from "@/data/constants/others";
+import { ENUM_ACCOUNT_TYPES } from "@/lib/constants/others";
+import { RegisterType } from "@/lib/types/schema";
 
 export default function RegisterForm(){
      const [isPending, startTransition] = useTransition();
      const [error, setError] = useState<string | undefined>("");
      const [success, setSuccess] = useState<string | undefined>("");
-     const form = useForm<z.infer<typeof RegisterSchema>>({
+     const form = useForm<RegisterType>({
           resolver: zodResolver(RegisterSchema),
           defaultValues: {
                name: "",
@@ -36,7 +36,7 @@ export default function RegisterForm(){
                accountType: "student",
           }
      });
-     const handleSubmit = (values: z.infer<typeof RegisterSchema>) => {
+     const handleSubmit = (values: RegisterType) => {
           setError("");
           setSuccess("");
           startTransition(()=>{

@@ -2,9 +2,9 @@
 import { useState } from "react";
 import PageLayout from "../page-layout";
 import QuizCard from "@/components/cards/quiz-card";
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { SUBJECT_LIST } from "@/data/constants/others";
+import { SUBJECT_LIST } from "@/lib/constants/others";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 interface QuizListProps{

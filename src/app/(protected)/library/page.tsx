@@ -1,6 +1,6 @@
 import { getQuizFromCurrEmail } from "@/actions/quiz";
 import LibraryQuizList from "@/components/client-components/library";
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 

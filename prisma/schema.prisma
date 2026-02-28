@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -31,18 +31,44 @@ enum QuizVisibility {
   unlisted
 }
 
-type Question {
+model Question {
+  id          Int  @id @default(autoincrement())
   question    String
-  answers     String[]
-  correct     String
   timer       Int
   type        QuestionType
   points      Int
   description String?
+  answers Answer[]
+
+  correctAnswerId Int?
+  correctAnswer   Answer? @relation("CorrectAnswer", fields: [correctAnswerId], references: [id], onDelete: Cascade)
+
+  quiz   HartsQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId String
+}
+
+model Answer {
+  id         Int @id @default(autoincrement())
+  text       String
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  correctFor Question[] @relation("CorrectAnswer")
+}
+
+model Favorite {
+  id     String @id @default(cuid())
+  userId String
+  quizId String
+
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz   HartsQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quizId])
 }
 
 model User {
-  id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String  @id @default(cuid())
   name                  String
   email                 String? @unique
   username              String? @unique
@@ -55,7 +81,7 @@ model User {
   soundEffectOn         Boolean                @default(false)
   showFavoriteSubject   Boolean                @default(true)
   bio                   String?
-  favorites             String[]
+  favorites Favorite[]
   favoriteSubject       String?
   twoFactorConfirmation TwoFactorConfirmation?
   accounts      Account[]
@@ -66,17 +92,17 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  id                String @id @default(cuid())
+  userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String?
   session_state     String?
  
   createdAt DateTime @default(now())
@@ -88,9 +114,9 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String   @db.ObjectId
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
  
@@ -99,7 +125,7 @@ model Session {
 }
 
 model HartsQuiz {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  id           String         @id @default(cuid())
   name         String
   teacher      String
   teacherEmail String
@@ -107,14 +133,15 @@ model HartsQuiz {
   questions    Question[]
   visibility   QuizVisibility
   subject      String
+
+  favorites Favorite[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  @@unique([teacherEmail])
 }
 
 model VerificationToken {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @id @default(cuid())
   email   String
   token   String   @unique
   expires DateTime
@@ -123,7 +150,7 @@ model VerificationToken {
 }
 
 model PasswordResetToken {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @id @default(cuid())
   email   String
   token   String   @unique
   expires DateTime
@@ -132,7 +159,7 @@ model PasswordResetToken {
 }
 
 model TwoFactorToken {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @id @default(cuid())
   email   String
   token   String   @unique
   expires DateTime
@@ -141,8 +168,8 @@ model TwoFactorToken {
 }
 
 model TwoFactorConfirmation {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String @db.ObjectId
+  id     String @id @default(cuid())
+  userId String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

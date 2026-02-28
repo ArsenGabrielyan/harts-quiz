@@ -1,4 +1,4 @@
-import { getUserById } from "@/data/db/user";
+import { getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,6 +17,6 @@ export async function GET(req: NextRequest): Promise<NextResponse<LikeQuizRespon
      if(!existingUser){
           return NextResponse.json({error: "Օգտատերը մուտք չի գործել"},{status: 401});
      }
-     const isLiked = existingUser.favorites.includes(quizId);
+     const isLiked = existingUser.favorites.some(f => f.quizId === quizId);
      return NextResponse.json({isLiked});
 }

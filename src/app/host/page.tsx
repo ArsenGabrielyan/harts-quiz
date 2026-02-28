@@ -1,6 +1,6 @@
 import { getQuizDetails } from "@/actions/quiz";
 import MultiplayerQuizHost from "@/components/quiz/multiplayer/host";
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import { currentUser } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 

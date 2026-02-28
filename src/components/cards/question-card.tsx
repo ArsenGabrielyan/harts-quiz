@@ -1,9 +1,9 @@
-import { IQuestion } from "@/data/types";
+import { IQuizDocumentQuestion } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAnswerType } from "@/data/helpers";
+import { getAnswerType } from "@/lib/helpers";
 
 interface QuestionCardProps{
-     question: IQuestion,
+     question: IQuizDocumentQuestion,
      id: number
 }
 export default function QuestionCard({question,id}:QuestionCardProps){
@@ -18,7 +18,7 @@ export default function QuestionCard({question,id}:QuestionCardProps){
                          {question.description && <p className={question.answers && question.type==="pick_one" ? "mb-3" : ""}>{question.description}</p>}
                          <ul className="space-y-2">
                               {question.answers.map((answer,i)=>(
-                                   <li key={i}>{i+1}. {answer}</li>
+                                   <li key={answer.id}>{i+1}. {answer.text}</li>
                               ))}
                          </ul>
                     </CardContent>
