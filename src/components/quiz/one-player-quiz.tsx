@@ -18,14 +18,15 @@ import { Switch } from "../ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { useState } from "react";
 import { INITIAL_1P_QUIZ_STATE } from "@/lib/constants/states";
-import { QUIZ_START_TIME, ROUND_START_TIME} from "@/lib/constants/others"
+import { ROUND_START_TIME} from "@/lib/constants/others"
 import { IOnePlayerQuizState } from "@/lib/types";
 import Timer from "./timer";
 import QuizQuestion from "./quiz-question";
 import { CircleCheck, CircleX } from "lucide-react";
-import { playSound, toPlaybackQuestion } from "@/lib/helpers";
-import { toast } from "sonner";
+import { formatCorrectAnswer, playSound, toPlaybackQuestion } from "@/lib/helpers";
 import { SoundSwitchFormType } from "@/lib/types/schema";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-success";
 
 interface QuizFormProps{
      quiz: QuizDocument,
@@ -47,22 +48,26 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
      const handleStartQuiz = () => {
           updateState({
                phase: "countdown",
-               startTimer: QUIZ_START_TIME
+               startTimer: ROUND_START_TIME
           })
      }
      const handleTimeChange = (time: number) => {
           updateState({
                startTimer: time
           })
+          if (time <= 0 && state.phase === "countdown") {
+               updateState({phase: "question"})
+          }
      }
-     const handleAfterCheck = (answerId: number, correctAnswerId: number) => {
+     const handleAfterCheck = (answerId: number, correctAnswerId: number, points?: number, text?: string) => {
           const isCorrect = answerId===correctAnswerId;
           setState(prev => ({
                ...prev,
                correct: isCorrect ? prev.correct + 1 : prev.correct,
                wrong: !isCorrect ? prev.wrong + 1 : prev.wrong,
-               points: isCorrect ? prev.points + points : prev.points,
-               phase: "result"
+               points: isCorrect ? prev.points + (points ?? 0) : prev.points,
+               phase: "result",
+               correctText: !isCorrect ? text ?? "" : null
           }));
           if (soundEffectOn)
                playSound(isCorrect ? "correct.mp3" : "wrong.mp3");
@@ -70,6 +75,7 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
      const handleNextRound = () => {
           if (state.currIdx === questions.length - 1) {
                setState(prev => ({ ...prev, phase: "ended" }));
+               if (soundEffectOn) playSound(correct > wrong ? "winner.mp3" : "tick.mp3");
                return;
           }
           setState(prev => ({
@@ -82,7 +88,7 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
           setState(INITIAL_1P_QUIZ_STATE);
           form.reset();
      }
-     const {phase, currIdx, correct, wrong, points, startTimer} = state
+     const {phase, currIdx, correct, wrong, points, startTimer, correctText} = state
      const currentQuestion = questions[currIdx]
      return (
           <QuizWrapper quizDetails={{name,teacher,subject,createdAt}}>
@@ -132,6 +138,8 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
                     />
                )}
                {phase==="result" && (
+                    <>
+                    {correctText===null ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(correctText)}`}/>}
                     <Button
                          type="button"
                          variant="outline"
@@ -140,6 +148,8 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
                     >
                          Անցնել հաջորդ հարցին
                     </Button>
+                    </>
+                    
                )}
                {phase==="ended" && (
                     <div className="flex flex-col items-center justify-center gap-5">

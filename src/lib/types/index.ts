@@ -110,7 +110,8 @@ export interface IOnePlayerQuizState {
      correct: number,
      wrong: number,
      points: number,
-     phase: Exclude<QuizPhase,"leaderboard"|"waiting"> | "result"
+     phase: Exclude<QuizPhase,"leaderboard"|"waiting"> | "result",
+     correctText: string | null
 }
 export interface IQuestionState {
      currTime: number,

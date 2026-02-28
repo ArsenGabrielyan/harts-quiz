@@ -7,7 +7,8 @@ export const INITIAL_1P_QUIZ_STATE: IOnePlayerQuizState = {
      wrong: 0,
      points: 0,
      phase: "lobby",
-     startTimer: ROUND_START_TIME
+     startTimer: ROUND_START_TIME,
+     correctText: ""
 }
 export const GET_INITIAL_QUESTION_STATE = (question: IQuestion): IQuestionState => ({
      currTime: question.timer,

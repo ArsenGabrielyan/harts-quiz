@@ -10,9 +10,9 @@ export default async function OnePlayerQuizPage({
      params: Promise<{ id: string }>
 }){
      const {id} = await params;
-     const {quiz} = await getQuizDetails(id);
-     if(!quiz) notFound();
      const user = await currentUser();
+     const {quiz} = await getQuizDetails(id,user);
+     if(!quiz) notFound();
      return (
           <OnePlayerQuiz quiz={quiz as QuizDocument} user={user}/>
      )

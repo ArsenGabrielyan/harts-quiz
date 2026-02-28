@@ -1,6 +1,6 @@
 import { GET_INITIAL_QUESTION_STATE } from "@/lib/constants/states";
 import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/lib/helpers";
-import { IAnswer, IQuestion, IQuestionState } from "@/lib/types";
+import { IQuestion, IQuestionState } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,6 @@ import { FormSuccess } from "../form-success";
 import { FormError } from "../form-error";
 import Timer from "./timer";
 import { cn } from "@/lib/utils";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { TextAnswerFormType } from "@/lib/types/schema";
 
@@ -28,7 +27,7 @@ interface QuizQuestionProps{
      mode: "multiplayer" | "one-player",
      soundEffectOn: boolean,
      questionNumber: number,
-     afterCheck?: (answerId: number, correctAnswerId: number) => void
+     afterCheck?: (answerId: number, correctAnswerId: number, points?: number, text?: string) => void
      isTeacher?: boolean;
      finishQuizWithNoAnswer?: () => void
 }
@@ -56,7 +55,12 @@ export default function QuizQuestion({
                currAnswerId: answerId,
                currTime: 0
           })
-          if(afterCheck) afterCheck(answerId,correctId);
+          if(afterCheck) afterCheck(
+               answerId,
+               correctId,
+               mode==="one-player" ? question.points : undefined,
+               mode==="one-player" ? question.correct?.text ?? "" : undefined
+          );
      }
      const updateState = (overrides: Partial<IQuestionState>) => {
           setState(prev=>({...prev,...overrides}))
