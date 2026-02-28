@@ -1,5 +1,5 @@
 import {Resend} from "resend"
-import { absoluteUrl } from "@/data/helpers";
+import { absoluteUrl } from "@/lib/helpers";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const onboardingEmail = process.env.ONBOARDING_EMAIL!

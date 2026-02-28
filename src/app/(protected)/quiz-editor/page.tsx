@@ -1,6 +1,6 @@
 import { getQuizDetails } from "@/actions/quiz";
 import QuizEditorForm from "@/components/quiz-editor/quiz-editor-form";
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 

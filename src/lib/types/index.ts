@@ -13,11 +13,8 @@ export interface ThemeColorStateParams{
 // Quiz Types
 export interface IQuestion{
      question: string,
-     answers: ({
-          id: number
-          text: string
-     })[],
-     correctAnswerId: number,
+     answers: string[],
+     correct: number;
      timer: number,
      type: QuestionType,
      points: number,

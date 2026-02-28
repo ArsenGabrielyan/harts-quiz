@@ -9,7 +9,7 @@ import {
      FormMessage
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { QuizEditorSchema } from "@/schemas";
+import { QuizEditorSchema } from "@/lib/schemas";
 import { Textarea } from "../ui/textarea";
 import {
      Select,
@@ -17,12 +17,12 @@ import {
      SelectValue,
      SelectItem,
      SelectContent} from "@/components/ui/select"
-import { QUIZ_TYPES_LIST } from "@/data/constants/others";
+import { QUIZ_TYPES_LIST } from "@/lib/constants/others";
 import { Button } from "../ui/button";
 import { ArrowDown, ArrowUp, CheckCircle, CopyPlus, Minus, Plus, Trash } from "lucide-react";
-import { getInitialAnswers } from "@/data/helpers";
+import { getInitialAnswers } from "@/lib/helpers";
 import { QuestionType } from "@prisma/client";
-import { QuizEditorType } from "@/data/types/schema";
+import { QuizEditorType } from "@/lib/types/schema";
 
 interface QuizEditorQuestionCardProps{
      index: number,

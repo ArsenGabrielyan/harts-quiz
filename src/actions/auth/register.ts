@@ -1,13 +1,13 @@
 "use server"
-import { RegisterSchema } from "@/schemas"
+import { RegisterSchema } from "@/lib/schemas"
 import * as z from "zod"
 import bcrypt from "bcryptjs"
 import { db } from "@/lib/db"
-import { getUserByEmail, getUserByUsername } from "@/data/db/user"
+import { getUserByEmail, getUserByUsername } from "@/data/user"
 import { generateVerificationToken } from "@/lib/tokens"
 import { sendVerificationEmail } from "@/lib/mail"
-import { generateUsername } from "@/data/helpers"
-import { RegisterType } from "@/data/types/schema"
+import { generateUsername } from "@/lib/helpers"
+import { RegisterType } from "@/lib/types/schema"
 
 export const register = async (values: RegisterType) => {
      const validatedFields = RegisterSchema.safeParse(values);

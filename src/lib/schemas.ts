@@ -1,29 +1,5 @@
-import { ENUM_ACCOUNT_TYPES, VISIBILITIES_LIST, QUIZ_TYPES_LIST, SUBJECT_LIST } from "@/data/constants/others"
+import { ACC_TYPE_ENUM, QUESTION_TYPE_ENUM, QUIZ_VISIBILITY_ENUM, SUBJECT_NAME_ENUM } from "@/lib/types/schema"
 import * as z from "zod"
-
-type AccountTypeEnum = typeof ENUM_ACCOUNT_TYPES[number]["type"]
-const ACC_TYPE_ENUM: [AccountTypeEnum, ...AccountTypeEnum[]] = [
-     ENUM_ACCOUNT_TYPES[0].type,
-     ...ENUM_ACCOUNT_TYPES.slice(1).map(p=>p.type)
-]
-
-type QuizVisibilityEnum = typeof VISIBILITIES_LIST[number]["type"];
-const QUIZ_VISIBILITY_ENUM: [QuizVisibilityEnum,...QuizVisibilityEnum[]] = [
-     VISIBILITIES_LIST[0].type,
-     ...VISIBILITIES_LIST.slice(1).map(p=>p.type)
-]
-
-type QuestionTypeEnum = typeof QUIZ_TYPES_LIST[number]["type"];
-const QUESTION_TYPE_ENUM: [QuestionTypeEnum,...QuestionTypeEnum[]] = [
-     QUIZ_TYPES_LIST[0].type,
-     ...QUIZ_TYPES_LIST.slice(1).map(p=>p.type)
-]
-
-type SubjectNameEnum = typeof SUBJECT_LIST[number]["name"];
-const SUBJECT_NAME_ENUM: [SubjectNameEnum,...SubjectNameEnum[]] = [
-     SUBJECT_LIST[0].name,
-     ...SUBJECT_LIST.slice(1).map(p=>p.name)
-]
 
 export const ResetSchema = z.object({
      email: z.string().email("Մուտքագրեք վավերական էլ․ փոստ"),

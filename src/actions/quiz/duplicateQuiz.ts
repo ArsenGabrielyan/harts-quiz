@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
-import { getQuizById } from "@/data/db/quiz";
+import { getQuizById } from "@/data/quiz";
 
 export const duplicateQuiz = async (quizId: string) => {
      if(!quizId){

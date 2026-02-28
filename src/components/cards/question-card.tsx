@@ -1,6 +1,6 @@
-import { IQuestion } from "@/data/types";
+import { IQuestion } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAnswerType } from "@/data/helpers";
+import { getAnswerType } from "@/lib/helpers";
 
 interface QuestionCardProps{
      question: IQuestion,

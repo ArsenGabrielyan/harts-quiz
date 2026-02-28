@@ -1,9 +1,9 @@
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { formatDate } from "@/data/helpers";
+import { formatDate } from "@/lib/helpers";
 
 interface QuizCardProps{
      quiz: QuizDocument

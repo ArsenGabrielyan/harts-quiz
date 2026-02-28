@@ -3,7 +3,7 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
-import { NewPasswordSchema } from "@/schemas";
+import { NewPasswordSchema } from "@/lib/schemas";
 import { CardWrapper } from "./card-wrapper";
 import {
      Form,
@@ -19,7 +19,7 @@ import { FormSuccess } from "../form-success";
 import { PasswordStrengthInput } from "../password-input";
 import { useSearchParams } from "next/navigation";
 import { newPassword } from "@/actions/auth/new-password";
-import { NewPasswordType } from "@/data/types/schema";
+import { NewPasswordType } from "@/lib/types/schema";
 
 export default function NewPasswordForm(){
      const [isPending, startTransition] = useTransition();

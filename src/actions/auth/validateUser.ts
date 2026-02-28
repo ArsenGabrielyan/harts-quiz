@@ -1,6 +1,6 @@
 "use server"
-import { LoginSchema } from "@/schemas"
-import { getUserByEmail } from "@/data/db/user"
+import { LoginSchema } from "@/lib/schemas"
+import { getUserByEmail } from "@/data/user"
 import bcrypt from "bcryptjs"
 
 export const validateUser = async (credentials: Partial<Record<string, unknown>>) => {

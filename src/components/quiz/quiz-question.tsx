@@ -1,11 +1,11 @@
-import { GET_INITIAL_QUESTION_STATE } from "@/data/constants/states";
-import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/data/helpers";
-import { IQuestion, IQuestionState } from "@/data/types";
+import { GET_INITIAL_QUESTION_STATE } from "@/lib/constants/states";
+import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/lib/helpers";
+import { IQuestion, IQuestionState } from "@/lib/types";
 import { useEffect, useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextAnswerFormSchema } from "@/schemas";
+import { TextAnswerFormSchema } from "@/lib/schemas";
 import {
      Form,
      FormControl,
@@ -22,7 +22,7 @@ import Timer from "./timer";
 import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
-import { TextAnswerFormType } from "@/data/types/schema";
+import { TextAnswerFormType } from "@/lib/types/schema";
 
 interface QuizQuestionProps{
      question: IQuestion,

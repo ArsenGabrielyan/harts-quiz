@@ -1,11 +1,11 @@
 "use client"
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import QuizWrapper from "../quiz-wrapper";
-import { formatNumberSuffix, generateGameCode, playSound } from "@/data/helpers";
+import { formatNumberSuffix, generateGameCode, playSound } from "@/lib/helpers";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SoundSwitchFormSchema } from "@/schemas";
+import { SoundSwitchFormSchema } from "@/lib/schemas";
 import {
      Form,
      FormControl,
@@ -19,15 +19,15 @@ import { Switch } from "@/components/ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { INITIAL_MULTI_HOST_STATE } from "@/data/constants/states";
-import { QUIZ_START_TIME } from "@/data/constants/others";
-import { IMultiplayerHostState, IQuizPlacement, IQuizUser } from "@/data/types";
+import { INITIAL_MULTI_HOST_STATE } from "@/lib/constants/states";
+import { QUIZ_START_TIME } from "@/lib/constants/others";
+import { IMultiplayerHostState, IQuizPlacement, IQuizUser } from "@/lib/types";
 import {produce} from "immer"
 import {socket} from "@/socket";
 import Timer from "../timer";
 import QuizQuestion from "../quiz-question";
 import { toast } from "sonner";
-import { SoundSwitchFormType } from "@/data/types/schema";
+import { SoundSwitchFormType } from "@/lib/types/schema";
 
 interface MultiplayerQuizHostProps{
      quiz: QuizDocument,

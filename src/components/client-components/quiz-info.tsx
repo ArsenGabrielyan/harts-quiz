@@ -1,12 +1,12 @@
 "use client"
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import PageLayout from "../page-layout";
 import { Button } from "../ui/button";
 import { CopyPlus, Edit, Heart, Printer, Share, Trash, Loader, Link2, Lock } from "lucide-react";
 import QuestionCard from "../cards/question-card";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { fetcher, shareQuiz } from "@/data/helpers";
+import { fetcher, shareQuiz } from "@/lib/helpers";
 import { duplicateQuiz } from "@/actions/quiz/duplicateQuiz";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

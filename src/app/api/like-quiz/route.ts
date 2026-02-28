@@ -1,4 +1,4 @@
-import { getUserById } from "@/data/db/user";
+import { getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -3,7 +3,7 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import {useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
-import { RegisterSchema } from "@/schemas";
+import { RegisterSchema } from "@/lib/schemas";
 import { CardWrapper } from "./card-wrapper";
 import {
      Form,
@@ -20,8 +20,8 @@ import { FormSuccess } from "../form-success";
 import { register } from "@/actions/auth/register";
 import { PasswordStrengthInput } from "../password-input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../ui/select";
-import { ENUM_ACCOUNT_TYPES } from "@/data/constants/others";
-import { RegisterType } from "@/data/types/schema";
+import { ENUM_ACCOUNT_TYPES } from "@/lib/constants/others";
+import { RegisterType } from "@/lib/types/schema";
 
 export default function RegisterForm(){
      const [isPending, startTransition] = useTransition();

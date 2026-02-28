@@ -1,6 +1,6 @@
 import { getUserDetails } from "@/actions/user";
 import UserInfo from "@/components/client-components/user-info";
-import { QuizDocument, UserDocument } from "@/data/types";
+import { QuizDocument, UserDocument } from "@/lib/types";
 import { notFound } from "next/navigation";
 
 export default async function SingleUserPage({

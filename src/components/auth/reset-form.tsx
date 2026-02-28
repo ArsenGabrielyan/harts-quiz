@@ -3,7 +3,7 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
-import { ResetSchema } from "@/schemas";
+import { ResetSchema } from "@/lib/schemas";
 import { CardWrapper } from "./card-wrapper";
 import {
      Form,
@@ -18,7 +18,7 @@ import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { reset } from "@/actions/auth/reset";
-import { ResetType } from "@/data/types/schema";
+import { ResetType } from "@/lib/types/schema";
 
 export default function ResetForm(){
      const [isPending, startTransition] = useTransition();

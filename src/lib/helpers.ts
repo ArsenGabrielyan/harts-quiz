@@ -125,7 +125,7 @@ export const mapQuizToForm = (quiz: QuizDocument) => ({
      subject: quiz.subject,
      questions: quiz.questions.map((question) => {
           const answers = question.answers.map((a) => ({
-               text: a.text,
+               text: a,
           }));
           const correctIndex = question.answers.findIndex(
                (a) => a.id === question.correctAnswerId

@@ -1,17 +1,17 @@
 "use server"
 import * as z from "zod";
-import { SettingsSchema } from "@/schemas";
-import { getUserByEmail, getUserById, getUserByUsername } from "@/data/db/user";
+import { SettingsSchema } from "@/lib/schemas";
+import { getUserByEmail, getUserById, getUserByUsername } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
 import bcrypt from "bcryptjs";
-import { generateUsername } from "@/data/helpers";
-import { getEveryQuizByTeacherEmail } from "@/data/db/quiz";
+import { generateUsername } from "@/lib/helpers";
+import { getEveryQuizByTeacherEmail } from "@/data/quiz";
 import { signOut } from "@/auth";
 import { db } from "@/lib/db";
-import { getAccountByUserId } from "@/data/db/account";
-import { SettingsType } from "@/data/types/schema";
+import { getAccountByUserId } from "@/data/account";
+import { SettingsType } from "@/lib/types/schema";
 
 export const settings = async (values: SettingsType) => {
      const user = await currentUser();

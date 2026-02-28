@@ -1,6 +1,6 @@
 "use client"
 import * as z from "zod";
-import { QuizEditorSchema } from "@/schemas";
+import { QuizEditorSchema } from "@/lib/schemas";
 import { useFieldArray, useForm } from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
 import {
@@ -29,16 +29,16 @@ import { IoRadioButtonOn } from "react-icons/io5"
 import PageLayout from "../page-layout"
 import { useState, useTransition } from "react";
 import { Textarea } from "../ui/textarea";
-import { absoluteUrl, getFilteredSubjects, getInitialAnswers, mapQuizToForm } from "@/data/helpers";
-import { VISIBILITIES_LIST } from "@/data/constants/others";
+import { absoluteUrl, getFilteredSubjects, getInitialAnswers, mapQuizToForm } from "@/lib/helpers";
+import { VISIBILITIES_LIST } from "@/lib/constants/others";
 import { QuestionType } from "@prisma/client"
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
 import { addQuiz, editQuiz } from "@/actions/quiz";
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import useUnsavedChangesWarning from "@/hooks/use-before-unload";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { QuizEditorType } from "@/data/types/schema";
+import { QuizEditorType } from "@/lib/types/schema";
 
 interface QuizEditorFormProps {
      currQuiz: QuizDocument | null;

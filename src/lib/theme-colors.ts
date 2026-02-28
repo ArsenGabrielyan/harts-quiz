@@ -1,4 +1,4 @@
-import { ThemeColors } from "@/data/types";
+import { ThemeColors } from "@/lib/types";
 
 const themes = {
   Orange: {

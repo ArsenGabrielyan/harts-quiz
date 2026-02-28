@@ -1,12 +1,12 @@
 "use server"
 import { currentUser } from "@/lib/auth";
-import { QuizEditorSchema } from "@/schemas"
+import { QuizEditorSchema } from "@/lib/schemas"
 import * as z from "zod"
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
-import { getEveryQuizByTeacherEmail, getEveryQuizByVisibility, getQuizById } from "@/data/db/quiz";
+import { getEveryQuizByTeacherEmail, getEveryQuizByVisibility, getQuizById } from "@/data/quiz";
 import { ExtendedUser } from "@/next-auth";
-import { QuizEditorType } from "@/data/types/schema";
+import { QuizEditorType } from "@/lib/types/schema";
 
 export const getEveryQuiz = async () => {
      const quizzes = await getEveryQuizByVisibility("public");

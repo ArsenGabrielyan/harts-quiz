@@ -1,11 +1,11 @@
 "use client"
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import QuizWrapper from "./quiz-wrapper";
 import { Button } from "../ui/button";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SoundSwitchFormSchema } from "@/schemas";
+import { SoundSwitchFormSchema } from "@/lib/schemas";
 import {
      Form,
      FormControl,
@@ -18,15 +18,15 @@ import {
 import { Switch } from "../ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { useState } from "react";
-import { INITIAL_1P_QUIZ_STATE } from "@/data/constants/states";
-import { QUIZ_START_TIME} from "@/data/constants/others"
-import { IOnePlayerQuizState } from "@/data/types";
+import { INITIAL_1P_QUIZ_STATE } from "@/lib/constants/states";
+import { QUIZ_START_TIME} from "@/lib/constants/others"
+import { IOnePlayerQuizState } from "@/lib/types";
 import Timer from "./timer";
 import QuizQuestion from "./quiz-question";
 import { CircleCheck, CircleX } from "lucide-react";
-import { playSound } from "@/data/helpers";
+import { playSound } from "@/lib/helpers";
 import { toast } from "sonner";
-import { SoundSwitchFormType } from "@/data/types/schema";
+import { SoundSwitchFormType } from "@/lib/types/schema";
 
 interface QuizFormProps{
      quiz: QuizDocument,

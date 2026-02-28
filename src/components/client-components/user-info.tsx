@@ -2,8 +2,8 @@
 import { User } from "lucide-react";
 import PageLayout from "../page-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { QuizDocument, UserDocument } from "@/data/types";
-import {accTypeInArmenian, getSubjectInArmenian} from "@/data/helpers"
+import { QuizDocument, UserDocument } from "@/lib/types";
+import {accTypeInArmenian, getSubjectInArmenian} from "@/lib/helpers"
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown"

@@ -3,7 +3,7 @@ import QuizWrapper from "../quiz-wrapper";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MultiplayerQuizFormSchema } from "@/schemas";
+import { MultiplayerQuizFormSchema } from "@/lib/schemas";
 import {
      Form,
      FormControl,
@@ -18,18 +18,18 @@ import { Input } from "@/components/ui/input";
 import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { formatNumberSuffix, playSound } from "@/data/helpers";
-import { GET_INITIAL_MULTI_PLAY_STATE } from "@/data/constants/states";
-import { QUIZ_START_TIME } from "@/data/constants/others";
-import { IMultiplayerPlayState, IQuizPlacement, IQuizUser } from "@/data/types";
+import { formatNumberSuffix, playSound } from "@/lib/helpers";
+import { GET_INITIAL_MULTI_PLAY_STATE } from "@/lib/constants/states";
+import { QUIZ_START_TIME } from "@/lib/constants/others";
+import { IMultiplayerPlayState, IQuizPlacement, IQuizUser } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
-import { QuizDocument } from "@/data/types";
+import { QuizDocument } from "@/lib/types";
 import { GridLoader } from "react-spinners";
 import {socket} from "@/socket";
 import QuizQuestion from "../quiz-question";
 import Timer from "../timer";
 import { toast } from "sonner";
-import { MultiplayerQuizFormType } from "@/data/types/schema";
+import { MultiplayerQuizFormType } from "@/lib/types/schema";
 
 interface MultiplayerQuizPlayProps{
      user?: ExtendedUser,

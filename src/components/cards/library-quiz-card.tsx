@@ -1,12 +1,12 @@
-import { VISIBILITIES } from "@/data/constants/mappings";
-import { QuizDocument } from "@/data/types";
+import { VISIBILITIES } from "@/lib/constants/mappings";
+import { QuizDocument } from "@/lib/types";
 import { Edit, CopyPlus, Trash, Share, Copy } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { duplicateQuiz } from "@/actions/quiz/duplicateQuiz";
 import { toast } from "sonner";
 import { deleteQuiz } from "@/actions/quiz";
-import { absoluteUrl, formatDate, shareQuiz } from "@/data/helpers";
+import { absoluteUrl, formatDate, shareQuiz } from "@/lib/helpers";
 import { useRouter } from "next/navigation";
 
 export interface LibraryQuizCardProps{

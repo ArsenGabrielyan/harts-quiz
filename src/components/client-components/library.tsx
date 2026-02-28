@@ -1,6 +1,6 @@
 "use client"
 
-import { QuizDocument } from "@/data/types"
+import { QuizDocument } from "@/lib/types"
 import PageLayout from "../page-layout"
 import LibraryQuizCard from "../cards/library-quiz-card"
 
