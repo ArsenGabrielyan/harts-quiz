@@ -120,7 +120,7 @@ export default function QuizEditorForm({ currQuiz }: QuizEditorFormProps) {
                <div className="mt-[70px] flex items-center justify-center w-full">
                     <Form {...form}>
                          <form onSubmit={form.handleSubmit(handleSubmit)} onReset={handleReset} className="w-full max-w-4xl">
-                              <div className="p-4 w-full bg-background border shadow rounded-xl space-y-3">
+                              <div className="p-6 w-full bg-background border shadow rounded-xl space-y-3">
                                    <FormSuccess message={success} />
                                    <FormError message={error} />
                                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold">

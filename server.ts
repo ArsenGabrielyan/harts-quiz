@@ -158,8 +158,12 @@ app.prepare().then(() => {
                if (!state || roundIndex < 0 || roundIndex >= state.rounds.length) return;
                gameStates[roomId].currentRound = roundIndex;
                gameStates[roomId].answeredSockets = new Set();
-               io.to(roomId).emit('start round', roundIndex)
+               io.to(roomId).emit("phase change", { phase: "countdown", index });
           })
+
+          socket.on("phase change", (roomId, phase) => {
+               io.to(roomId).emit("phase change", { phase });
+          });
 
           socket.on('finish quiz', (room: unknown, placement: unknown) => {
                const roomId = sanitize(room);
@@ -177,21 +181,13 @@ app.prepare().then(() => {
                devLog("Quiz Finished!")
           })
 
-          socket.on('round end', (answer: unknown, _point: unknown, _correct: unknown, room: unknown) => {
-               const now = Date.now();
-               if (now - lastRoundEnd < ROUND_END_COOLDOWN_MS) return;
-               lastRoundEnd = now;
-
-               const roomId = sanitize(room);
-               const players = rooms[roomId];
-               const state = gameStates[roomId];
+          socket.on("round end", (answer, room) => {
+               const players = rooms[room];
+               const state = gameStates[room];
                if (!players || !state) return;
 
                const player = players.find(p => p.socketId === socket.id);
                if (!player) return;
-
-               if (state.answeredSockets.has(socket.id)) return;
-               state.answeredSockets.add(socket.id);
 
                const round = state.rounds[state.currentRound];
                if (!round) return;
@@ -199,8 +195,8 @@ app.prepare().then(() => {
                const isCorrect = sanitize(answer).toLowerCase() === round.correct.toLowerCase();
                if (isCorrect) player.points += round.points;
 
-               io.to(roomId).emit('end round', players)
-          })
+               io.to(room).emit("end round", players);
+          });
      })
 
      server.once("error", (err) => {

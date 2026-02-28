@@ -67,13 +67,13 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
                playSound(isCorrect? 'correct.mp3' : 'wrong.mp3',error=>toast.error(error))
      }
      const handleNextRound = () => {
-          setState(prev=>({
+          setState(prev => ({
                ...prev,
-               currIdx: prev.currIdx+1,
-               isNextRound: state.currIdx!==questions.length-1 ? false : true
+               currIdx: prev.currIdx + 1,
+               isNextRound: prev.currIdx !== questions.length - 1 ? false : true
           }))
-          if(state.currIdx===questions.length-1 && soundEffectOn)
-               playSound("winner.mp3",error=>toast.error(error));
+          if (state.currIdx === questions.length - 1 && soundEffectOn)
+               playSound("winner.mp3", error => toast.error(error));
      }
      const reset = () => {
           setState(INITIAL_1P_QUIZ_STATE);
@@ -94,6 +94,7 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
                          <>
                               {currentQuestion && (
                                    <QuizQuestion
+                                        key={currIdx}
                                         question={toPlaybackQuestion(currentQuestion)}
                                         mode="one-player"
                                         soundEffectOn={soundEffectOn}

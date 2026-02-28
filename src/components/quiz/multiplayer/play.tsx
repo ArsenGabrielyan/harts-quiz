@@ -34,11 +34,9 @@ interface MultiplayerQuizPlayProps{
      user?: ExtendedUser,
      code: string
 }
-export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProps){
+export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayProps) {
      const [state, setState] = useState(GET_INITIAL_MULTI_PLAY_STATE(uuidv4()))
-     const updateState = (overrides: Partial<IMultiplayerPlayState>) => {
-          setState(prev=>({...prev,...overrides}));
-     }
+     const updateState = (overrides: Partial<IMultiplayerPlayState>) => setState(prev => ({ ...prev, ...overrides }));
      const form = useForm<MultiplayerQuizFormType>({
           resolver: zodResolver(MultiplayerQuizFormSchema),
           defaultValues: {
@@ -48,32 +46,54 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
           }
      })
      const soundEffectOn = form.watch("soundEffectOn");
-     useEffect(()=>{
-          socket.on("start quiz",(quiz: QuizDocument,idx: number)=>{
+     useEffect(() => {
+          socket.on("start quiz", (quiz: QuizDocument, idx: number) => {
                updateState({
                     currIdx: idx,
                     currQuiz: quiz,
-                    isStarted: true
-               })
+                    isStarted: true,
+                    phase: "countdown",
+                    startTimer: QUIZ_START_TIME
+               });
           })
-          socket.on("update players",(room: IQuizUser[])=>{
-               const player = room.find(val=>val.userId===state.formData.userId)
-               if(player){
-                    form.setValue("name",player.name)
-               }
+          socket.on("update players", (room: IQuizUser[]) => {
+               const player = room.find(val => val.userId === state.formData.userId)
+               if (player) form.setValue("name", player.name)
           })
-          socket.on("start round",(idx: number) => {
-               updateState({currIdx: idx})
-          })
-          socket.on("end quiz",(placement: IQuizPlacement[]) => {
-               const mentioned = placement.find(val=>val.userId===state.formData.userId);
-               console.log(mentioned, placement, state.formData.userId)
+          socket.on("start round", (idx: number) => {
                updateState({
-                    isEnded: true,
+                    currIdx: idx,
+                    phase: "question"
+               });
+          })
+          socket.on("phase change",({ phase, index }: {
+               phase: typeof state["phase"],
+               index: number
+          })=>{
+               updateState({
+                    phase,
+                    currIdx: index ?? state.currIdx,
+                    startTimer: phase === "countdown" ? QUIZ_START_TIME : state.startTimer
+               });
+          })
+          socket.on("end quiz", (placement: IQuizPlacement[]) => {
+               const mentioned = placement.find(val => val.userId === state.formData.userId);
+               updateState({
+                    phase: "ended",
                     place: mentioned ? mentioned.place : 0
                })
           })
-          socket.on("reset game",()=>{
+          socket.on("end round", (players: IQuizUser[]) => {
+               const me = players.find(p => p.userId === state.formData.userId);
+               if (!me) return;
+               updateState({
+                    formData: {
+                         ...state.formData,
+                         points: me.points
+                    }
+               });
+          });
+          socket.on("reset game", () => {
                setState(GET_INITIAL_MULTI_PLAY_STATE(uuidv4()))
                form.reset();
           })
@@ -84,9 +104,10 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
                socket.off("start round");
                socket.off("end quiz");
                socket.off("reset game");
+               socket.off("end round");
           }
           // eslint-disable-next-line
-     },[state.formData.userId])
+     }, [state.formData.userId])
      const handleSubmitToHost = (values: MultiplayerQuizFormType) => {
           const data: IQuizUser = {
                ...state.formData,
@@ -95,97 +116,83 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
                points: 0,
                socketId: socket.id || ""
           }
-          updateState({isSubmitted: true,formData: {...data}})
-          socket.emit("join",data);
+          updateState({ formData: data, phase: "waiting" });
+          socket.emit("join", data);
      }
      const handleLeave = () => {
-          socket.emit("leave",state.formData);
-          updateState({isSubmitted: false})
+          socket.emit("leave", state.formData);
+          updateState({ phase: "lobby" })
      }
-     const afterCheck = (answer: string, correctAnswer: string, points: number) => {
-          const isCorrect = answer.toLowerCase()===correctAnswer.toLowerCase();
-          socket.emit("round end",answer,points,correctAnswer,state.formData.userId,state.formData.quizId);
-          setState(prev=>({...prev, score: isCorrect ? prev.score+points : prev.score}));
-          if(soundEffectOn)
-               playSound(isCorrect ? "correct.mp3" : "wrong.mp3",error=>toast.error(error));
+     const afterCheck = (answer: string, correctAnswer: string) => {
+          const isCorrect = answer.toLowerCase() === correctAnswer.toLowerCase();
+          socket.emit("round end", answer, state.formData.quizId);
+          if (soundEffectOn)
+               playSound(isCorrect ? "correct.mp3" : "wrong.mp3", error => toast.error(error));
      }
      const handleChangeTime = (time: number) => {
-          updateState({startTimer: time})
-     }
-     const {isStarted, score, isEnded, isSubmitted, formData, place, startTimer, currQuiz, currIdx} = state
+          if (time <= 0 && state.phase === "countdown") {
+               updateState({ phase: "question" });
+          }
+          updateState({ startTimer: time });
+     };
+     const { isStarted, phase, formData, place, startTimer, currQuiz, currIdx } = state
      const currentQuestion = currQuiz ? currQuiz.questions[currIdx] : null
      return (
           <>
-          {isStarted && (
-               <div className="bg-background/90 fixed top-3 left-3 p-3 rounded-xl shadow">
-                    <h2 className="text-xl">{formData.name}</h2>
-                    <p className="text-muted-foreground">{score} Միավոր</p>
-               </div>
-          )}
-          <QuizWrapper quizDetails={currQuiz ? {
-               name: currQuiz.name,
-               teacher: currQuiz.teacher,
-               subject: currQuiz.subject,
-               createdAt: currQuiz.createdAt
-          } : undefined}>
-               {isEnded ? (
-                    <div className="flex items-center justify-center flex-col gap-2">
-                         <h2 className="text-2xl">{formData.name}</h2>
-                         <p>Դուք Գրավել եք</p>
-                         <p className="text-2xl md:text-3xl text-primary">{formatNumberSuffix(place)} տեղ</p>
+               {isStarted && (
+                    <div className="bg-background/90 fixed top-3 left-3 p-3 rounded-xl shadow">
+                         <h2 className="text-xl">{formData.name}</h2>
+                         <p className="text-muted-foreground">{formData.points} Միավոր</p>
                     </div>
-               ) : !isStarted ? (
-                    !isSubmitted ? (
+               )}
+               <QuizWrapper quizDetails={currQuiz ? {
+                    name: currQuiz.name,
+                    teacher: currQuiz.teacher,
+                    subject: currQuiz.subject,
+                    createdAt: currQuiz.createdAt
+               } : undefined}>
+                    {phase==="lobby" && (
                          <Form {...form}>
                               <form onSubmit={form.handleSubmit(handleSubmitToHost)} className="space-y-6">
                                    <div className="space-y-4">
                                         <FormField
                                              control={form.control}
                                              name="quizCode"
-                                             render={({field})=>(
+                                             render={({ field }) => (
                                                   <FormItem>
                                                        <FormLabel>Խաղի կոդ</FormLabel>
                                                        <FormControl>
-                                                            <Input
-                                                                 {...field}
-                                                                 placeholder="12345678"
-                                                            />
+                                                            <Input {...field} placeholder="12345678" />
                                                        </FormControl>
-                                                       <FormMessage/>
+                                                       <FormMessage />
                                                   </FormItem>
                                              )}
                                         />
                                         <FormField
                                              control={form.control}
                                              name="name"
-                                             render={({field})=>(
+                                             render={({ field }) => (
                                                   <FormItem>
                                                        <FormLabel>Աշակերտի անուն</FormLabel>
                                                        <FormControl>
-                                                            <Input
-                                                                 {...field}
-                                                                 placeholder="Պողոս"
-                                                            />
+                                                            <Input {...field} placeholder="Պողոս" />
                                                        </FormControl>
-                                                       <FormMessage/>
+                                                       <FormMessage />
                                                   </FormItem>
                                              )}
                                         />
                                         <FormField
                                              control={form.control}
                                              name="soundEffectOn"
-                                             render={({field})=>(
+                                             render={({ field }) => (
                                                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                                                        <div className="space-y-0.5">
                                                             <FormLabel>Ձայնային էֆֆեկտներ</FormLabel>
                                                             <FormDescription>Ձայններ, որոնք օգտագործվում են Հարց հավելվածում հարցաշար պատասխանելիս</FormDescription>
-                                                            <FormMessage/>
+                                                            <FormMessage />
                                                        </div>
                                                        <FormControl>
-                                                            <Switch
-                                                                 checked={field.value}
-                                                                 onCheckedChange={field.onChange}
-                                                            />
+                                                            <Switch checked={field.value} onCheckedChange={field.onChange} />
                                                        </FormControl>
                                                   </FormItem>
                                              )}
@@ -194,31 +201,39 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
                                    <Button type="submit" className="w-full">Միանալ</Button>
                               </form>
                          </Form>
-                    ) : (
+                    )}
+                    {phase==="waiting" && (
                          <div className="flex items-center justify-center flex-col gap-2">
-                              <GridLoader color="hsl(var(--primary))"/>
+                              <GridLoader color="hsl(var(--primary))" />
                               <p>Խնդրում ենք սպասել</p>
                               <Button type="button" className="w-full" onClick={handleLeave}>Հեռանալ խաղից</Button>
                          </div>
-                    )
-               ) : startTimer <= 0 ? (
-                    currentQuestion && (
+                    )}
+                    {phase==="countdown" && (
+                         <Timer
+                              time={startTimer}
+                              initialTime={QUIZ_START_TIME}
+                              onTimeChange={handleChangeTime}
+                         />
+                    )}
+                    {phase === "question" && currentQuestion && (
                          <QuizQuestion
+                              key={currIdx}
                               question={toPlaybackQuestion(currentQuestion)}
-                              questionNumber={currIdx+1}
+                              questionNumber={currIdx + 1}
                               afterCheck={afterCheck}
                               mode="multiplayer"
                               soundEffectOn={soundEffectOn}
                          />
-                    )
-               ) : (
-                    <Timer
-                         time={startTimer}
-                         initialTime={QUIZ_START_TIME}
-                         onTimeChange={handleChangeTime}
-                    />
-               )}
-          </QuizWrapper>
+                    )}
+                    {phase==="ended" && (
+                         <div className="flex items-center justify-center flex-col gap-2">
+                              <h2 className="text-2xl">{formData.name}</h2>
+                              <p>Դուք Գրավել եք</p>
+                              <p className="text-2xl md:text-3xl text-primary">{formatNumberSuffix(place)} տեղ</p>
+                         </div>
+                    )}
+               </QuizWrapper>
           </>
      )
 }

@@ -82,7 +82,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                                              </Button>
                                              {user && (
                                                   <Button variant="ghost" size="icon" title={data?.isLiked ? "Չհավանել" : 'Հավանել'} onClick={handleLikeQuiz} disabled={isLoading || isValidating}>
-                                                       {(isLoading || isValidating) ? <Loader/> : <Heart className={data?.isLiked ? "text-primary" : "text-foreground"}/>}
+                                                       {(isLoading || isValidating) ? <Loader className="animate-spin"/> : <Heart className={data?.isLiked ? "text-primary" : "text-foreground"}/>}
                                                   </Button>
                                              )}
                                              {isCurrUser && (

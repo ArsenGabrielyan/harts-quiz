@@ -20,9 +20,11 @@ export default function QuizCard({quiz}:QuizCardProps){
                     <CardTitle>{name}</CardTitle>
                     <CardDescription>{teacher}&nbsp;&middot;&nbsp;{formatDate(createdAt)}</CardDescription>
                </CardHeader>
-               <CardContent>
-                    <p className="text-muted-foreground">{questions.length} Հարցեր</p>
-               </CardContent>
+               {!!questions && (
+                    <CardContent>
+                         <p className="text-muted-foreground">{questions.length} Հարցեր</p>
+                    </CardContent>
+               )}
                <CardFooter className="flex-wrap gap-2">
                     {(isStudent || isPersonal || !user) &&(
                          <Button className="flex-1" asChild>

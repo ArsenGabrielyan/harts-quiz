@@ -121,21 +121,18 @@ export interface IMultiplayerHostState {
      users: IQuizUser[],
      isStarted: boolean,
      startTimer: number,
-     showLeaderBoard: boolean,
-     isEnded: boolean,
      placements: IQuizPlacement[],
      showPlacements: boolean,
+     phase: "countdown" | "question" | "leaderboard" | "ended";
 }
 export interface IMultiplayerPlayState {
-     isSubmitted: boolean,
      isStarted: boolean,
      startTimer: number,
      currQuiz: QuizDocument | null,
      currIdx: number,
-     isEnded: boolean,
      place: number,
-     score: number,
      formData: IQuizUser,
+     phase: "lobby" | "waiting" | "countdown" | "question" | "ended"
 }
 
 // Other

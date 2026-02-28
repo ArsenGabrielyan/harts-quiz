@@ -69,9 +69,10 @@ export default function QuizQuestion({
           updateState({currTime: time})
      }
      useEffect(() => {
-          if (state.currTime === 0 && state.currAnswer !== "" && afterCheck)
-               afterCheck(state.currAnswer, question.correct, question.points);
-     }, [state.currTime]);
+          if (state.currTime !== 0) return;
+          if (state.currAnswer.trim() === "") return;
+          afterCheck?.(state.currAnswer, question.correct, question.points);
+     }, [state.currTime, state.currAnswer]);
      useEffect(()=>{
           if(soundEffectOn)
                playSound("start.mp3",error=>toast.error(error))
@@ -83,7 +84,7 @@ export default function QuizQuestion({
                <div className={cn("space-y-4",(currAnswer==="" || currTime>=0) && "mb-4")}>
                     <h2 className="text-2xl font-semibold">{questionNumber}. {question.question}</h2>
                     {(mode==="multiplayer" && (currAnswer!=="" && currTime>0)) && (
-                         <p className="text-muted-foreground flex items-center gap-2"><Loader/> Խնդրում ենք սպասել․․․</p>
+                         <p className="text-muted-foreground flex items-center gap-2"><Loader className="animate-spin"/> Խնդրում ենք սպասել․․․</p>
                     )}
                     {(currAnswer==="" || currTime!==0) ? null : isCorrect ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(question.correct)}`}/>}
                     {question.description && (

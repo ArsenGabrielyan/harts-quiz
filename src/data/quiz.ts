@@ -25,6 +25,14 @@ export async function getEveryQuizByTeacherEmail(email: string){
           const quiz = await db.hartsQuiz.findFirst({
                where: {
                     teacherEmail: email
+               },
+               include: {
+                    questions: {
+                         include: {
+                              answers: true,
+                              correctAnswer: true
+                         }
+                    }
                }
           })
           return quiz
@@ -36,7 +44,15 @@ export async function getEveryQuizByTeacherEmail(email: string){
 export async function getEveryQuizByVisibility(visibility: QuizVisibility){
      try{
           const quizzes = await db.hartsQuiz.findMany({
-               where: {visibility}
+               where: {visibility},
+               include: {
+                    questions: {
+                         include: {
+                              answers: true,
+                              correctAnswer: true
+                         }
+                    }
+               }
           })
           return quizzes
      } catch {

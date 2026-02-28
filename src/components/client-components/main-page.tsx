@@ -42,7 +42,7 @@ export default function MainPage({user, questions}: MainPageProps) {
                ) : (
                     <>
                          <div className="bg-background shadow rounded-xl p-5 flex justify-center items-center flex-col sm:flex-row gap-4">
-                              <div className="flex flex-col justify-center items-center text-center sm:items-start sm:text-left gap-1">
+                              <div className="flex flex-col justify-center items-center text-center sm:items-start sm:text-left gap-2">
                                    <h1 className="text-3xl font-semibold">Բարև {user.name?.split(' ')[0]}!</h1>
                                    <p className="text-muted-foreground">@{user.username}</p>
                                    <p>{accTypeInArmenian(user?.accountType)}</p>
