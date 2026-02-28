@@ -68,11 +68,10 @@ export default function QuizQuestion({
      const handleChangeTime = (time: number) => {
           updateState({currTime: time})
      }
-     useEffect(()=>{
-          if(state.currTime <= 0 && afterCheck)
-               afterCheck(state.currAnswer,question.correct,question.points)
-          // eslint-disable-next-line
-     },[state.currTime])
+     useEffect(() => {
+          if (state.currTime === 0 && state.currAnswer !== "" && afterCheck)
+               afterCheck(state.currAnswer, question.correct, question.points);
+     }, [state.currTime]);
      useEffect(()=>{
           if(soundEffectOn)
                playSound("start.mp3",error=>toast.error(error))

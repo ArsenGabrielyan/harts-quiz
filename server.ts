@@ -39,7 +39,8 @@ app.prepare().then(()=>{
           socket.on('join',formData=>{
                const {name: playerName,userId,quizId,points} = formData
                if(!rooms[quizId]) rooms[quizId] = [];
-               rooms[quizId].push({name: playerName, userId, points, socketId: socket.id, quizId});
+               const exists = rooms[quizId].some(p => p.userId === userId);
+               if (!exists) rooms[quizId].push({name: playerName, userId, points, socketId: socket.id, quizId});
                socket.join(quizId);
                io.to(quizId).emit("update players",rooms[quizId])
                devLog(`${playerName} Joined Quiz ${quizId}`)
@@ -49,6 +50,9 @@ app.prepare().then(()=>{
                     if(rooms[room]){
                          rooms[room] = rooms[room].filter(p=>p.userId!==formData.userId);
                          io.to(room).emit("update players",rooms[room])
+                    }
+                    if (rooms[room].length === 0) {
+                         delete rooms[room];
                     }
                }
                devLog(`${formData.playerName} Left`)
@@ -63,9 +67,9 @@ app.prepare().then(()=>{
           socket.on('round end',(answer,point,correct,userId,room)=>{
                const players = rooms[room];
                const isCorrect = `${answer}`.toLowerCase()===`${correct}`.toLowerCase()
-               for(let i=0;i<players.length;i++)
-                    if(players[i].userId===userId && isCorrect)
-                         players[i].points += point;
+               const player = players.find(p => p.userId === userId);
+               if (player && isCorrect)
+                    player.points += point;
                io.to(room).emit('end round',players)
           })
           socket.on('finish quiz',(room,placement)=>{

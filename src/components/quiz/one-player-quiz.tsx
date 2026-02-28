@@ -23,7 +23,7 @@ import { IOnePlayerQuizState } from "@/lib/types";
 import Timer from "./timer";
 import QuizQuestion from "./quiz-question";
 import { CircleCheck, CircleX } from "lucide-react";
-import { playSound } from "@/lib/helpers";
+import { playSound, toPlaybackQuestion } from "@/lib/helpers";
 import { toast } from "sonner";
 import { SoundSwitchFormType } from "@/lib/types/schema";
 
@@ -80,6 +80,7 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
           form.reset();
      }
      const {isStarted, startTimer,currIdx, isNextRound, correct, wrong, points} = state
+     const currentQuestion = questions[currIdx]
      return (
           <QuizWrapper quizDetails={{name,teacher,subject,createdAt}}>
                {isStarted ? (
@@ -91,18 +92,15 @@ export default function OnePlayerQuiz({quiz,user}: QuizFormProps){
                          />
                     ) : (
                          <>
-                              {currIdx<=questions.length && questions.map((question,i)=>{
-                                   if(i===currIdx) return (
-                                        <QuizQuestion
-                                             key={i}
-                                             question={question}
-                                             mode="one-player"
-                                             soundEffectOn={soundEffectOn}
-                                             questionNumber={i+1}
-                                             afterCheck={handleAfterCheck}
-                                        />
-                                   )
-                              })}
+                              {currentQuestion && (
+                                   <QuizQuestion
+                                        question={toPlaybackQuestion(currentQuestion)}
+                                        mode="one-player"
+                                        soundEffectOn={soundEffectOn}
+                                        questionNumber={currIdx+1}
+                                        afterCheck={handleAfterCheck}
+                                   />
+                              )}
                               {isNextRound && (
                                    currIdx!==questions.length ? (
                                         <Button

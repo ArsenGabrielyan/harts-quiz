@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { formatNumberSuffix, playSound } from "@/lib/helpers";
+import { formatNumberSuffix, playSound, toPlaybackQuestion } from "@/lib/helpers";
 import { GET_INITIAL_MULTI_PLAY_STATE } from "@/lib/constants/states";
 import { QUIZ_START_TIME } from "@/lib/constants/others";
 import { IMultiplayerPlayState, IQuizPlacement, IQuizUser } from "@/lib/types";
@@ -78,10 +78,12 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
                form.reset();
           })
           return () => {
-               socket.emit("leave",form.watch());
-               socket.off("start quiz")
+               socket.emit("leave", state.formData);
+               socket.off("start quiz");
+               socket.off("update players");
                socket.off("start round");
                socket.off("end quiz");
+               socket.off("reset game");
           }
           // eslint-disable-next-line
      },[state.formData.userId])
@@ -111,6 +113,7 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
           updateState({startTimer: time})
      }
      const {isStarted, score, isEnded, isSubmitted, formData, place, startTimer, currQuiz, currIdx} = state
+     const currentQuestion = currQuiz ? currQuiz.questions[currIdx] : null
      return (
           <>
           {isStarted && (
@@ -199,18 +202,15 @@ export default function MultiplayerQuizPlay({user,code}: MultiplayerQuizPlayProp
                          </div>
                     )
                ) : startTimer <= 0 ? (
-                    currQuiz && currQuiz.questions.map((question,i)=>{
-                         if(i===currIdx) return (
-                              <QuizQuestion
-                                   key={i}
-                                   question={question}
-                                   questionNumber={i+1}
-                                   afterCheck={afterCheck}
-                                   mode="multiplayer"
-                                   soundEffectOn={soundEffectOn}
-                              />
-                         )
-                    })
+                    currentQuestion && (
+                         <QuizQuestion
+                              question={toPlaybackQuestion(currentQuestion)}
+                              questionNumber={currIdx+1}
+                              afterCheck={afterCheck}
+                              mode="multiplayer"
+                              soundEffectOn={soundEffectOn}
+                         />
+                    )
                ) : (
                     <Timer
                          time={startTimer}

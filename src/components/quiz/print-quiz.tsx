@@ -36,7 +36,7 @@ export default function PrintQuiz({quiz}:PrintQuizProps){
                </div>
                <div className="w-full space-y-6">
                     {questions.map((question,i)=>{
-                         const answers = ["ա","բ","գ","դ","ե","զ"];
+                         const answers = ["ա","բ","գ","դ","ե","զ","է","ը"];
                          return (
                               <div key={i} className="w-full">
                                    <strong className="mb-3">{i+1}. {question.question}</strong>
@@ -46,7 +46,7 @@ export default function PrintQuiz({quiz}:PrintQuizProps){
                                    ) : (
                                         <div className="grid grid-cols-2 gap-2">
                                              {question.answers.map((answer,i)=>(
-                                                  <p key={i}>{answers[i]}. {formatCorrectAnswer(answer)}</p>
+                                                  <p key={answer.id}>{answers[i]}. {formatCorrectAnswer(answer.text)}</p>
                                              ))}
                                         </div>
                                    )}

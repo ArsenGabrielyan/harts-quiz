@@ -1,7 +1,8 @@
 import { getUserDetails } from "@/actions/user";
 import UserInfo from "@/components/client-components/user-info";
-import { QuizDocument, UserDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types";
 import { notFound } from "next/navigation";
+import {User as UserDocument} from "@prisma/client"
 
 export default async function SingleUserPage({
      params

@@ -2,7 +2,7 @@
 import { User } from "lucide-react";
 import PageLayout from "../page-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { QuizDocument, UserDocument } from "@/lib/types";
+import { QuizDocument, SubjectName } from "@/lib/types";
 import {accTypeInArmenian, getSubjectInArmenian} from "@/lib/helpers"
 import { Button } from "../ui/button";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import ReactMarkdown from "react-markdown"
 import QuizCard from "@/components/cards/quiz-card";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import Link from "next/link";
+import {User as UserDocument} from "@prisma/client"
 
 interface UserInfoProps{
      user: UserDocument | null,
@@ -47,7 +48,7 @@ export default function UserInfo({user, questions}: UserInfoProps){
                                    <h1 className="text-3xl font-semibold">{user.name}</h1>
                                    <p className="text-muted-foreground">@{user.username}</p>
                                    <p>{accTypeInArmenian(user?.accountType)}</p>
-                                   {!!user.favoriteSubject && user.showFavoriteSubject && <p>Սիրած առարկա՝ {getSubjectInArmenian(user.favoriteSubject)}</p>}
+                                   {!!user.favoriteSubject && user.showFavoriteSubject && <p>Սիրած առարկա՝ {getSubjectInArmenian(user.favoriteSubject as SubjectName)}</p>}
                               </div>
                          </div>
                          <div className="flex justify-center items-center gap-2 flex-wrap">

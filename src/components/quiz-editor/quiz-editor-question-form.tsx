@@ -1,5 +1,5 @@
 "use client";
-import { useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import {
      FormField,
      FormItem,
@@ -41,22 +41,28 @@ export default function QuizEditorQuestionCard({
      const {control,watch,setValue} = useFormContext<QuizEditorType>();
      const questionType = watch(`questions.${index}.type`);
      const correctAnswer = watch(`questions.${index}.correct`);
-     const answers = watch(`questions.${index}.answers`)
+     const { fields: answerFields, append, remove, replace } = useFieldArray({
+          control,
+          name: `questions.${index}.answers`
+     });
      const handleQuestionTypeChange = (value: string) => {
           const questionType = value as QuestionType
           const {answers,correct} = getInitialAnswers(questionType);
-          setValue(`questions.${index}.answers`,answers);
-          setValue(`questions.${index}.correct`,correct);
-          setValue(`questions.${index}.type`,questionType);
+          setValue(`questions.${index}.type`, questionType);
+          replace(answers);
+          setValue(`questions.${index}.correct`, correct);
      }
      const addAnswer = () => {
-          setValue(`questions.${index}.answers`, [...answers, { text: "" }]);
+          append({ text: "" });
      }
      const removeAnswer = () => {
-          const updatedAnswers = [...answers];
-          updatedAnswers.pop();
-          setValue(`questions.${index}.answers`,updatedAnswers);
-     }
+          if (answerFields.length <= 2) return;
+          const newLength = answerFields.length - 1;
+          remove(newLength);
+          const currentCorrect = watch(`questions.${index}.correct`);
+          if (typeof currentCorrect === "number" && currentCorrect >= newLength)
+               setValue(`questions.${index}.correct`, newLength - 1);
+     };
      return (
           <div className="p-4 w-full max-w-inherit bg-background border shadow rounded-xl mt-4 space-y-4">
                <div className="flex justify-between items-center">
@@ -117,46 +123,41 @@ export default function QuizEditorQuestionCard({
                {questionType==="pick_one" && (
                     <>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
-                              {answers.map((_,answerIndex)=>(
+                              {answerFields.map((answer,answerIndex)=>(
                                    <FormField
-                                        key={answerIndex}
+                                        key={answer.id}
                                         control={control}
                                         name={`questions.${index}.answers.${answerIndex}.text`}
                                         render={({ field }) => (
-                                        <FormItem>
-                                             <FormLabel>Պատասխան {answerIndex + 1}</FormLabel>
-                                             <div className="flex items-center gap-2">
-                                             <Button
-                                                  type="button"
-                                                  variant={
-                                                       field.value !== "" && correctAnswer === answerIndex
-                                                       ? "success"
-                                                       : "outline"
-                                                  }
-                                                  size="icon"
-                                                  onClick={() =>setValue(`questions.${index}.correct`, answerIndex)}
-                                             >
-                                                  <CheckCircle />
-                                             </Button>
-
-                                             <FormControl>
-                                                  <Input
-                                                  {...field}
-                                                  disabled={isPending}
-                                                  placeholder="Նշել պատասխանն այստեղ"
-                                                  />
-                                             </FormControl>
-                                             </div>
-                                             <FormMessage />
-                                        </FormItem>
+                                             <FormItem>
+                                                  <FormLabel>Պատասխան {answerIndex + 1}</FormLabel>
+                                                  <div className="flex items-center gap-2">
+                                                       <Button
+                                                            type="button"
+                                                            variant={field.value !== "" && correctAnswer === answerIndex ? "success" : "outline"}
+                                                            size="icon"
+                                                            onClick={() =>setValue(`questions.${index}.correct`, answerIndex)}
+                                                       >
+                                                            <CheckCircle />
+                                                       </Button>
+                                                       <FormControl>
+                                                            <Input
+                                                                 {...field}
+                                                                 disabled={isPending}
+                                                                 placeholder="Նշել պատասխանն այստեղ"
+                                                            />
+                                                       </FormControl>
+                                                  </div>
+                                                  <FormMessage />
+                                             </FormItem>
                                         )}
                                    />
                               ))}
                          </div>
                          <div className="flex justify-between items-center gap-2 w-full">
-                              <Button type="button" size="icon" variant="outline" onClick={removeAnswer} disabled={answers.length<=2}><Minus/></Button>
-                              <span>{answers.length}</span>
-                              <Button type="button" size="icon" variant="outline" onClick={addAnswer} disabled={answers.length>=6}><Plus/></Button>
+                              <Button type="button" size="icon" variant="outline" onClick={removeAnswer} disabled={answerFields.length<=2}><Minus/></Button>
+                              <span>{answerFields.length}</span>
+                              <Button type="button" size="icon" variant="outline" onClick={addAnswer} disabled={answerFields.length>=6}><Plus/></Button>
                          </div>
                     </>
                )}
@@ -192,7 +193,13 @@ export default function QuizEditorQuestionCard({
                          render={({field})=>(
                               <FormItem>
                                    <FormLabel>Հարցի տեսակ</FormLabel>
-                                   <Select onValueChange={(value)=>handleQuestionTypeChange(value)} defaultValue={field.value}>
+                                   <Select
+                                        onValueChange={(value) => {
+                                             field.onChange(value);
+                                             handleQuestionTypeChange(value);
+                                        }}
+                                        value={field.value}
+                                   >
                                         <FormControl>
                                              <SelectTrigger>
                                                   <SelectValue placeholder="Ընտրել հարցի տեսակը"/>

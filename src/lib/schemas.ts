@@ -45,7 +45,7 @@ export const QuizEditorSchema = z.object({
      description: z.optional(z.string()),
      visibility: z.enum(QUIZ_VISIBILITY_ENUM),
      subject: z.enum(SUBJECT_NAME_ENUM),
-     questions: z.array(QuestionSchema).nonempty("Ավելացնել մի քանի հարցեր հարցաշար ստեղծելու համար")
+     questions: z.array(QuestionSchema)
 })
 
 export const SettingsSchema = z.object({

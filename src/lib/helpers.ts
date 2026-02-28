@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { SUBJECT_LIST } from "./constants/others";
 import { ACCOUNT_TYPES, ANSWER_FORMATS, ANSWER_TYPES } from "./constants/mappings"
-import { IQuestionState, QuizDocument, SubjectName } from "./types";
+import { IQuestion, IQuestionState, IQuizDocumentQuestion, QuizDocument, SubjectName } from "./types";
 import { AccountType, QuestionType } from "@prisma/client";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import axios from "axios";
@@ -76,13 +76,13 @@ export const getInitialAnswers = (type: QuestionType): { answers: { text: string
      if (type === "true_false") {
           return {
                answers: [{ text: "true" }, { text: "false" }],
-               correct: "true",   // string, not an index
+               correct: "true",
           };
      }
      // pick_one
      return {
           answers: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
-          correct: 0,             // number index
+          correct: 0,
      };
 };
 
@@ -183,3 +183,16 @@ export const mapQuizToForm = (quiz: QuizDocument) => ({
           };
      }),
 });
+
+export const toPlaybackQuestion = (question: IQuizDocumentQuestion): IQuestion => {
+     const correctAnswer = question.answers.find(a => a.id === question.correctAnswerId);
+     return {
+          question: question.question,
+          answers: question.answers.map(a => a.text),
+          correct: correctAnswer?.text ?? "",
+          timer: question.timer,
+          type: question.type,
+          points: question.points,
+          description: question.description,
+     }
+}

@@ -1,7 +1,7 @@
 "use client"
 import { QuizDocument } from "@/lib/types";
 import QuizWrapper from "../quiz-wrapper";
-import { formatNumberSuffix, generateGameCode, playSound } from "@/lib/helpers";
+import { formatNumberSuffix, generateGameCode, playSound, toPlaybackQuestion } from "@/lib/helpers";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SoundSwitchFormSchema } from "@/lib/schemas";
@@ -102,6 +102,7 @@ export default function MultiplayerQuizHost({quiz, user}: MultiplayerQuizHostPro
      }
      const {users, isStarted, isEnded, showPlacements, placements, startTimer, showLeaderBoard, currIdx} = state
      const leaderBoard = users.slice(0,5).sort(({points: a},{points: b})=>b-a);
+     const currentQuestion = questions[currIdx]
      return (
           <>
           <QuizWrapper quizDetails={{name,teacher,subject,createdAt}}>
@@ -142,18 +143,15 @@ export default function MultiplayerQuizHost({quiz, user}: MultiplayerQuizHostPro
                                    )}
                                    <Button variant="outline" onClick={()=>currIdx!==questions.length-1 ? nextQuestion() : finishGame()}>{currIdx!==questions.length-1 ? 'Անցնել հաջորդին' : 'Վերջացնել'}</Button>
                               </div>
-                         ) : questions.map((question,i)=>{
-                              if(i===currIdx) return (
-                                   <QuizQuestion
-                                        key={i}
-                                        question={question}
-                                        questionNumber={i+1}
-                                        mode="multiplayer"
-                                        soundEffectOn={soundEffectOn}
-                                        isTeacher
-                                   />
-                              )
-                         })
+                         ) : currentQuestion && (
+                              <QuizQuestion
+                                   question={toPlaybackQuestion(currentQuestion)}
+                                   questionNumber={currIdx+1}
+                                   mode="multiplayer"
+                                   soundEffectOn={soundEffectOn}
+                                   isTeacher
+                              />
+                         )
                     ) : (
                          <Timer
                               time={startTimer}

@@ -11,14 +11,10 @@ export interface ThemeColorStateParams {
 }
 
 // Quiz Types
-
-// Shape of an answer coming from the DB (Prisma)
 export interface IAnswer {
      id: number,
      text: string,
 }
-
-// Shape of a question coming from the DB (Prisma)
 export interface IQuizDocumentQuestion {
      id: number,
      question: string,
@@ -29,18 +25,15 @@ export interface IQuizDocumentQuestion {
      points: number,
      description: string | null,
 }
-
-// Runtime shape used during quiz playback
 export interface IQuestion {
      question: string,
-     answers: string[],   // just the answer texts
-     correct: string,     // the correct answer text (not an index)
+     answers: string[],
+     correct: string,
      timer: number,
      type: QuestionType,
      points: number,
      description: string | null,
 }
-
 export interface IQuiz {
      name: string,
      description: string | null,
@@ -48,7 +41,6 @@ export interface IQuiz {
      visibility: QuizVisibility,
      subject: SubjectName,
 }
-
 export interface QuizDocument extends IQuiz {
      id: string,
      teacher: string,
@@ -56,7 +48,6 @@ export interface QuizDocument extends IQuiz {
      createdAt: Date,
      updatedAt?: Date,
 }
-
 export interface IQuizUser {
      name: string,
      quizId: string,
@@ -64,7 +55,6 @@ export interface IQuizUser {
      points: number,
      socketId: string
 }
-
 export interface IQuizPlacement {
      name: string,
      points: number,
@@ -73,7 +63,39 @@ export interface IQuizPlacement {
 }
 
 // Subjects
-export type SubjectName = "mayreni" | "armenian" | "russian" | "english" | "literature" | "foreign-lang" | "foreign-literature" | "algebra" | "geometry" | "mathematics" | "arithmetics" | "advanced-math" | "physics" | "chemistry" | "natural-env" | "natural-history" | "geography" | "astronomy" | "biology" | "informatics" | "pe" | "health" | "music" | "nzp" | "chess" | "local-history" | "history" | "social-studies" | "technology" | "religious-studies" | "art" | "reading" | "others"
+export enum SubjectName {
+     NativeLang = "native-lang",
+     Armenian = "armenian",
+     Russian = "russian",
+     English = "english",
+     Literature = "literature",
+     ForeignLang = "foreign-lang",
+     ForeignLiterature = "foreign-literature",
+     Algebra = "algebra",
+     Geometry = "geometry",
+     Maths = "maths",
+     Arithmetics = "arithmetics",
+     AdvancedMaths = "advanced-maths",
+     Physics = "physics",
+     Chemistry = "chemistry",
+     Science = "science",
+     Geography = "geography",
+     Astronomy = "astronomy",
+     Biology = "biology",
+     Informatics = "informatics",
+     PE = "pe",
+     Health = "health",
+     Music = "music",
+     MilStudies = "military-studies",
+     Chess = "chess",
+     History = "history",
+     SocialStudies = "social-studies",
+     Tech = "technology",
+     ReligiousStudies = "religious-studies",
+     Art = "art",
+     Reading = "reading",
+     Other = "others"
+}
 export interface ISubject {
      name: SubjectName,
      title: string,
@@ -125,23 +147,4 @@ export interface ISelectData<T> {
 export interface INameIcon {
      name: string,
      Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
-}
-export interface UserDocument {
-     id: string,
-     name: string,
-     email: string,
-     username: string | null,
-     organization: string | null,
-     password: string | null,
-     image: string | null,
-     accountType: AccountType,
-     emailVerified: Date | null,
-     isTwoFactorEnabled: boolean,
-     soundEffectOn: boolean,
-     showFavoriteSubject: boolean,
-     bio: string | null,
-     favorites: string[],
-     favoriteSubject: SubjectName | null,
-     createdAt?: Date,
-     updatedAt?: Date,
 }
