@@ -5,6 +5,7 @@ import { IQuestion, IQuestionState, IQuizDocumentQuestion, QuizDocument, Subject
 import { AccountType, QuestionType } from "@prisma/client";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import axios from "axios";
+import { QuizEditorType } from "./types/schema";
 
 const generateRandomString = (chars: string, length: number) => {
      let result = "";
@@ -96,18 +97,18 @@ export const fetcher = async (url: string) => {
 }
 
 export const getButtonVariantDependingOnAnswer = (
-     answer: string,
-     correct: string,
+     answerId: number,
+     correctId: number,
      mode: "multiplayer" | "one-player",
      state: IQuestionState
 ) => {
-     const { currAnswer, currTime } = state
-     const hasNoAnswer = mode === "multiplayer" ? (currAnswer === "" || currTime > 0) : currAnswer === "";
+     const { currAnswerId, currTime } = state
+     const hasNoAnswer = mode === "multiplayer" ? (currAnswerId === null || currTime > 0) : currAnswerId === null;
      if (hasNoAnswer)
           return "outline"
-     else if (answer === correct)
+     else if (answerId === correctId)
           return "success";
-     else if (answer === currAnswer)
+     else if (answerId === currAnswerId)
           return "destructive";
      return "outline"
 }
@@ -126,8 +127,7 @@ export const generateGameCode = () => {
      return generateRandomString(chars, 8)
 }
 
-export const formatCorrectAnswer = (correct: string) =>
-     correct === "true" ? "Այո" : correct === "false" ? "Ոչ" : correct
+export const formatCorrectAnswer = (correct: string) => correct === "true" ? "Այո" : correct === "false" ? "Ոչ" : correct
 
 export const formatDate = (date: Date) => {
      const d = new Date(date)
@@ -137,41 +137,31 @@ export const formatDate = (date: Date) => {
      return `${day}-${month}-${year}`
 }
 
-export const mapQuizToForm = (quiz: QuizDocument) => ({
+export const mapQuizToForm = (quiz: QuizDocument): QuizEditorType => ({
      name: quiz.name,
      description: quiz.description ?? undefined,
      visibility: quiz.visibility,
      subject: quiz.subject,
      questions: quiz.questions.map((question) => {
-          if (question.type === "text") {
-               // The correct answer text is stored as the single Answer record
-               const correctAnswer = question.answers.find(a => a.id === question.correctAnswerId);
-               return {
-                    question: question.question,
-                    description: question.description ?? "",
-                    timer: question.timer,
-                    points: question.points,
-                    type: question.type,
-                    answers: [],                          // no answer options for text type
-                    correct: correctAnswer?.text ?? "",   // string
-               };
-          }
-
-          if (question.type === "true_false") {
-               const correctAnswer = question.answers.find(a => a.id === question.correctAnswerId);
-               return {
-                    question: question.question,
-                    description: question.description ?? "",
-                    timer: question.timer,
-                    points: question.points,
-                    type: question.type,
-                    answers: question.answers.map(a => ({ text: a.text })),
-                    correct: correctAnswer?.text ?? "true",  // "true" or "false" string
-               };
-          }
-
-          // pick_one — correct is the index of the correct answer
-          const correctIndex = question.answers.findIndex(a => a.id === question.correctAnswerId);
+          const correctAnswer = question.answers.find(a => a.id === question.correctAnswerId);
+          if (question.type === "text") return {
+               question: question.question,
+               description: question.description ?? "",
+               timer: question.timer,
+               points: question.points,
+               type: question.type,
+               answers: [],
+               correct: correctAnswer?.text ?? "",
+          };
+          if (question.type === "true_false") return {
+               question: question.question,
+               description: question.description ?? "",
+               timer: question.timer,
+               points: question.points,
+               type: question.type,
+               answers: question.answers.map(a => ({ text: a.text })),
+               correct: correctAnswer?.text ?? "true",
+          };
           return {
                question: question.question,
                description: question.description ?? "",
@@ -179,7 +169,7 @@ export const mapQuizToForm = (quiz: QuizDocument) => ({
                points: question.points,
                type: question.type,
                answers: question.answers.map(a => ({ text: a.text })),
-               correct: correctIndex >= 0 ? correctIndex : 0,  // number
+               correct: correctAnswer?.text ?? "",
           };
      }),
 });
@@ -188,8 +178,8 @@ export const toPlaybackQuestion = (question: IQuizDocumentQuestion): IQuestion =
      const correctAnswer = question.answers.find(a => a.id === question.correctAnswerId);
      return {
           question: question.question,
-          answers: question.answers.map(a => a.text),
-          correct: correctAnswer?.text ?? "",
+          answers: question.answers,
+          correct: !correctAnswer ? null : correctAnswer,
           timer: question.timer,
           type: question.type,
           points: question.points,

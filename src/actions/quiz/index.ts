@@ -149,7 +149,6 @@ export const editQuiz = async (values: QuizEditorType, id: string): Promise<{
                });
 
                const correctAnswerId = resolveCorrectAnswerId(q, createdQuestion.answers);
-               // Only set correctAnswerId — do NOT re-create answers here
                await tx.question.update({
                     where: { id: createdQuestion.id },
                     data: { correctAnswerId }

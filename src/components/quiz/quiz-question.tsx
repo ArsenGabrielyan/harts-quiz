@@ -1,6 +1,6 @@
 import { GET_INITIAL_QUESTION_STATE } from "@/lib/constants/states";
 import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/lib/helpers";
-import { IQuestion, IQuestionState } from "@/lib/types";
+import { IAnswer, IQuestion, IQuestionState } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +28,7 @@ interface QuizQuestionProps{
      mode: "multiplayer" | "one-player",
      soundEffectOn: boolean,
      questionNumber: number,
-     afterCheck?: (answer: string, correctAnswer: string, points: number) => void
+     afterCheck?: (answerId: number, correctAnswerId: number) => void
      isTeacher?: boolean;
 }
 export default function QuizQuestion({
@@ -47,11 +47,11 @@ export default function QuizQuestion({
                answer: ""
           }
      })
-     const checkAnswer = (answer: string) => {
+     const checkAnswer = (answerId: number) => {
           updateState(mode==="multiplayer" ? {
-               currAnswer: answer,
+               currAnswerId: answerId,
           } : {
-               currAnswer: answer,
+               currAnswerId: answerId,
                currTime: 0
           })
           if(mode==="multiplayer" && soundEffectOn)
@@ -61,7 +61,8 @@ export default function QuizQuestion({
           setState(prev=>({...prev,...overrides}))
      }
      const handleSubmitAnswer = (values: TextAnswerFormType)=>{
-          checkAnswer(values.answer);
+          const answerId = question.answers.find(val=>val.text.toLowerCase().includes(values.answer))?.id
+          checkAnswer(answerId ?? -1);
           if(mode==="multiplayer" && soundEffectOn)
                playSound("tick.mp3",error=>toast.error(error))
      }
@@ -70,29 +71,29 @@ export default function QuizQuestion({
      }
      useEffect(() => {
           if (state.currTime !== 0) return;
-          if (state.currAnswer.trim() === "") return;
-          afterCheck?.(state.currAnswer, question.correct, question.points);
-     }, [state.currTime, state.currAnswer]);
+          if (!state.currAnswerId) return;
+          afterCheck?.(state.currAnswerId, question.correct?.id ?? -1);
+     }, [state.currTime, state.currAnswerId]);
      useEffect(()=>{
           if(soundEffectOn)
                playSound("start.mp3",error=>toast.error(error))
      },[soundEffectOn])
-     const {currAnswer,currTime} = state
-     const isCorrect = currAnswer.toLowerCase()===question.correct.toLowerCase();
+     const {currAnswerId,currTime} = state
+     const isCorrect = currAnswerId===question.correct?.id
      return (
           <>
-               <div className={cn("space-y-4",(currAnswer==="" || currTime>=0) && "mb-4")}>
+               <div className={cn("space-y-4",(currAnswerId===null || currTime>=0) && "mb-4")}>
                     <h2 className="text-2xl font-semibold">{questionNumber}. {question.question}</h2>
-                    {(mode==="multiplayer" && (currAnswer!=="" && currTime>0)) && (
+                    {(mode==="multiplayer" && (currAnswerId!==null && currTime>0)) && (
                          <p className="text-muted-foreground flex items-center gap-2"><Loader className="animate-spin"/> Խնդրում ենք սպասել․․․</p>
                     )}
-                    {(currAnswer==="" || currTime!==0) ? null : isCorrect ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(question.correct)}`}/>}
+                    {(currAnswerId===null || currTime!==0) ? null : isCorrect ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(question.correct?.text ?? "")}`}/>}
                     {question.description && (
                          <p className="text-muted-foreground">{question.description}</p>
                     )}
                </div>
                {isTeacher && currTime<=0 && (
-                    <h2 className="text-2xl font-semibold text-center w-full">Ճիշտ պատասխան՝ {formatCorrectAnswer(question.correct)}</h2>
+                    <h2 className="text-2xl font-semibold text-center w-full">Ճիշտ պատասխան՝ {formatCorrectAnswer(question.correct?.text ?? "")}</h2>
                )}
                {!isTeacher && (
                     question.type==="text" ? (
@@ -109,7 +110,7 @@ export default function QuizQuestion({
                                                             <Input
                                                                  {...field}
                                                                  placeholder="Մուտքագրեք Ձեր պատասխանը այստեղ"
-                                                                 disabled={currAnswer!==""}
+                                                                 disabled={currAnswerId!==null}
                                                             />
                                                        </FormControl>
                                                        <FormMessage/>
@@ -117,21 +118,21 @@ export default function QuizQuestion({
                                              )}
                                         />
                                    </div>
-                                   <Button type="submit" className="w-full" disabled={currAnswer!==""}>Հաստատել</Button>
+                                   <Button type="submit" className="w-full" disabled={currAnswerId!==null}>Հաստատել</Button>
                               </form>
                          </Form>
                     ) : (
                          <div className="flex flex-col items-center justify-center gap-y-3">
                               {question.answers.map((answer,i)=>(
                                    <Button
-                                        variant={getButtonVariantDependingOnAnswer(answer,question.correct,mode,state)}
+                                        variant={getButtonVariantDependingOnAnswer(answer.id,question.correct?.id ?? -1,mode,state)}
                                         type="button"
-                                        key={i}
-                                        onClick={()=>checkAnswer(answer)}
+                                        key={answer.id}
+                                        onClick={()=>checkAnswer(answer.id)}
                                         className={cn("w-full",question.type==="pick_one" && "justift-start")}
-                                        disabled={currAnswer!=="" || currTime<=0}
+                                        disabled={currAnswerId!==null || currTime<=0}
                                    >
-                                        {question.type==="true_false" ? answerFormat[i] : `${answerFormat[i]}. ${answer}`}
+                                        {question.type==="true_false" ? answerFormat[i] : `${answerFormat[i]}. ${answer.text}`}
                                    </Button>
                               ))}
                          </div>

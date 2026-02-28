@@ -17,8 +17,8 @@ export default function QuestionCard({question,id}:QuestionCardProps){
                     <CardContent>
                          {question.description && <p className={question.answers && question.type==="pick_one" ? "mb-3" : ""}>{question.description}</p>}
                          <ul className="space-y-2">
-                              {question.answers.map(answer=>(
-                                   <li key={answer.id}>{answer.id}. {answer.text}</li>
+                              {question.answers.map((answer,i)=>(
+                                   <li key={answer.id}>{i+1}. {answer.text}</li>
                               ))}
                          </ul>
                     </CardContent>

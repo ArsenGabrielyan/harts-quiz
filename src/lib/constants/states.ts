@@ -12,7 +12,7 @@ export const INITIAL_1P_QUIZ_STATE: IOnePlayerQuizState = {
 }
 export const GET_INITIAL_QUESTION_STATE = (question: IQuestion): IQuestionState => ({
      currTime: question.timer,
-     currAnswer: "",
+     currAnswerId: null,
 })
 export const INITIAL_MULTI_HOST_STATE: IMultiplayerHostState = {
      currIdx: 0,
@@ -29,12 +29,12 @@ export const GET_INITIAL_MULTI_PLAY_STATE = (userId: string): IMultiplayerPlaySt
      currQuiz: null,
      currIdx: 0,
      place: 0,
+     phase: "lobby",
      formData: {
           name: "",
           quizId: "",
           userId,
           points: 0,
           socketId: ""
-     },
-     phase: "lobby"
+     }
 })

@@ -35,8 +35,11 @@ interface MultiplayerQuizPlayProps{
      code: string
 }
 export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayProps) {
-     const [state, setState] = useState(GET_INITIAL_MULTI_PLAY_STATE(uuidv4()))
-     const updateState = (overrides: Partial<IMultiplayerPlayState>) => setState(prev => ({ ...prev, ...overrides }));
+     const [state, setState] = useState(GET_INITIAL_MULTI_PLAY_STATE(uuidv4()));
+
+     const updateState = (overrides: Partial<IMultiplayerPlayState>) =>
+          setState(prev => ({ ...prev, ...overrides }));
+
      const form = useForm<MultiplayerQuizFormType>({
           resolver: zodResolver(MultiplayerQuizFormSchema),
           defaultValues: {
@@ -44,70 +47,64 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                name: user?.name || "",
                soundEffectOn: user?.soundEffectOn || false,
           }
-     })
+     });
+
      const soundEffectOn = form.watch("soundEffectOn");
+
      useEffect(() => {
+          socket.connect();
           socket.on("start quiz", (quiz: QuizDocument, idx: number) => {
                updateState({
                     currIdx: idx,
                     currQuiz: quiz,
                     isStarted: true,
                     phase: "countdown",
-                    startTimer: QUIZ_START_TIME
+                    startTimer: QUIZ_START_TIME,
                });
-          })
+          });
           socket.on("update players", (room: IQuizUser[]) => {
-               const player = room.find(val => val.userId === state.formData.userId)
-               if (player) form.setValue("name", player.name)
-          })
-          socket.on("start round", (idx: number) => {
-               updateState({
-                    currIdx: idx,
-                    phase: "question"
-               });
-          })
-          socket.on("phase change",({ phase, index }: {
-               phase: typeof state["phase"],
-               index: number
-          })=>{
+               const player = room.find(val => val.userId === state.formData.userId);
+               if (player) form.setValue("name", player.name);
+          });
+          socket.on("phase change", ({ phase, index }: {
+               phase: IMultiplayerPlayState["phase"],
+               index?: number
+          }) => {
                updateState({
                     phase,
-                    currIdx: index ?? state.currIdx,
-                    startTimer: phase === "countdown" ? QUIZ_START_TIME : state.startTimer
+                    ...(index !== undefined ? { currIdx: index } : {}),
+                    ...(phase === "countdown" ? { startTimer: QUIZ_START_TIME } : {}),
                });
-          })
+          });
+          socket.on("end round", (players: IQuizUser[]) => {
+               const me = players.find(p => p.userId === state.formData.userId);
+               if (!me) return;
+               // updateState({ formData: { ...state.formData, points: me.points } });
+          });
           socket.on("end quiz", (placement: IQuizPlacement[]) => {
                const mentioned = placement.find(val => val.userId === state.formData.userId);
                updateState({
                     phase: "ended",
-                    place: mentioned ? mentioned.place : 0
-               })
-          })
-          socket.on("end round", (players: IQuizUser[]) => {
-               const me = players.find(p => p.userId === state.formData.userId);
-               if (!me) return;
-               updateState({
-                    formData: {
-                         ...state.formData,
-                         points: me.points
-                    }
+                    place: mentioned ? mentioned.place : 0,
                });
           });
           socket.on("reset game", () => {
-               setState(GET_INITIAL_MULTI_PLAY_STATE(uuidv4()))
+               setState(GET_INITIAL_MULTI_PLAY_STATE(uuidv4()));
                form.reset();
-          })
+          });
+
           return () => {
                socket.emit("leave", state.formData);
                socket.off("start quiz");
                socket.off("update players");
-               socket.off("start round");
+               socket.off("phase change");
+               socket.off("end round");
                socket.off("end quiz");
                socket.off("reset game");
-               socket.off("end round");
           }
           // eslint-disable-next-line
-     }, [state.formData.userId])
+     }, [state.formData.userId]);
+
      const handleSubmitToHost = (values: MultiplayerQuizFormType) => {
           const data: IQuizUser = {
                ...state.formData,
@@ -115,43 +112,54 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                quizId: values.quizCode,
                points: 0,
                socketId: socket.id || ""
-          }
+          };
           updateState({ formData: data, phase: "waiting" });
           socket.emit("join", data);
      }
+
      const handleLeave = () => {
           socket.emit("leave", state.formData);
-          updateState({ phase: "lobby" })
+          updateState({ phase: "lobby" });
      }
-     const afterCheck = (answer: string, correctAnswer: string) => {
-          const isCorrect = answer.toLowerCase() === correctAnswer.toLowerCase();
-          socket.emit("round end", answer, state.formData.quizId);
+
+     const afterCheck = (answerId: number, correctAnswerId: number) => {
+          const isCorrect = answerId === correctAnswerId
+          // Only send answer + room — server resolves correct/points from its own state
+          socket.emit("round end", answerId, state.formData.quizId);
           if (soundEffectOn)
                playSound(isCorrect ? "correct.mp3" : "wrong.mp3", error => toast.error(error));
      }
+
+     // When the local countdown timer finishes, move to question phase
      const handleChangeTime = (time: number) => {
-          if (time <= 0 && state.phase === "countdown") {
-               updateState({ phase: "question" });
-          }
           updateState({ startTimer: time });
-     };
-     const { isStarted, phase, formData, place, startTimer, currQuiz, currIdx } = state
-     const currentQuestion = currQuiz ? currQuiz.questions[currIdx] : null
+          if (time <= 0 && state.phase === "countdown") {
+               socket.emit("countdown finished", state.formData.quizId);
+          }
+     }
+
+     const { isStarted, phase, formData, place, startTimer, currQuiz, currIdx } = state;
+     const currentQuestion = currQuiz ? currQuiz.questions[currIdx] : null;
+
      return (
           <>
+               {/* Live score overlay */}
                {isStarted && (
                     <div className="bg-background/90 fixed top-3 left-3 p-3 rounded-xl shadow">
                          <h2 className="text-xl">{formData.name}</h2>
                          <p className="text-muted-foreground">{formData.points} Միավոր</p>
                     </div>
                )}
+
                <QuizWrapper quizDetails={currQuiz ? {
                     name: currQuiz.name,
                     teacher: currQuiz.teacher,
                     subject: currQuiz.subject,
                     createdAt: currQuiz.createdAt
                } : undefined}>
-                    {phase==="lobby" && (
+
+                    {/* Join form */}
+                    {phase === "lobby" && (
                          <Form {...form}>
                               <form onSubmit={form.handleSubmit(handleSubmitToHost)} className="space-y-6">
                                    <div className="space-y-4">
@@ -202,20 +210,28 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                               </form>
                          </Form>
                     )}
-                    {phase==="waiting" && (
+
+                    {/* Waiting for host to start */}
+                    {phase === "waiting" && (
                          <div className="flex items-center justify-center flex-col gap-2">
                               <GridLoader color="hsl(var(--primary))" />
                               <p>Խնդրում ենք սպասել</p>
-                              <Button type="button" className="w-full" onClick={handleLeave}>Հեռանալ խաղից</Button>
+                              <Button type="button" className="w-full" onClick={handleLeave}>
+                                   Հեռանալ խաղից
+                              </Button>
                          </div>
                     )}
-                    {phase==="countdown" && (
+
+                    {/* Countdown timer */}
+                    {phase === "countdown" && (
                          <Timer
                               time={startTimer}
                               initialTime={QUIZ_START_TIME}
                               onTimeChange={handleChangeTime}
                          />
                     )}
+
+                    {/* Active question */}
                     {phase === "question" && currentQuestion && (
                          <QuizQuestion
                               key={currIdx}
@@ -226,7 +242,9 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                               soundEffectOn={soundEffectOn}
                          />
                     )}
-                    {phase==="ended" && (
+
+                    {/* End screen */}
+                    {phase === "ended" && (
                          <div className="flex items-center justify-center flex-col gap-2">
                               <h2 className="text-2xl">{formData.name}</h2>
                               <p>Դուք Գրավել եք</p>

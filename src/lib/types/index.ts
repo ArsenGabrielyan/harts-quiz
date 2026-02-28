@@ -27,8 +27,8 @@ export interface IQuizDocumentQuestion {
 }
 export interface IQuestion {
      question: string,
-     answers: string[],
-     correct: string,
+     answers: IAnswer[],
+     correct: IAnswer | null
      timer: number,
      type: QuestionType,
      points: number,
@@ -114,7 +114,7 @@ export interface IOnePlayerQuizState {
 }
 export interface IQuestionState {
      currTime: number,
-     currAnswer: string,
+     currAnswerId: number | null,
 }
 export interface IMultiplayerHostState {
      currIdx: number,
