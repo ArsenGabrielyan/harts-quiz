@@ -30,10 +30,10 @@ export const AnswerSchema = z.object({
 export const QuestionSchema = z.object({
      question: z.string().min(1, "Պարտադիր է լրացնել հարցը"),
      answers: z.array(AnswerSchema),
-     correct: z.union([
-          z.number().int().min(0, "Պարտադիր է ընտրել ճիշտ պատասխանը"),
-          z.string().min(1, "Պարտադիր է մուտքագրել ճիշտ պատասխանը"),
-     ]),
+     correct: z.object({
+          id: z.number().int().min(0, "Պարտադիր է ընտրել ճիշտ պատասխանը"),
+          text: z.string().min(1, "Պարտադիր է մուտքագրել ճիշտ պատասխանը")
+     }),
      timer: z.number().int("Տևողությունը պետք է լինի ամբողջ թիվ").gte(0, "Տևողությունը պետք է լինի դրական").refine(val => val !== 0, "Տևողությունը պետք չէ լինի 0"),
      points: z.number().int("Միավորը պետք է լինի ամբողջ թիվ").gte(0, "Միավորը պետք է լինի դրական").refine(val => val !== 0, "Միավորը պետք չէ լինի 0"),
      type: z.enum(QUESTION_TYPE_ENUM),

@@ -6,6 +6,7 @@ import { CheckSquare, TextCursorInput } from "lucide-react"
 import { IoRadioButtonOn } from "react-icons/io5"
 
 export const QUIZ_START_TIME = 5;
+export const ROUND_START_TIME = 3;
 export const SUBJECT_LIST: ISubject[] = [
      {name: SubjectName.NativeLang, title: "Մայրենի", type: "Հումանիտար"},
      {name: SubjectName.Armenian, title: "Հայոց լեզու", type: "Հումանիտար"},

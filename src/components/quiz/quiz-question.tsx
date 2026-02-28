@@ -30,6 +30,7 @@ interface QuizQuestionProps{
      questionNumber: number,
      afterCheck?: (answerId: number, correctAnswerId: number) => void
      isTeacher?: boolean;
+     finishQuizWithNoAnswer?: () => void
 }
 export default function QuizQuestion({
      question,
@@ -37,6 +38,7 @@ export default function QuizQuestion({
      soundEffectOn,
      questionNumber,
      afterCheck,
+     finishQuizWithNoAnswer,
      isTeacher=false
 }:QuizQuestionProps){
      const answerFormat = getAnswerFormat(question.type);
@@ -47,32 +49,29 @@ export default function QuizQuestion({
                answer: ""
           }
      })
-     const checkAnswer = (answerId: number) => {
+     const checkAnswer = (answerId: number, correctId: number) => {
           updateState(mode==="multiplayer" ? {
                currAnswerId: answerId,
           } : {
                currAnswerId: answerId,
                currTime: 0
           })
-          if(mode==="multiplayer" && soundEffectOn)
-               playSound("tick.mp3",error=>toast.error(error))
+          if(afterCheck) afterCheck(answerId,correctId);
      }
      const updateState = (overrides: Partial<IQuestionState>) => {
           setState(prev=>({...prev,...overrides}))
      }
      const handleSubmitAnswer = (values: TextAnswerFormType)=>{
           const answerId = question.answers.find(val=>val.text.toLowerCase().includes(values.answer))?.id
-          checkAnswer(answerId ?? -1);
-          if(mode==="multiplayer" && soundEffectOn)
-               playSound("tick.mp3",error=>toast.error(error))
+          checkAnswer(answerId ?? -1, question.correct?.id ?? -1);
      }
      const handleChangeTime = (time: number) => {
           updateState({currTime: time})
      }
      useEffect(() => {
           if (state.currTime !== 0) return;
-          if (!state.currAnswerId) return;
-          afterCheck?.(state.currAnswerId, question.correct?.id ?? -1);
+          if (state.currAnswerId !== null) return;
+          finishQuizWithNoAnswer?.()
      }, [state.currTime, state.currAnswerId]);
      useEffect(()=>{
           if(soundEffectOn)
@@ -82,12 +81,9 @@ export default function QuizQuestion({
      const isCorrect = currAnswerId===question.correct?.id
      return (
           <>
-               <div className={cn("space-y-4",(currAnswerId===null || currTime>=0) && "mb-4")}>
+               <div className={cn("space-y-4",(currAnswerId===null || currTime>0) && "mb-4")}>
                     <h2 className="text-2xl font-semibold">{questionNumber}. {question.question}</h2>
-                    {(mode==="multiplayer" && (currAnswerId!==null && currTime>0)) && (
-                         <p className="text-muted-foreground flex items-center gap-2"><Loader className="animate-spin"/> Խնդրում ենք սպասել․․․</p>
-                    )}
-                    {(currAnswerId===null || currTime!==0) ? null : isCorrect ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(question.correct?.text ?? "")}`}/>}
+                    {currAnswerId===null ? null : isCorrect ? <FormSuccess message="Ճիշտ է"/> : <FormError message={`Սխալ է։ Ճիշտ պատասխան՝ ${formatCorrectAnswer(question.correct?.text ?? "")}`}/>}
                     {question.description && (
                          <p className="text-muted-foreground">{question.description}</p>
                     )}
@@ -128,7 +124,7 @@ export default function QuizQuestion({
                                         variant={getButtonVariantDependingOnAnswer(answer.id,question.correct?.id ?? -1,mode,state)}
                                         type="button"
                                         key={answer.id}
-                                        onClick={()=>checkAnswer(answer.id)}
+                                        onClick={()=>checkAnswer(answer.id,question.correct?.id ?? -1)}
                                         className={cn("w-full",question.type==="pick_one" && "justift-start")}
                                         disabled={currAnswerId!==null || currTime<=0}
                                    >
@@ -138,7 +134,7 @@ export default function QuizQuestion({
                          </div>
                     )
                )}
-               {currTime>0 && (
+               {(currAnswerId===null && currTime>0) && (
                     <Timer time={currTime} initialTime={question.timer} onTimeChange={handleChangeTime} isInQuizQuestion/>
                )}
           </>

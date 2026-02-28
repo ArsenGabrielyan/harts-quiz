@@ -7,13 +7,12 @@ import QuestionCard from "../cards/question-card";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { fetcher, shareQuiz } from "@/lib/helpers";
-import { duplicateQuiz } from "@/actions/quiz/duplicate-quiz";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import useSWR from "swr"
 import { LikeQuizResponse } from "@/app/api/like-quiz/route";
-import { likeQuiz } from "@/actions/quiz/like-quiz";
-import { deleteQuiz } from "@/actions/quiz"
+import { likeQuiz } from "@/actions/quiz";
+import { deleteQuiz, duplicateQuiz } from "@/actions/quiz/crud"
 import ReactMarkdown from "react-markdown";
 import PrintQuiz from "../quiz/print-quiz";
 
@@ -127,7 +126,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
                                    </>    
                               )}
                               <h2 className="text-3xl md:text-4xl text-center my-3">Հարցեր</h2>
-                              <div className="flex flex-col gap-y-3">
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                    {quiz.questions.map((question,i)=><QuestionCard key={i} question={question} id={i+1}/>)}
                               </div>
                          </>

@@ -15,9 +15,9 @@ import { useState, useTransition, useMemo } from "react";
 import { Textarea } from "../ui/textarea";
 import { absoluteUrl, getFilteredSubjects, getInitialAnswers, mapQuizToForm } from "@/lib/helpers";
 import { VISIBILITIES_LIST } from "@/lib/constants/others";
-import { $Enums, QuestionType } from "@prisma/client"
+import { QuestionType } from "@prisma/client"
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
-import { addQuiz, editQuiz } from "@/actions/quiz";
+import { addQuiz, editQuiz } from "@/actions/quiz/crud";
 import { QuizDocument, SubjectName } from "@/lib/types";
 import useUnsavedChangesWarning from "@/hooks/use-before-unload";
 import { useRouter } from "next/navigation";
@@ -81,13 +81,18 @@ export default function QuizEditorForm({ currQuiz }: QuizEditorFormProps) {
      }
 
      const addQuestion = (questionType: QuestionType) => {
+          const {answers, correct} = getInitialAnswers(questionType);
           append({
+               answers,
                question: "",
-               ...getInitialAnswers(questionType),
-               timer: 30,   // sensible non-zero default (schema rejects 0)
+               timer: 10,   // sensible non-zero default (schema rejects 0)
                type: questionType,
                points: 1,   // sensible non-zero default (schema rejects 0)
-               description: ""
+               description: "",
+               correct: {
+                    id: 0,
+                    text: correct
+               }
           })
      }
 

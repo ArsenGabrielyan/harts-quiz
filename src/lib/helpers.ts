@@ -70,7 +70,7 @@ export function groupBy<T, K extends string | number>(
 
 export const getFilteredSubjects = () => groupBy(SUBJECT_LIST, subject => subject.type, type => type);
 
-export const getInitialAnswers = (type: QuestionType): { answers: { text: string }[], correct: number | string } => {
+export const getInitialAnswers = (type: QuestionType): { answers: { text: string }[], correct: string } => {
      if (type === "text") {
           return { answers: [], correct: "" };
      }
@@ -80,10 +80,9 @@ export const getInitialAnswers = (type: QuestionType): { answers: { text: string
                correct: "true",
           };
      }
-     // pick_one
      return {
           answers: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
-          correct: 0,
+          correct: "",
      };
 };
 
@@ -151,7 +150,10 @@ export const mapQuizToForm = (quiz: QuizDocument): QuizEditorType => ({
                points: question.points,
                type: question.type,
                answers: [],
-               correct: correctAnswer?.text ?? "",
+               correct: {
+                    id: correctAnswer?.id ?? -1,
+                    text: correctAnswer?.text ?? ""
+               }
           };
           if (question.type === "true_false") return {
                question: question.question,
@@ -159,8 +161,11 @@ export const mapQuizToForm = (quiz: QuizDocument): QuizEditorType => ({
                timer: question.timer,
                points: question.points,
                type: question.type,
-               answers: question.answers.map(a => ({ text: a.text })),
-               correct: correctAnswer?.text ?? "true",
+               answers: question.answers.map(val=>({text: val.text})),
+               correct: {
+                    id: correctAnswer?.id ?? -1,
+                    text: correctAnswer?.text ?? ""
+               }
           };
           return {
                question: question.question,
@@ -168,8 +173,11 @@ export const mapQuizToForm = (quiz: QuizDocument): QuizEditorType => ({
                timer: question.timer,
                points: question.points,
                type: question.type,
-               answers: question.answers.map(a => ({ text: a.text })),
-               correct: correctAnswer?.text ?? "",
+               answers: question.answers.map(val=>({text: val.text})),
+               correct: {
+                    id: correctAnswer?.id ?? -1,
+                    text: correctAnswer?.text ?? ""
+               }
           };
      }),
 });

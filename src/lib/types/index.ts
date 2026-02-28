@@ -61,6 +61,7 @@ export interface IQuizPlacement {
      place: number,
      userId: string,
 }
+export type QuizPhase = "lobby" | "waiting" | "countdown" | "question" | "leaderboard" | "ended"
 
 // Subjects
 export enum SubjectName {
@@ -123,7 +124,7 @@ export interface IMultiplayerHostState {
      startTimer: number,
      placements: IQuizPlacement[],
      showPlacements: boolean,
-     phase: "countdown" | "question" | "leaderboard" | "ended";
+     phase: QuizPhase
 }
 export interface IMultiplayerPlayState {
      isStarted: boolean,
@@ -132,7 +133,7 @@ export interface IMultiplayerPlayState {
      currIdx: number,
      place: number,
      formData: IQuizUser,
-     phase: "lobby" | "waiting" | "countdown" | "question" | "ended"
+     phase: QuizPhase
 }
 
 // Other

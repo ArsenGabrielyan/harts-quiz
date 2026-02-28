@@ -77,12 +77,14 @@ export default function UserInfo({user, questions}: UserInfoProps){
                               </div>
                          </>
                     )}
-                    {currUser?.accountType!=="student" && questions && (
+                    {currUser?.accountType!=="student" && (
                          <>
                               <h2 className="text-3xl md:text-4xl text-center my-3">Հարցաշարեր</h2>
-                              <div className="flex flex-wrap justify-center items-center gap-4">
-                                   {questions.map(question=><QuizCard key={question.id} quiz={question}/>)}
-                              </div>
+                              {questions && (
+                                   <div className="flex flex-wrap justify-center items-center gap-4">
+                                        {questions.length>0 && questions.map(question=><QuizCard key={question.id} quiz={question}/>)}
+                                   </div>
+                              )}
                          </>
                     )}
                     </>

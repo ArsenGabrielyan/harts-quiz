@@ -41,9 +41,9 @@ model Question {
   answers Answer[]
 
   correctAnswerId Int?
-  correctAnswer   Answer? @relation("CorrectAnswer", fields: [correctAnswerId], references: [id])
+  correctAnswer   Answer? @relation("CorrectAnswer", fields: [correctAnswerId], references: [id], onDelete: Cascade)
 
-  quiz   HartsQuiz @relation(fields: [quizId], references: [id])
+  quiz   HartsQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId String
 }
 

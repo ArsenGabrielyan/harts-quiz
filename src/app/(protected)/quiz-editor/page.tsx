@@ -11,7 +11,7 @@ export default async function QuizEditorPage({
 }){
      const {id} = await searchParams;
      const user = await currentUser();
-     const quizData = !id ? null : await getQuizDetails(id as string);
+     const quizData = !id ? null : await getQuizDetails(id as string, user);
      if(user?.accountType==="student") redirect("/");
      return (
           <QuizEditorForm currQuiz={quizData?.quiz as QuizDocument || null}/>

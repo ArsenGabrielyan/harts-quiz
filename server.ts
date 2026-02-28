@@ -42,6 +42,16 @@ app.prepare().then(() => {
      const server = createServer(handle)
      const io = new Server(server);
 
+     const endRound = (roomId: string, players: IQuizUser[], index: number) => {
+          io.to(roomId).emit("end round", players);
+          setTimeout(() => {
+               io.to(roomId).emit("phase change", {
+                    phase: "leaderboard",
+                    index
+               });
+          }, 4000);
+     }
+
      io.on('connection', socket => {
           devLog("Socket Connected")
 
@@ -65,6 +75,9 @@ app.prepare().then(() => {
                          io.to(room).emit("host disconnected");
                          delete gameStates[room];
                     }
+               }
+               for (const room in gameStates) {
+                    gameStates[room]?.answeredSockets.delete(socket.id);
                }
                devLog("Socket Disconnected")
           })
@@ -120,7 +133,6 @@ app.prepare().then(() => {
                }
           })
           socket.on('round end', (answer: unknown, room: unknown) => {
-               // Rate limit
                const now = Date.now();
                if (now - lastRoundEnd < ROUND_END_COOLDOWN_MS) return;
                lastRoundEnd = now;
@@ -129,30 +141,23 @@ app.prepare().then(() => {
                const players = rooms[roomId];
                const state = gameStates[roomId];
                if (!players || !state) return;
+               if(answer === null || answer === undefined) {
+                    endRound(roomId,players,state.currentRound);
+                    return;
+               }
 
-               const player = players.find(p => p.socketId === socket.id);
-               if (!player) return;
+               const playerIdx = players.findIndex(p => p.socketId === socket.id);
+               if (playerIdx === -1) return;
 
                if (state.answeredSockets.has(socket.id)) return;
                state.answeredSockets.add(socket.id);
 
                const round = state.rounds[state.currentRound];
                if (!round) return;
-
+               
                const isCorrect = answer === round.correctIndex
-               if (isCorrect) player.points += round.points;
-
-               io.to(roomId).emit("end round", players);
-               setTimeout(() => {
-                    io.to(roomId).emit("phase change", {
-                         phase: "leaderboard",
-                         index: state.currentRound
-                    });
-               }, 4000);
-               console.log("ROUND:", state.currentRound);
-               console.log("ANSWER:", answer);
-               console.log("CORRECT:", round.correctIndex);
-               console.log("IS CORRECT:", isCorrect);
+               if (isCorrect) players[playerIdx].points += round.points;
+               if (state.answeredSockets.size >= players.length) endRound(roomId,players,state.currentRound)
           });
           socket.on('start game', (quiz: unknown, index: unknown, quizId: unknown) => {
                const roomId = sanitize(quizId);
@@ -190,7 +195,6 @@ app.prepare().then(() => {
                     phase: "countdown",
                     index: state.currentRound
                });
-               console.log("ROUND:", state.currentRound);;
           });
           socket.on('finish quiz', (room: unknown, placement: unknown) => {
                const roomId = sanitize(room);
@@ -215,7 +219,6 @@ app.prepare().then(() => {
                     phase: "question",
                     index: state.currentRound
                });
-               console.log("ROUND:", state.currentRound);;
           });
      })
 

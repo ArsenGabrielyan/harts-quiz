@@ -22,10 +22,8 @@ export async function getQuizById(id: string){
 
 export async function getEveryQuizByTeacherEmail(email: string){
      try{
-          const quiz = await db.hartsQuiz.findFirst({
-               where: {
-                    teacherEmail: email
-               },
+          const quiz = await db.hartsQuiz.findMany({
+               where: { teacherEmail: email },
                include: {
                     questions: {
                          include: {

@@ -19,7 +19,7 @@ import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { INITIAL_MULTI_HOST_STATE } from "@/lib/constants/states";
-import { QUIZ_START_TIME } from "@/lib/constants/others";
+import { QUIZ_START_TIME, ROUND_START_TIME } from "@/lib/constants/others";
 import { IMultiplayerHostState, IQuizPlacement, IQuizUser } from "@/lib/types";
 import {produce} from "immer"
 import {socket} from "@/socket";
@@ -63,9 +63,7 @@ export default function MultiplayerQuizHost({ quiz, user }: MultiplayerQuizHostP
                     startTimer: QUIZ_START_TIME
                });
           });
-          socket.on("end round", (players: IQuizUser[]) => {
-               updateState({ users: players });
-          });
+          socket.on("end round", (players: IQuizUser[]) => updateState({ users: players }));
           socket.on("phase change", ({ phase, index }: {
                phase: IMultiplayerHostState["phase"],
                index?: number
@@ -73,7 +71,7 @@ export default function MultiplayerQuizHost({ quiz, user }: MultiplayerQuizHostP
                updateState({
                     phase,
                     ...(index !== undefined ? { currIdx: index } : {}),
-                    ...(phase === "countdown" ? { startTimer: QUIZ_START_TIME } : {}),
+                    ...(phase === "countdown" ? { startTimer: ROUND_START_TIME } : {}),
                });
           });
           socket.on("update players", (players: IQuizUser[]) => {
@@ -177,8 +175,6 @@ export default function MultiplayerQuizHost({ quiz, user }: MultiplayerQuizHostP
                               isTeacher
                          />
                     )}
-
-                    {/* Leaderboard between rounds */}
                     {(isStarted && phase === "leaderboard") && (
                          <div className="flex items-center justify-center flex-col gap-2">
                               <h2 className="text-2xl font-semibold">Առաջատարներ</h2>

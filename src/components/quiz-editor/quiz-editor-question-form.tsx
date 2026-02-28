@@ -21,6 +21,7 @@ import { ArrowDown, ArrowUp, CheckCircle, CopyPlus, Minus, Plus, Trash } from "l
 import { getInitialAnswers } from "@/lib/helpers";
 import { QuestionType } from "@prisma/client";
 import { QuizEditorType } from "@/lib/types/schema";
+import { useEffect } from "react";
 
 interface QuizEditorQuestionCardProps{
      index: number,
@@ -50,7 +51,10 @@ export default function QuizEditorQuestionCard({
           const {answers,correct} = getInitialAnswers(questionType);
           setValue(`questions.${index}.type`, questionType);
           replace(answers);
-          setValue(`questions.${index}.correct`, correct);
+          setValue(`questions.${index}.correct`, {
+               id: 0,
+               text: correct
+          });
      }
      const addAnswer = () => {
           append({ text: "" });
@@ -60,9 +64,31 @@ export default function QuizEditorQuestionCard({
           const newLength = answerFields.length - 1;
           remove(newLength);
           const currentCorrect = watch(`questions.${index}.correct`);
-          if (typeof currentCorrect === "number" && currentCorrect >= newLength)
-               setValue(`questions.${index}.correct`, newLength - 1);
+
+          if (currentCorrect?.id !== undefined && currentCorrect.id >= newLength) {
+               setValue(`questions.${index}.correct`, {
+                    id: newLength - 1,
+                    text: watch(`questions.${index}.answers.${newLength - 1}.text`)
+               });
+          }
      };
+     useEffect(() => {
+          if (questionType === "text") setValue(`questions.${index}.correct.id`, 0);
+     }, [questionType, index]);
+     useEffect(() => {
+          if (questionType !== "pick_one") return;
+          const subscription = watch((value, { name }) => {
+               if (!name?.includes(`questions.${index}.answers`)) return;
+
+               const currentCorrect = value.questions?.[index]?.correct;
+               if (!currentCorrect) return;
+
+               const correctIndex = currentCorrect.id;
+               const updatedText = value.questions?.[index]?.answers?.[correctIndex ?? -1]?.text;
+               if (updatedText !== undefined) setValue(`questions.${index}.correct.text`, updatedText);
+          });
+          return () => subscription.unsubscribe();
+     }, [index, questionType]);
      return (
           <div className="p-4 w-full max-w-inherit bg-background border shadow rounded-xl mt-4 space-y-4">
                <div className="flex justify-between items-center">
@@ -134,9 +160,12 @@ export default function QuizEditorQuestionCard({
                                                   <div className="flex items-center gap-2">
                                                        <Button
                                                             type="button"
-                                                            variant={field.value !== "" && correctAnswer === answerIndex ? "success" : "outline"}
+                                                            variant={correctAnswer?.id === answerIndex ? "success" : "outline"}
                                                             size="icon"
-                                                            onClick={() =>setValue(`questions.${index}.correct`, answerIndex)}
+                                                            onClick={() => setValue(`questions.${index}.correct`, {
+                                                                 id: answerIndex,
+                                                                 text: watch(`questions.${index}.answers.${answerIndex}.text`)
+                                                            })}
                                                        >
                                                             <CheckCircle />
                                                        </Button>
@@ -163,14 +192,32 @@ export default function QuizEditorQuestionCard({
                )}
                {questionType==="true_false" && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                         <Button type="button" variant={correctAnswer==="true" ? "default" : 'outline'} onClick={()=>setValue(`questions.${index}.correct`,"true")}>Այո</Button>
-                         <Button type="button" variant={correctAnswer==="false" ? "default" : 'outline'} onClick={()=>setValue(`questions.${index}.correct`,"false")}>Ոչ</Button>
+                         <Button
+                              type="button"
+                              variant={correctAnswer?.text === "true" ? "default" : "outline"}
+                              onClick={() =>
+                                   setValue(`questions.${index}.correct`, {
+                                        id: 0,
+                                        text: "true"
+                                   })
+                              }
+                         >Այո</Button>
+                         <Button
+                              type="button"
+                              variant={correctAnswer?.text === "false" ? "default" : "outline"}
+                              onClick={() =>
+                                   setValue(`questions.${index}.correct`, {
+                                        id: 1,
+                                        text: "false"
+                                   })
+                              }
+                         >Ոչ</Button>
                     </div>
                )}
                {questionType==="text" && (
                     <FormField
                          control={control}
-                         name={`questions.${index}.correct`}
+                         name={`questions.${index}.correct.text`}
                          render={({field})=>(
                               <FormItem>
                                    <FormLabel>Ճիշտ պատասխան</FormLabel>

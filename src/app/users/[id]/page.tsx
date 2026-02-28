@@ -11,7 +11,7 @@ export default async function SingleUserPage({
 }){
      const {id} = await params;
      const {user, questions} = await getUserDetails(id)
-     if(!user) notFound()
+     if(!user) notFound();
      return (
           <UserInfo user={user as UserDocument} questions={questions as QuizDocument[] | null}/>
      )

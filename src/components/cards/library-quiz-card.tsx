@@ -3,9 +3,8 @@ import { QuizDocument } from "@/lib/types";
 import { Edit, CopyPlus, Trash, Share, Copy } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { duplicateQuiz } from "@/actions/quiz/duplicate-quiz";
 import { toast } from "sonner";
-import { deleteQuiz } from "@/actions/quiz";
+import { deleteQuiz, duplicateQuiz } from "@/actions/quiz/crud";
 import { absoluteUrl, formatDate, shareQuiz } from "@/lib/helpers";
 import { useRouter } from "next/navigation";
 

@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { formatNumberSuffix, playSound, toPlaybackQuestion } from "@/lib/helpers";
 import { GET_INITIAL_MULTI_PLAY_STATE } from "@/lib/constants/states";
-import { QUIZ_START_TIME } from "@/lib/constants/others";
+import { QUIZ_START_TIME, ROUND_START_TIME } from "@/lib/constants/others";
 import { IMultiplayerPlayState, IQuizPlacement, IQuizUser } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
 import { QuizDocument } from "@/lib/types";
@@ -73,13 +73,19 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                updateState({
                     phase,
                     ...(index !== undefined ? { currIdx: index } : {}),
-                    ...(phase === "countdown" ? { startTimer: QUIZ_START_TIME } : {}),
+                    ...(phase === "countdown" ? { startTimer: ROUND_START_TIME } : {}),
                });
           });
           socket.on("end round", (players: IQuizUser[]) => {
                const me = players.find(p => p.userId === state.formData.userId);
                if (!me) return;
-               // updateState({ formData: { ...state.formData, points: me.points } });
+               setState(prev=>({
+                    ...prev,
+                    formData: {
+                         ...prev.formData,
+                         points: me.points
+                    }
+               }))
           });
           socket.on("end quiz", (placement: IQuizPlacement[]) => {
                const mentioned = placement.find(val => val.userId === state.formData.userId);
@@ -124,13 +130,15 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
 
      const afterCheck = (answerId: number, correctAnswerId: number) => {
           const isCorrect = answerId === correctAnswerId
-          // Only send answer + room — server resolves correct/points from its own state
           socket.emit("round end", answerId, state.formData.quizId);
           if (soundEffectOn)
                playSound(isCorrect ? "correct.mp3" : "wrong.mp3", error => toast.error(error));
      }
-
-     // When the local countdown timer finishes, move to question phase
+     const finishWithoutAnswer = () => {
+          socket.emit("round end", null, state.formData.quizId);
+          if (soundEffectOn)
+               playSound("tick.mp3", error => toast.error(error));
+     }
      const handleChangeTime = (time: number) => {
           updateState({ startTimer: time });
           if (time <= 0 && state.phase === "countdown") {
@@ -143,22 +151,18 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
 
      return (
           <>
-               {/* Live score overlay */}
                {isStarted && (
                     <div className="bg-background/90 fixed top-3 left-3 p-3 rounded-xl shadow">
                          <h2 className="text-xl">{formData.name}</h2>
                          <p className="text-muted-foreground">{formData.points} Միավոր</p>
                     </div>
                )}
-
                <QuizWrapper quizDetails={currQuiz ? {
                     name: currQuiz.name,
                     teacher: currQuiz.teacher,
                     subject: currQuiz.subject,
                     createdAt: currQuiz.createdAt
                } : undefined}>
-
-                    {/* Join form */}
                     {phase === "lobby" && (
                          <Form {...form}>
                               <form onSubmit={form.handleSubmit(handleSubmitToHost)} className="space-y-6">
@@ -210,8 +214,6 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                               </form>
                          </Form>
                     )}
-
-                    {/* Waiting for host to start */}
                     {phase === "waiting" && (
                          <div className="flex items-center justify-center flex-col gap-2">
                               <GridLoader color="hsl(var(--primary))" />
@@ -221,8 +223,6 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                               </Button>
                          </div>
                     )}
-
-                    {/* Countdown timer */}
                     {phase === "countdown" && (
                          <Timer
                               time={startTimer}
@@ -230,8 +230,6 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                               onTimeChange={handleChangeTime}
                          />
                     )}
-
-                    {/* Active question */}
                     {phase === "question" && currentQuestion && (
                          <QuizQuestion
                               key={currIdx}
@@ -240,10 +238,15 @@ export default function MultiplayerQuizPlay({ user, code }: MultiplayerQuizPlayP
                               afterCheck={afterCheck}
                               mode="multiplayer"
                               soundEffectOn={soundEffectOn}
+                              finishQuizWithNoAnswer={finishWithoutAnswer}
                          />
                     )}
-
-                    {/* End screen */}
+                    {phase === "leaderboard" && (
+                         <div className="flex items-center justify-center flex-col gap-2">
+                              <h2 className="text-2xl">{formData.name}</h2>
+                              <p className="text-muted-foreground">{formData.points} Միավոր</p>
+                         </div>
+                    )}
                     {phase === "ended" && (
                          <div className="flex items-center justify-center flex-col gap-2">
                               <h2 className="text-2xl">{formData.name}</h2>
