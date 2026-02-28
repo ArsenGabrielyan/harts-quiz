@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { SUBJECT_LIST } from "./constants/others";
-import {ACCOUNT_TYPES, ANSWER_FORMATS, ANSWER_TYPES} from "./constants/mappings"
+import { ACCOUNT_TYPES, ANSWER_FORMATS, ANSWER_TYPES } from "./constants/mappings"
 import { IQuestionState, QuizDocument, SubjectName } from "./types";
 import { AccountType, QuestionType } from "@prisma/client";
 import { ReadonlyURLSearchParams } from "next/navigation";
@@ -14,106 +14,125 @@ const generateRandomString = (chars: string, length: number) => {
      }
      return result;
 };
+
 export const getOAuthNotLinkedError = (searchParams: ReadonlyURLSearchParams) => {
      const error = searchParams.get("error") || "";
      return error.includes("OAuthAccountNotLinked") ? "Այս էլ․ փոստով արդեն կա հաշիվ, բայց այլ մուտքի մեթոդով։" : ""
 }
-export const generateUsername = (prefix="user",length=8) => {
+
+export const generateUsername = (prefix = "user", length = 8) => {
      const chars = "abcdefghijklmnopqrstuvwxyz0123456789-";
-     return `${prefix}-${generateRandomString(chars,length)}`
+     return `${prefix}-${generateRandomString(chars, length)}`
 }
+
 export const getAnswerFormat = (type: QuestionType) => ANSWER_FORMATS[type]
 export const getAnswerType = (type: QuestionType) => ANSWER_TYPES[type];
 export const accTypeInArmenian = (accountType: AccountType) => ACCOUNT_TYPES[accountType]
-export const formatNumberSuffix = (n: number) => n===1 ? `${n}-ին` : `${n}-րդ`;
-export const shareQuiz = async (url=location.href) => {
+export const formatNumberSuffix = (n: number) => n === 1 ? `${n}-ին` : `${n}-րդ`;
+
+export const shareQuiz = async (url = location.href) => {
      const shareData = {
           title: 'Հարց',
           text: "Եկեք խաղացեք այս հարցաշարը",
           url
      }
-     if(navigator.canShare(shareData)) await navigator.share(shareData)
+     if (navigator.canShare(shareData)) await navigator.share(shareData)
      else {
           navigator.clipboard.writeText(location.href);
           toast.success("Հղումը պատճենված է")
      }
 }
+
 export const getSubjectInArmenian = (subject: SubjectName): string => {
-     const currSubject = SUBJECT_LIST.find(val=>val.name===subject);
+     const currSubject = SUBJECT_LIST.find(val => val.name === subject);
      return currSubject ? currSubject.title : "";
 }
+
 export const absoluteUrl = (path: string) => `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
+
 export function groupBy<T, K extends string | number>(
      arr: T[],
      getKey: (item: T) => K,
      getTitle: (key: K) => string
-): {title: string, data: T[]}[]{
-     if(arr.length===0) return [];
-     return Object.values(arr.reduce((acc,item)=>{
+): { title: string, data: T[] }[] {
+     if (arr.length === 0) return [];
+     return Object.values(arr.reduce((acc, item) => {
           const key = getKey(item)
-          if(!acc[key]){
-               acc[key] = {title: getTitle(key), data: [item]}
+          if (!acc[key]) {
+               acc[key] = { title: getTitle(key), data: [item] }
           } else {
                acc[key].data.push(item)
           }
           return acc;
-     },{} as Record<K, {title: string, data: T[]}>))
+     }, {} as Record<K, { title: string, data: T[] }>))
 }
-export const getFilteredSubjects = () => groupBy(SUBJECT_LIST,subject=>subject.type,type=>type);
-export const getInitialAnswers = (type: QuestionType) => ({
-     answers: type === "text" ? [] :
-          type === "true_false" ? [
-               { text: "true" },
-               { text: "false" }
-          ] : [
-               { text: "" },
-               { text: "" },
-               { text: "" },
-               { text: "" }
-          ],
-     correct: 0
-});
+
+export const getFilteredSubjects = () => groupBy(SUBJECT_LIST, subject => subject.type, type => type);
+
+export const getInitialAnswers = (type: QuestionType): { answers: { text: string }[], correct: number | string } => {
+     if (type === "text") {
+          return { answers: [], correct: "" };
+     }
+     if (type === "true_false") {
+          return {
+               answers: [{ text: "true" }, { text: "false" }],
+               correct: "true",   // string, not an index
+          };
+     }
+     // pick_one
+     return {
+          answers: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
+          correct: 0,             // number index
+     };
+};
+
 export const fetcher = async (url: string) => {
-     try{
+     try {
           const res = await axios.get(url);
           return res.data;
-     } catch(err) {
+     } catch (err) {
           console.error(err);
      }
 }
+
 export const getButtonVariantDependingOnAnswer = (
      answer: string,
      correct: string,
      mode: "multiplayer" | "one-player",
      state: IQuestionState
 ) => {
-     const {currAnswer,currTime} = state
-     const hasNoAnswer = mode==="multiplayer" ? (currAnswer==="" || currTime>0) : currAnswer==="";
-     if(hasNoAnswer)
+     const { currAnswer, currTime } = state
+     const hasNoAnswer = mode === "multiplayer" ? (currAnswer === "" || currTime > 0) : currAnswer === "";
+     if (hasNoAnswer)
           return "outline"
-     else if(answer===correct)
+     else if (answer === correct)
           return "success";
-     else if(answer===currAnswer)
+     else if (answer === currAnswer)
           return "destructive";
      return "outline"
 }
-export const playSound = (soundName: string,onError?:(message: string) => void) => {
+
+export const playSound = (soundName: string, onError?: (message: string) => void) => {
      const path = `/sounds/${soundName}`
      const audio = new Audio(path);
-     audio.play().catch((error)=>{
-          if(onError) onError("Չհաջողվեց միացնել Ձայնը")
+     audio.play().catch((error) => {
+          if (onError) onError("Չհաջողվեց միացնել Ձայնը")
           console.error(error)
      })
 }
+
 export const generateGameCode = () => {
      const chars = "0123456789";
-     return generateRandomString(chars,8)
+     return generateRandomString(chars, 8)
 }
-export const formatCorrectAnswer = (correct: string) => correct==="true" ? "Այո" : correct==="false" ? "Ոչ" : correct
+
+export const formatCorrectAnswer = (correct: string) =>
+     correct === "true" ? "Այո" : correct === "false" ? "Ոչ" : correct
+
 export const formatDate = (date: Date) => {
      const d = new Date(date)
-     const month = (d.getMonth()+1).toString().padStart(2,"0");
-     const day = d.getDate().toString().padStart(2,"0");
+     const month = (d.getMonth() + 1).toString().padStart(2, "0");
+     const day = d.getDate().toString().padStart(2, "0");
      const year = d.getFullYear();
      return `${day}-${month}-${year}`
 }
@@ -124,20 +143,43 @@ export const mapQuizToForm = (quiz: QuizDocument) => ({
      visibility: quiz.visibility,
      subject: quiz.subject,
      questions: quiz.questions.map((question) => {
-          const answers = question.answers.map((a) => ({
-               text: a,
-          }));
-          const correctIndex = question.answers.findIndex(
-               (a) => a.id === question.correctAnswerId
-          );
+          if (question.type === "text") {
+               // The correct answer text is stored as the single Answer record
+               const correctAnswer = question.answers.find(a => a.id === question.correctAnswerId);
+               return {
+                    question: question.question,
+                    description: question.description ?? "",
+                    timer: question.timer,
+                    points: question.points,
+                    type: question.type,
+                    answers: [],                          // no answer options for text type
+                    correct: correctAnswer?.text ?? "",   // string
+               };
+          }
+
+          if (question.type === "true_false") {
+               const correctAnswer = question.answers.find(a => a.id === question.correctAnswerId);
+               return {
+                    question: question.question,
+                    description: question.description ?? "",
+                    timer: question.timer,
+                    points: question.points,
+                    type: question.type,
+                    answers: question.answers.map(a => ({ text: a.text })),
+                    correct: correctAnswer?.text ?? "true",  // "true" or "false" string
+               };
+          }
+
+          // pick_one — correct is the index of the correct answer
+          const correctIndex = question.answers.findIndex(a => a.id === question.correctAnswerId);
           return {
                question: question.question,
                description: question.description ?? "",
                timer: question.timer,
                points: question.points,
                type: question.type,
-               answers,
-               correct: correctIndex >= 0 ? correctIndex : 0,
+               answers: question.answers.map(a => ({ text: a.text })),
+               correct: correctIndex >= 0 ? correctIndex : 0,  // number
           };
      }),
 });

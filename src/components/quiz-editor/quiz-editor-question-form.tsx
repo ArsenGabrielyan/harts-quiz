@@ -1,5 +1,4 @@
 "use client";
-import * as z from "zod";
 import { useFormContext } from "react-hook-form";
 import {
      FormField,
@@ -9,7 +8,6 @@ import {
      FormMessage
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { QuizEditorSchema } from "@/lib/schemas";
 import { Textarea } from "../ui/textarea";
 import {
      Select,

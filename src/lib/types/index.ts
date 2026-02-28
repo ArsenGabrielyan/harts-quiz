@@ -5,59 +5,83 @@ import { IconType } from "react-icons/lib";
 
 // Themes
 export type ThemeColors = "Zinc" | "Rose" | "Blue" | "Green" | "Orange";
-export interface ThemeColorStateParams{
+export interface ThemeColorStateParams {
      themeColor: ThemeColors,
      setThemeColor: React.Dispatch<React.SetStateAction<ThemeColors>>
 }
 
 // Quiz Types
-export interface IQuestion{
+
+// Shape of an answer coming from the DB (Prisma)
+export interface IAnswer {
+     id: number,
+     text: string,
+}
+
+// Shape of a question coming from the DB (Prisma)
+export interface IQuizDocumentQuestion {
+     id: number,
      question: string,
-     answers: string[],
-     correct: number;
+     answers: IAnswer[],
+     correctAnswerId: number | null,
      timer: number,
      type: QuestionType,
      points: number,
-     description: string
+     description: string | null,
 }
-export interface IQuiz{
+
+// Runtime shape used during quiz playback
+export interface IQuestion {
+     question: string,
+     answers: string[],   // just the answer texts
+     correct: string,     // the correct answer text (not an index)
+     timer: number,
+     type: QuestionType,
+     points: number,
+     description: string | null,
+}
+
+export interface IQuiz {
      name: string,
-     description: string,
-     questions: IQuestion[],
+     description: string | null,
+     questions: IQuizDocumentQuestion[],
      visibility: QuizVisibility,
      subject: SubjectName,
 }
-export interface QuizDocument extends IQuiz{
+
+export interface QuizDocument extends IQuiz {
      id: string,
      teacher: string,
      teacherEmail: string,
      createdAt: Date,
-     updatedAt?: Date
+     updatedAt?: Date,
 }
-export interface IQuizUser{
+
+export interface IQuizUser {
      name: string,
      quizId: string,
      userId: string,
      points: number,
      socketId: string
 }
-export interface IQuizPlacement{
+
+export interface IQuizPlacement {
      name: string,
      points: number,
-     place: number
+     place: number,
      userId: string,
 }
 
 // Subjects
 export type SubjectName = "mayreni" | "armenian" | "russian" | "english" | "literature" | "foreign-lang" | "foreign-literature" | "algebra" | "geometry" | "mathematics" | "arithmetics" | "advanced-math" | "physics" | "chemistry" | "natural-env" | "natural-history" | "geography" | "astronomy" | "biology" | "informatics" | "pe" | "health" | "music" | "nzp" | "chess" | "local-history" | "history" | "social-studies" | "technology" | "religious-studies" | "art" | "reading" | "others"
-export interface ISubject{
+export interface ISubject {
      name: SubjectName,
      title: string,
      type: "Հումանիտար" | "Մաթեմատիկական" | "Բնագիտական" | "Սպորտ և Առողջ Ապրելակերպ" | "Արվեստ և Արհեստ" | "Ուրիշ Առարկաներ"
 }
 
 // States
-export interface IOnePlayerQuizState{
+export interface IOnePlayerQuizState {
      isStarted: boolean,
      startTimer: number,
      currIdx: number,
@@ -66,11 +90,11 @@ export interface IOnePlayerQuizState{
      wrong: number,
      points: number,
 }
-export interface IQuestionState{
+export interface IQuestionState {
      currTime: number,
      currAnswer: string,
 }
-export interface IMultiplayerHostState{
+export interface IMultiplayerHostState {
      currIdx: number,
      users: IQuizUser[],
      isStarted: boolean,
@@ -80,44 +104,44 @@ export interface IMultiplayerHostState{
      placements: IQuizPlacement[],
      showPlacements: boolean,
 }
-export interface IMultiplayerPlayState{
+export interface IMultiplayerPlayState {
      isSubmitted: boolean,
      isStarted: boolean,
      startTimer: number,
-     currQuiz: QuizDocument | null
+     currQuiz: QuizDocument | null,
      currIdx: number,
      isEnded: boolean,
      place: number,
      score: number,
-     formData: IQuizUser
+     formData: IQuizUser,
 }
 
 // Other
-export interface ISelectData<T>{
+export interface ISelectData<T> {
      type: T,
      name: string,
      Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
 }
-export interface INameIcon{
+export interface INameIcon {
      name: string,
      Icon: (ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>) | IconType
 }
-export interface UserDocument{
+export interface UserDocument {
      id: string,
      name: string,
      email: string,
-     username: string,
-     organization: string,
-     password: string,
-     image: string,
+     username: string | null,
+     organization: string | null,
+     password: string | null,
+     image: string | null,
      accountType: AccountType,
-     emailVerified: Date,
+     emailVerified: Date | null,
      isTwoFactorEnabled: boolean,
      soundEffectOn: boolean,
      showFavoriteSubject: boolean,
-     bio: string,
+     bio: string | null,
      favorites: string[],
-     favoriteSubject: SubjectName,
+     favoriteSubject: SubjectName | null,
      createdAt?: Date,
-     updatedAt?: Date
+     updatedAt?: Date,
 }

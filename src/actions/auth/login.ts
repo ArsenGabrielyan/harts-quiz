@@ -1,5 +1,4 @@
 "use server"
-import * as z from "zod"
 import { signIn } from "@/auth";
 import { getUserByEmail } from "@/data/user";
 import { sendVerificationEmail, sendTwoFactorEmail } from "@/lib/mail";

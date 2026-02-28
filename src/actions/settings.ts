@@ -1,6 +1,4 @@
 "use server"
-import * as z from "zod";
-import { SettingsSchema } from "@/lib/schemas";
 import { getUserByEmail, getUserById, getUserByUsername } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";

@@ -1,5 +1,4 @@
 "use server"
-import * as z from "zod"
 import { NewPasswordSchema } from "@/lib/schemas"
 import { getPasswordResetTokenByToken } from "@/data/password-reset-token"
 import { getUserByEmail } from "@/data/user"

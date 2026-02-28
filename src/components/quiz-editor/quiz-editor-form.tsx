@@ -1,5 +1,4 @@
 "use client"
-import * as z from "zod";
 import { QuizEditorSchema } from "@/lib/schemas";
 import { useFieldArray, useForm } from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"

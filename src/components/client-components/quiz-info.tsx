@@ -7,12 +7,12 @@ import QuestionCard from "../cards/question-card";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { fetcher, shareQuiz } from "@/lib/helpers";
-import { duplicateQuiz } from "@/actions/quiz/duplicateQuiz";
+import { duplicateQuiz } from "@/actions/quiz/duplicate-quiz";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import useSWR from "swr"
 import { LikeQuizResponse } from "@/app/api/like-quiz/route";
-import { likeQuiz } from "@/actions/quiz/likeQuiz";
+import { likeQuiz } from "@/actions/quiz/like-quiz";
 import { deleteQuiz } from "@/actions/quiz"
 import ReactMarkdown from "react-markdown";
 import PrintQuiz from "../quiz/print-quiz";

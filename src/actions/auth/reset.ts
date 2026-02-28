@@ -1,5 +1,4 @@
 "use server"
-import * as z from "zod"
 import { ResetSchema } from "@/lib/schemas"
 import { getUserByEmail } from "@/data/user"
 import { sendPasswordResetEmail } from "@/lib/mail"

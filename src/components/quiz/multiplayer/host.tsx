@@ -2,7 +2,6 @@
 import { QuizDocument } from "@/lib/types";
 import QuizWrapper from "../quiz-wrapper";
 import { formatNumberSuffix, generateGameCode, playSound } from "@/lib/helpers";
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SoundSwitchFormSchema } from "@/lib/schemas";

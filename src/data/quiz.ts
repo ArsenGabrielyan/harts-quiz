@@ -1,7 +1,5 @@
 import { QuizVisibility } from "@prisma/client";
 import { db } from "@/lib/db";
-import * as z from "zod"
-import { QuizEditorSchema } from "@/lib/schemas";
 
 export async function getQuizById(id: string){
      try{
