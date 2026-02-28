@@ -125,7 +125,7 @@ app.prepare().then(() => {
                if (roomHosts[roomId] !== socket.id) return;
                if (!quiz || typeof quiz !== "object") return;
 
-               const { questions } = quiz as { questions: { correct: string, points: number }[] };
+               const { questions } = quiz as { questions: IQuestion[] };
                if (!Array.isArray(questions)) return;
 
                gameStates[roomId] = {
