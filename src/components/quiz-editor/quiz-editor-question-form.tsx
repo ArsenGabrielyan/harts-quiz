@@ -22,6 +22,7 @@ import { getInitialAnswers } from "@/lib/helpers";
 import { QuestionType } from "@prisma/client";
 import { QuizEditorType } from "@/lib/types/schema";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface QuizEditorQuestionCardProps{
      index: number,
@@ -75,20 +76,6 @@ export default function QuizEditorQuestionCard({
      useEffect(() => {
           if (questionType === "text") setValue(`questions.${index}.correct.id`, 0);
      }, [questionType, index]);
-     useEffect(() => {
-          if (questionType !== "pick_one") return;
-          const subscription = watch((value, { name }) => {
-               if (!name?.includes(`questions.${index}.answers`)) return;
-
-               const currentCorrect = value.questions?.[index]?.correct;
-               if (!currentCorrect) return;
-
-               const correctIndex = currentCorrect.id;
-               const updatedText = value.questions?.[index]?.answers?.[correctIndex ?? -1]?.text;
-               if (updatedText !== undefined) setValue(`questions.${index}.correct.text`, updatedText);
-          });
-          return () => subscription.unsubscribe();
-     }, [index, questionType]);
      return (
           <div className="p-4 w-full max-w-inherit bg-background border shadow rounded-xl mt-4 space-y-4">
                <div className="flex justify-between items-center">
@@ -149,39 +136,43 @@ export default function QuizEditorQuestionCard({
                {questionType==="pick_one" && (
                     <>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
-                              {answerFields.map((answer,answerIndex)=>(
-                                   <FormField
-                                        key={answer.id}
-                                        control={control}
-                                        name={`questions.${index}.answers.${answerIndex}.text`}
-                                        render={({ field }) => (
-                                             <FormItem>
-                                                  <FormLabel>Պատասխան {answerIndex + 1}</FormLabel>
-                                                  <div className="flex items-center gap-2">
-                                                       <Button
-                                                            type="button"
-                                                            variant={correctAnswer?.id === answerIndex ? "success" : "outline"}
-                                                            size="icon"
-                                                            onClick={() => setValue(`questions.${index}.correct`, {
-                                                                 id: answerIndex,
-                                                                 text: watch(`questions.${index}.answers.${answerIndex}.text`)
-                                                            })}
-                                                       >
-                                                            <CheckCircle />
-                                                       </Button>
-                                                       <FormControl>
-                                                            <Input
-                                                                 {...field}
-                                                                 disabled={isPending}
-                                                                 placeholder="Նշել պատասխանն այստեղ"
-                                                            />
-                                                       </FormControl>
-                                                  </div>
-                                                  <FormMessage />
-                                             </FormItem>
-                                        )}
-                                   />
-                              ))}
+                              {answerFields.map((answer,answerIndex)=>{
+                                   const isCorrectChosen = correctAnswer.text===answer.text
+                                   return (
+                                        <FormField
+                                             key={answer.id}
+                                             control={control}
+                                             name={`questions.${index}.answers.${answerIndex}.text`}
+                                             render={({ field }) => (
+                                                  <FormItem>
+                                                       <FormLabel>Պատասխան {answerIndex + 1}</FormLabel>
+                                                       <div className="flex items-center gap-2">
+                                                            <Button
+                                                                 type="button"
+                                                                 variant={isCorrectChosen ? "success" : "outline"}
+                                                                 size="icon"
+                                                                 onClick={() => setValue(`questions.${index}.correct`, {
+                                                                      id: answerIndex,
+                                                                      text: watch(`questions.${index}.answers.${answerIndex}.text`)
+                                                                 })}
+                                                                 className={cn("opacity-30", isCorrectChosen && "opacity-100")}
+                                                            >
+                                                                 <CheckCircle />
+                                                            </Button>
+                                                            <FormControl>
+                                                                 <Input
+                                                                      {...field}
+                                                                      disabled={isPending}
+                                                                      placeholder="Նշել պատասխանն այստեղ"
+                                                                 />
+                                                            </FormControl>
+                                                       </div>
+                                                       <FormMessage />
+                                                  </FormItem>
+                                             )}
+                                        />
+                                   )
+                              })}
                          </div>
                          <div className="flex justify-between items-center gap-2 w-full">
                               <Button type="button" size="icon" variant="outline" onClick={removeAnswer} disabled={answerFields.length<=2}><Minus/></Button>

@@ -105,13 +105,12 @@ export interface ISubject {
 
 // States
 export interface IOnePlayerQuizState {
-     isStarted: boolean,
      startTimer: number,
      currIdx: number,
-     isNextRound: boolean,
      correct: number,
      wrong: number,
      points: number,
+     phase: Exclude<QuizPhase,"leaderboard"|"waiting"> | "result"
 }
 export interface IQuestionState {
      currTime: number,

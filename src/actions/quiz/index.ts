@@ -7,6 +7,7 @@ import { ExtendedUser } from "@/next-auth";
 
 export const getQuizDetails = async (id: string, user?: ExtendedUser) => {
      const quiz = await getQuizById(id);
+     if (!quiz) return { quiz: null };
      const isAuthenticated = user && user.email === quiz?.teacherEmail;
      if (!isAuthenticated) return { quiz: null }
      return { quiz }
@@ -27,13 +28,15 @@ export const getQuizFromCurrEmail = async (email: string) => {
 }
 
 export const likeQuiz = async (quizId: string) => {
+     const quiz = await db.hartsQuiz.findUnique({ where: { id: quizId } });
+     if (!quiz) return { error: "Հարցաշարը չի գտնվել" };
      const user = await currentUser();
      if (!user) return { error: "Այս օգտագործողը մուտք չի գործել" };
      const existing = await db.favorite.findUnique({
           where: {
                userId_quizId: {
                     userId: user.id!,
-                    quizId
+                    quizId: quiz.id
                }
           }
      });
@@ -42,14 +45,14 @@ export const likeQuiz = async (quizId: string) => {
                where: {
                     userId_quizId: {
                          userId: user.id!,
-                         quizId
+                         quizId: quiz.id
                     }
                }
           });
           return { success: "Հարցաշարը ջնջվել է հավանած հարցաշարերի ցուցակից" };
      }
      await db.favorite.create({
-          data: { userId: user.id!, quizId }
+          data: { userId: user.id!, quizId: quiz.id }
      });
      return { success: "Հարցաշարը հավանվել է" };
 };

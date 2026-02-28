@@ -43,6 +43,8 @@ export default function QuizEditorForm({ currQuiz }: QuizEditorFormProps) {
           questions: []
      }, [currQuiz]);
 
+     console.log(initialData)
+
      const form = useForm<QuizEditorType>({
           resolver: zodResolver(QuizEditorSchema),
           defaultValues: initialData,
