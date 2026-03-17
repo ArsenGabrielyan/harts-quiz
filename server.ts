@@ -24,9 +24,7 @@ const MAX_NAME_LENGTH = 100;
 const MAX_PLAYERS_PER_ROOM = 50;
 
 function devLog(message: string) {
-     if (process.env.NODE_ENV === "development") {
-          console.info(message)
-     }
+     if (process.env.NODE_ENV === "development") console.info(message)
 }
 
 function sanitize(value: unknown): string {

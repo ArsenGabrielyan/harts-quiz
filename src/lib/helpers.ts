@@ -6,6 +6,7 @@ import { AccountType, QuestionType } from "@prisma/client";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import axios from "axios";
 import { QuizEditorType } from "./types/schema";
+import { env } from "./env";
 
 const generateRandomString = (chars: string, length: number) => {
      let result = "";
@@ -49,7 +50,7 @@ export const getSubjectInArmenian = (subject: SubjectName): string => {
      return currSubject ? currSubject.title : "";
 }
 
-export const absoluteUrl = (path: string) => `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
+export const absoluteUrl = (path: string) => `${env.NEXT_PUBLIC_APP_URL}${path}`;
 
 export function groupBy<T, K extends string | number>(
      arr: T[],

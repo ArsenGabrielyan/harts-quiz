@@ -1,8 +1,9 @@
 import {Resend} from "resend"
 import { absoluteUrl } from "@/lib/helpers";
+import { env } from "./env";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const onboardingEmail = process.env.ONBOARDING_EMAIL!
+const resend = new Resend(env.RESEND_API_KEY);
+const onboardingEmail = env.ONBOARDING_EMAIL
 
 export const sendVerificationEmail = async(
      name: string,
