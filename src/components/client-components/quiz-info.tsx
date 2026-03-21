@@ -1,5 +1,5 @@
 "use client"
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import PageLayout from "../page-layout";
 import { Button } from "../ui/button";
 import { CopyPlus, Edit, Heart, Printer, Share, Trash, Loader, Link2, Lock } from "lucide-react";

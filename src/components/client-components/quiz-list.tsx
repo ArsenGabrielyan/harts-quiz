@@ -2,7 +2,7 @@
 import { useState } from "react";
 import PageLayout from "../page-layout";
 import QuizCard from "@/components/cards/quiz-card";
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import { Button } from "@/components/ui/button";
 import { SUBJECT_LIST } from "@/lib/constants/others";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";

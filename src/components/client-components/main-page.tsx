@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PageLayout from "../page-layout";
 import { ExtendedUser } from "@/next-auth";
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import QuizCard from "../cards/quiz-card";
 import { SUBJECT_LIST } from "@/lib/constants/others";
 import { useMemo } from "react";

@@ -1,5 +1,5 @@
 import { VISIBILITIES } from "@/lib/constants/mappings";
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import { Edit, CopyPlus, Trash, Share, Copy } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

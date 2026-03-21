@@ -1,6 +1,6 @@
 import { getQuizDetails } from "@/actions/quiz";
 import OnePlayerQuiz from "@/components/quiz/one-player-quiz";
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import { currentUser } from "@/lib/auth";
 import { notFound } from "next/navigation";
 

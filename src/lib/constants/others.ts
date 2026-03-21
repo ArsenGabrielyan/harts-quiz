@@ -1,4 +1,5 @@
-import { ISelectData, ISubject, SubjectName } from "@/lib/types";
+import { ISelectData } from "@/lib/types";
+import { ISubject, SubjectName } from "../types/subjects";
 import { AccountType, QuestionType, QuizVisibility } from "@prisma/client";
 import { BookOpenText, Globe, Link, Lock, User } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";

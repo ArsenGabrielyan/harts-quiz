@@ -1,7 +1,7 @@
 import { formatDate, getSubjectInArmenian } from "@/lib/helpers";
 import Logo from "../logo";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { SubjectName } from "@/lib/types";
+import { SubjectName } from "@/lib/types/subjects";
 import { Button } from "../ui/button";
 import Link from "next/link";
 

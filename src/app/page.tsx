@@ -1,6 +1,6 @@
 import { getCurrUser } from "@/actions/quiz";
 import MainPage from "@/components/client-components/main-page";
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 
 export default async function Home() {
   const {user,questions} = await getCurrUser();

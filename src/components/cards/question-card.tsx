@@ -1,4 +1,4 @@
-import { IQuizDocumentQuestion } from "@/lib/types";
+import { IQuizDocumentQuestion } from "@/lib/types/quiz";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAnswerType } from "@/lib/helpers";
 

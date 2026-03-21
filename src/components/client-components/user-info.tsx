@@ -2,7 +2,8 @@
 import { User } from "lucide-react";
 import PageLayout from "../page-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { QuizDocument, SubjectName } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
+import { SubjectName } from "@/lib/types/subjects";
 import {accTypeInArmenian, getSubjectInArmenian} from "@/lib/helpers"
 import { Button } from "../ui/button";
 import { toast } from "sonner";

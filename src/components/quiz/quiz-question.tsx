@@ -1,6 +1,7 @@
 import { GET_INITIAL_QUESTION_STATE } from "@/lib/constants/states";
 import { formatCorrectAnswer, getAnswerFormat, getButtonVariantDependingOnAnswer, playSound } from "@/lib/helpers";
-import { IQuestion, IQuestionState } from "@/lib/types";
+import { IQuestion } from "@/lib/types/quiz";
+import { IQuestionState } from "@/lib/types/states";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

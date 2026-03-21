@@ -1,5 +1,5 @@
 "use client"
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import QuizWrapper from "./quiz-wrapper";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ import { ExtendedUser } from "@/next-auth";
 import { useState } from "react";
 import { INITIAL_1P_QUIZ_STATE } from "@/lib/constants/states";
 import { ROUND_START_TIME} from "@/lib/constants/others"
-import { IOnePlayerQuizState } from "@/lib/types";
+import { IOnePlayerQuizState } from "@/lib/types/states";
 import Timer from "./timer";
 import QuizQuestion from "./quiz-question";
 import { CircleCheck, CircleX } from "lucide-react";

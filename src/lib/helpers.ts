@@ -1,7 +1,9 @@
 import { toast } from "sonner";
 import { SUBJECT_LIST } from "./constants/others";
 import { ACCOUNT_TYPES, ANSWER_FORMATS, ANSWER_TYPES } from "./constants/mappings"
-import { IQuestion, IQuestionState, IQuizDocumentQuestion, QuizDocument, SubjectName } from "./types";
+import { IQuestion, IQuizDocumentQuestion, QuizDocument } from "./types/quiz";
+import { SubjectName } from "./types/subjects";
+import { IQuestionState } from "./types/states";
 import { AccountType, QuestionType } from "@prisma/client";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import axios from "axios";

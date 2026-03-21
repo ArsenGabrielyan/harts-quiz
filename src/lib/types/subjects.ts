@@ -1,0 +1,38 @@
+export enum SubjectName {
+     NativeLang = "native-lang",
+     Armenian = "armenian",
+     Russian = "russian",
+     English = "english",
+     Literature = "literature",
+     ForeignLang = "foreign-lang",
+     ForeignLiterature = "foreign-literature",
+     Algebra = "algebra",
+     Geometry = "geometry",
+     Maths = "maths",
+     Arithmetics = "arithmetics",
+     AdvancedMaths = "advanced-maths",
+     Physics = "physics",
+     Chemistry = "chemistry",
+     Science = "science",
+     Geography = "geography",
+     Astronomy = "astronomy",
+     Biology = "biology",
+     Informatics = "informatics",
+     PE = "pe",
+     Health = "health",
+     Music = "music",
+     MilStudies = "military-studies",
+     Chess = "chess",
+     History = "history",
+     SocialStudies = "social-studies",
+     Tech = "technology",
+     ReligiousStudies = "religious-studies",
+     Art = "art",
+     Reading = "reading",
+     Other = "others"
+}
+export interface ISubject {
+     name: SubjectName,
+     title: string,
+     type: "Հումանիտար" | "Մաթեմատիկական" | "Բնագիտական" | "Սպորտ և Առողջ Ապրելակերպ" | "Արվեստ և Արհեստ" | "Ուրիշ Առարկաներ"
+}

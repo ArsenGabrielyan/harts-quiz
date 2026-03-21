@@ -4,7 +4,7 @@ import { QuizEditorSchema } from "@/lib/schemas"
 import { db } from "@/lib/db";
 import { getQuizById } from "@/data/quiz";
 import { QuizEditorType } from "@/lib/types/schema";
-import { IAnswer } from "@/lib/types";
+import { IAnswer } from "@/lib/types/quiz";
 import { Prisma } from "@prisma/client";
 
 function normalize(s: string) {

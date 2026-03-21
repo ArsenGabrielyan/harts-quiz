@@ -1,5 +1,5 @@
 "use client"
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import QuizWrapper from "../quiz-wrapper";
 import { formatNumberSuffix, generateGameCode, playSound, toPlaybackQuestion } from "@/lib/helpers";
 import { useForm } from "react-hook-form";
@@ -17,10 +17,11 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ExtendedUser } from "@/next-auth";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { INITIAL_MULTI_HOST_STATE } from "@/lib/constants/states";
 import { QUIZ_START_TIME, ROUND_START_TIME } from "@/lib/constants/others";
-import { IMultiplayerHostState, IQuizPlacement, IQuizUser } from "@/lib/types";
+import { IQuizPlacement, IQuizUser } from "@/lib/types/quiz";
+import { IMultiplayerHostState } from "@/lib/types/states";
 import {produce} from "immer"
 import {socket} from "@/socket";
 import Timer from "../timer";

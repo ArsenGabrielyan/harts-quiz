@@ -1,5 +1,5 @@
 import { formatCorrectAnswer, formatDate, getSubjectInArmenian } from "@/lib/helpers";
-import { QuizDocument } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
 import Image from "next/image";
 
 interface PrintQuizProps{

@@ -2,7 +2,6 @@
 import { useCurrentTheme } from "@/hooks/use-current-theme"
 import setGlobalColorTheme, { getSavedThemeColor } from "@/lib/theme-colors"
 import { ThemeColors, ThemeColorStateParams } from "@/lib/types"
-import { useTheme } from "next-themes"
 import { ThemeProviderProps } from "next-themes"
 import { createContext, useContext, useEffect, useState } from "react"
 

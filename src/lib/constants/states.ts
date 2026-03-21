@@ -1,5 +1,6 @@
 import { QUIZ_START_TIME, ROUND_START_TIME } from "./others"
-import { IOnePlayerQuizState, IQuestion, IQuestionState, IMultiplayerHostState, IMultiplayerPlayState } from "../types"
+import { IOnePlayerQuizState, IQuestionState, IMultiplayerHostState, IMultiplayerPlayState } from "../types/states"
+import { IQuestion } from "../types/quiz"
 
 export const INITIAL_1P_QUIZ_STATE: IOnePlayerQuizState = {
      currIdx: 0,

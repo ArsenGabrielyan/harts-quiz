@@ -18,7 +18,8 @@ import { VISIBILITIES_LIST } from "@/lib/constants/others";
 import { QuestionType } from "@prisma/client"
 import QuizEditorQuestionCard from "./quiz-editor-question-form";
 import { addQuiz, editQuiz } from "@/actions/quiz/crud";
-import { QuizDocument, SubjectName } from "@/lib/types";
+import { QuizDocument } from "@/lib/types/quiz";
+import { SubjectName } from "@/lib/types/subjects";
 import useUnsavedChangesWarning from "@/hooks/use-before-unload";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

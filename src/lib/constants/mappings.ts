@@ -1,5 +1,5 @@
 import { Globe, Link, Lock } from "lucide-react"
-import { INameIcon} from "../types"
+import { INameIcon } from "../types"
 import { AccountType, QuestionType, QuizVisibility } from "@prisma/client"
 
 export const ANSWER_FORMATS: Record<QuestionType, string[] | string> = {
