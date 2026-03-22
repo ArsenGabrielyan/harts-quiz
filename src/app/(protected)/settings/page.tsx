@@ -91,7 +91,7 @@ export default function SettingsPage(){
           }
      }
      return (
-          <PageLayout>
+          <PageLayout mainClassName="min-h-screen primary-main-bg">
                <h1 className="text-3xl md:text-4xl text-center mb-4">Կարգավորումներ</h1>
                <div className="p-4 bg-card text-foreground border shadow rounded-xl">
                     <Form {...form}>

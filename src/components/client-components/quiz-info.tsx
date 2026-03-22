@@ -61,7 +61,7 @@ export default function QuizInfo({quiz}: QuizInfoProps){
           print();
      }
      return (
-          <PageLayout>
+          <PageLayout mainClassName="min-h-screen primary-main-bg">
                <div className="print:hidden">
                     {quiz && (
                          <>

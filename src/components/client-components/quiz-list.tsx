@@ -18,7 +18,7 @@ export default function QuizList({quizzes}:QuizListProps){
           setVisibleItems(prev=>prev+12);
      }
      return (
-          <PageLayout mainClassName="flex flex-col items-center justify-start gap-y-3" searchBox={{search,setSearch}}>
+          <PageLayout mainClassName="min-h-screen primary-main-bg flex flex-col items-center justify-start gap-y-3" searchBox={{search,setSearch}}>
                <h1 className="text-3xl md:text-4xl text-center">Ուսումնասիրել</h1>
                <div className="bg-background shadow rounded-xl p-5 px-16 flex justify-start items-center gap-3 flex-wrap w-full max-w-8xl">
                     <Carousel className="w-full">

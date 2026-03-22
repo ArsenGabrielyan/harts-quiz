@@ -10,6 +10,7 @@ import { SUBJECT_LIST } from "@/lib/constants/others";
 import { useMemo } from "react";
 import { PlayCircle, Search } from "lucide-react";
 import Logo from "../logo";
+import { LandingPage } from "../contents/landing-page";
 
 interface MainPageProps {
      user: ExtendedUser | null,
@@ -27,29 +28,11 @@ export default function MainPage({user, questions}: MainPageProps) {
           ) : []
      },[questions])
      return (
-          <PageLayout mainClassName="flex-1 flex items-center justify-center">
+          <PageLayout mainClassName="flex-1 flex items-center justify-center flex-col">
                {!user ? (
-                    <div className="max-w-[1440px] py-4 w-full flex flex-col items-center justify-center text-center gap-6">
-                         <Logo width={210} height={95}/>
-                         <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold">Հայկական վերջնական վիկտորինայի մարտահրավերը</h1>
-                         <p className="text-base md:text-lg max-w-5xl">Կապվեք ընկերների և սփյուռքի հետ ամբողջ աշխարհում: Ստուգեք ձեր գիտելիքները մշակույթի, պատմության, աշխարհագրության և լեզվի վերաբերյալ իրական ժամանակի մարտերում:</p>
-                         <div className="flex gap-2 flex-wrap">
-                              <Button asChild className="flex-1">
-                                   <Link href="/play">
-                                        <PlayCircle/>
-                                        Խաղալ
-                                   </Link>
-                              </Button>
-                              <Button variant="outline" asChild className="flex-1">
-                                   <Link href="/explore">
-                                        <Search/>
-                                        Ուսումնասիրել
-                                   </Link>
-                              </Button>
-                         </div>
-                    </div>
+                    <LandingPage/>
                ) : (
-                    <div className="max-w-[1440px] w-full flex flex-col items-center justify-start">
+                    <div className="p-3 primary-main-bg max-w-[1440px] w-full flex flex-col items-center justify-start min-h-screen">
                          <div className="bg-background shadow rounded-xl p-5 flex justify-center items-center flex-col sm:flex-row gap-4">
                               <div className="flex flex-col justify-center items-center text-center sm:items-start sm:text-left gap-2">
                                    <h1 className="text-3xl font-semibold">Բարև {user.name?.split(' ')[0]}!</h1>

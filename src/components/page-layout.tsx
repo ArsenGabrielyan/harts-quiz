@@ -74,7 +74,7 @@ export default function PageLayout({children,mainClassName, searchBox, removeCre
                          )}
                     </div>
                </header>
-               <main className={cn("primary-main-bg min-h-screen mt-[80px] p-3 relative print:mt-0",mainClassName)}>
+               <main className={cn("relative w-full",mainClassName)}>
                     {children}
                </main>
                <footer className="text-center bg-background text-foreground shadow p-5 flex justify-between items-center flex-col md:flex-row gap-2 print:hidden">

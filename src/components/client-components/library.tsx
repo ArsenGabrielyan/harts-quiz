@@ -8,7 +8,7 @@ interface LibraryQuizListProps{
 }
 export default function LibraryQuizList({quizzes}: LibraryQuizListProps){
      return (
-          <PageLayout>
+          <PageLayout mainClassName="min-h-screen primary-main-bg">
                <h1 className="text-3xl md:text-4xl text-center">Ձեր հարցաշարերը</h1>
                {quizzes && (
                     <div className="w-full space-y-4 mt-4">

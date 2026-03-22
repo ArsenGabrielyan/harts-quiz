@@ -34,7 +34,7 @@ export default function UserInfo({user, questions}: UserInfoProps){
           }
      }
      return (
-          <PageLayout>
+          <PageLayout mainClassName="primary-main-bg min-h-screen">
                {user && (
                     <>
                     <div className="bg-background shadow rounded-xl p-5 flex justify-between items-center flex-col sm:flex-row gap-4">
