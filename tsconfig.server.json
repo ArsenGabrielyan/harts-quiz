@@ -6,8 +6,12 @@
           "lib": ["es2019"],
           "target": "es2019",
           "strict": true,
-          "isolatedModules": false,
-          "noEmit": false
+          "noEmit": false,
+          "moduleDetection": "force",
+		"resolveJsonModule": true,
+		"allowJs": true,
+		"esModuleInterop": true,
+		"isolatedModules": true,
      },
      "include": ["server.ts"],
      "exclude": ["node_modules"]
