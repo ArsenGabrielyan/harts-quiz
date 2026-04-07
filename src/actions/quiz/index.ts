@@ -2,7 +2,7 @@
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
-import { getEveryQuizByTeacherEmail, getEveryQuizByVisibility, getQuizById } from "@/data/quiz";
+import { getEveryQuizByTeacherEmail, getEveryQuizByVisibility, getExistingFavorites, getQuizById } from "@/data/quiz";
 import { ExtendedUser } from "@/next-auth";
 
 export const getQuizDetails = async (id: string, user?: ExtendedUser) => {
@@ -28,18 +28,11 @@ export const getQuizFromCurrEmail = async (email: string) => {
 }
 
 export const likeQuiz = async (quizId: string) => {
-     const quiz = await db.hartsQuiz.findUnique({ where: { id: quizId } });
+     const quiz = await getQuizById(quizId)
      if (!quiz) return { error: "Հարցաշարը չի գտնվել" };
      const user = await currentUser();
      if (!user) return { error: "Այս օգտագործողը մուտք չի գործել" };
-     const existing = await db.favorite.findUnique({
-          where: {
-               userId_quizId: {
-                    userId: user.id!,
-                    quizId: quiz.id
-               }
-          }
-     });
+     const existing = await getExistingFavorites(user.id ?? "",quiz.id);
      if (existing) {
           await db.favorite.delete({
                where: {

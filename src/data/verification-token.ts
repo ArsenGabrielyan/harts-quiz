@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
+import { cache } from "react";
 
-export const getVerificationTokenByEmail = async (
+export const getVerificationTokenByEmail = cache(async (
      email: string
 ) => {
      try{
@@ -11,9 +12,9 @@ export const getVerificationTokenByEmail = async (
      } catch {
           return null
      }
-}
+})
 
-export const getVerificationTokenByToken = async (
+export const getVerificationTokenByToken = cache(async (
      token: string
 ) => {
      try{
@@ -24,4 +25,4 @@ export const getVerificationTokenByToken = async (
      } catch {
           return null
      }
-}
+})

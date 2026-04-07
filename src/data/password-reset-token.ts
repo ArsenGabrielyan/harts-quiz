@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
+import { cache } from "react";
 
-export const getPasswordResetTokenByToken = async (token: string) => {
+export const getPasswordResetTokenByToken = cache(async (token: string) => {
      try{
           const passwordResetToken = await db.passwordResetToken.findUnique({
                where: {token}
@@ -9,9 +10,9 @@ export const getPasswordResetTokenByToken = async (token: string) => {
      } catch{
           return null
      }
-}
+})
 
-export const getPasswordResetTokenByEmail = async (email: string) => {
+export const getPasswordResetTokenByEmail = cache(async (email: string) => {
      try{
           const passwordResetToken = await db.passwordResetToken.findFirst({
                where: {email}
@@ -20,4 +21,4 @@ export const getPasswordResetTokenByEmail = async (email: string) => {
      } catch{
           return null
      }
-}
+})

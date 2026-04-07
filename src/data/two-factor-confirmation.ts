@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
+import { cache } from "react";
 
-export const getTwoFactorConfirmationByUserId = async(userId: string) => {
+export const getTwoFactorConfirmationByUserId = cache(async(userId: string) => {
      try{
           const twoFactorConfirmation = await db.twoFactorConfirmation.findUnique({
                where: {userId}
@@ -9,4 +10,4 @@ export const getTwoFactorConfirmationByUserId = async(userId: string) => {
      } catch {
           return null
      }
-}
+})
